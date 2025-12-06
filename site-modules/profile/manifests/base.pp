@@ -2,4 +2,11 @@
 class profile::base {
   notify { 'Base profile applied': }
   include chrony
+  include firewall
+
+  firewall { '100 allow puppet':
+    dport  => 8140,
+    proto  => 'tcp',
+    jump   => 'ACCEPT',
+  }
 }
