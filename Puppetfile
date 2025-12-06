@@ -10,6 +10,7 @@ mod 'puppet/chrony',      '5.0.0'
 mod 'puppetlabs/vcsrepo', '7.0.0'
 mod 'puppetlabs/firewall','8.2.0'
 mod 'puppetlabs/apt',     '11.1.0'
+mod 'saz/sudo',           '9.0.2'
 
 # Modules from Git
 # Examples: https://github.com/puppetlabs/r10k/blob/master/doc/puppetfile.mkd#examples

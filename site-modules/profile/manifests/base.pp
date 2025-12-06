@@ -9,4 +9,9 @@ class profile::base {
     proto  => 'tcp',
     jump   => 'ACCEPT',
   }
+
+  class { 'sudo': }
+  sudo::conf { 'mharp':
+    content  => 'mharp ALL=(ALL) NOPASSWD: ALL',
+  }
 }
