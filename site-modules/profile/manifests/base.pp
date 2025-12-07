@@ -4,6 +4,7 @@ class profile::base (
 ) {
   include chrony
   include firewall
+  include profile::openvox_agent
 
   firewall { '100 allow puppet':
     dport => 8140,
