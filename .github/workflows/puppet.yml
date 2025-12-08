@@ -12,4 +12,3 @@ jobs:
     uses: voxpupuli/gha-puppet/.github/workflows/basic.yml@v1
     with:
       working-directory: site-modules/profile
-      puppet_major_versions: '[8]'
