@@ -1,4 +1,7 @@
 # The base profile should include component modules that will be on all nodes
+#
+# @param release
+#   The OS release version.
 class profile::base (
   Integer $release,
 ) {
