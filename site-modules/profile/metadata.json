@@ -1,0 +1,10 @@
+{
+  "name": "myorg-profile",
+  "version": "0.1.0",
+  "author": "mharp",
+  "summary": "Profile module",
+  "license": "Apache-2.0",
+  "source": "",
+  "dependencies": [],
+  "operatingsystem_support": []
+}
