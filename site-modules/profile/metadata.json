@@ -6,5 +6,11 @@
   "license": "Apache-2.0",
   "source": "",
   "dependencies": [],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 7.0.0 < 9.0.0"
+    }
+  ],
   "operatingsystem_support": []
 }
