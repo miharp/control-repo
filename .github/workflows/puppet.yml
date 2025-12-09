@@ -1,0 +1,30 @@
+name: CI
+
+on: pull_request
+
+concurrency:
+  group: ${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Puppet 8
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site-modules/profile
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+          working-directory: site-modules/profile
+
+      - name: Validate
+        run: bundle exec rake validate lint check
+
+      - name: Run tests
+        run: bundle exec rake parallel_spec
