@@ -1,6 +1,6 @@
 ---
 message: "This node is using common data"
 profile::base::release: 8
-profile::openvox_agent::version: '8.24.1'
+profile::openvox_agent::version: '8.24.2'
 
 
