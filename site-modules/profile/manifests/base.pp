@@ -20,15 +20,23 @@ class profile::base (
     content => 'mharp ALL=(ALL) NOPASSWD: ALL',
   }
 
-  $os_name = $facts['os']['name'] ? {
-    'Fedora' => 'fedora',
-    default  => 'el',
-  }
-  $url = "https://yum.voxpupuli.org/openvox${release}-release-${os_name}-${facts['os']['release']['major']}.noarch.rpm"
+  if $facts['os']['family'] == 'RedHat' {
+    $os_name = $facts['os']['name'] ? {
+      'Fedora' => 'fedora',
+      default  => 'el',
+    }
+    $url = "https://yum.voxpupuli.org/openvox${release}-release-${os_name}-${facts['os']['release']['major']}.noarch.rpm"
 
-  package { "openvox${release}-release":
-    ensure   => present,
-    provider => 'rpm',
-    source   => $url,
+    package { "openvox${release}-release":
+      ensure   => present,
+      provider => 'rpm',
+      source   => $url,
+    }
+
+    yumrepo { "openvox${release}":
+      ensure          => present,
+      metadata_expire => '300',
+      require         => Package["openvox${release}-release"],
+    }
   }
 }
