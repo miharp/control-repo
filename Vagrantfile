@@ -25,6 +25,12 @@ Vagrant.configure("2") do |config|
       # Install OpenVox Server
       dnf install -y openvox-server
 
+      # Install git (required for r10k if using git sources, and for config_version)
+      dnf install -y git
+
+      # Ensure firewalld is running
+      systemctl enable --now firewalld
+
       # Configure Firewall
       firewall-cmd --add-port=8140/tcp --permanent
       firewall-cmd --reload
@@ -69,6 +75,12 @@ Vagrant.configure("2") do |config|
 
       # Start the service (agent service is 'puppet')
       systemctl enable --now puppet
+
+      # Wait for Puppet Master to be ready
+      echo "Waiting for Puppet Master..."
+      while ! curl -k https://puppet:8140/status/v1/simple > /dev/null 2>&1; do
+        sleep 5
+      done
 
       # Run Puppet Agent
       /opt/puppetlabs/bin/puppet agent -t || true
