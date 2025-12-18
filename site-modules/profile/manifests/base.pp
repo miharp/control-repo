@@ -19,6 +19,9 @@ class profile::base (
   sudo::conf { 'mharp':
     content => 'mharp ALL=(ALL) NOPASSWD: ALL',
   }
+  sudo::conf { 'vagrant':
+    content => 'vagrant ALL=(ALL) NOPASSWD: ALL',
+  }
 
   if $facts['os']['family'] == 'RedHat' {
     $os_name = $facts['os']['name'] ? {
