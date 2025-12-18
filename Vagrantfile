@@ -11,6 +11,9 @@ Vagrant.configure("2") do |config|
       prl.cpus = 2
     end
 
+    # Sync control-repo to production environment
+    puppet.vm.synced_folder ".", "/etc/puppetlabs/code/environments/production"
+
     puppet.vm.provision "shell", inline: <<-SHELL
       # Set up /etc/hosts
       echo "192.168.56.10 puppet.example.com puppet" >> /etc/hosts
@@ -29,8 +32,18 @@ Vagrant.configure("2") do |config|
       # Configure Autosign
       echo "*" > /etc/puppetlabs/puppet/autosign.conf
 
+      # Install r10k
+      /opt/puppetlabs/puppet/bin/gem install r10k
+
+      # Install modules from Puppetfile
+      cd /etc/puppetlabs/code/environments/production
+      /opt/puppetlabs/puppet/bin/r10k puppetfile install
+
       # Start the service
       systemctl enable --now puppetserver
+
+      # Run Puppet Agent
+      /opt/puppetlabs/bin/puppet agent -t || true
     SHELL
   end
 
@@ -56,6 +69,9 @@ Vagrant.configure("2") do |config|
 
       # Start the service (agent service is 'puppet')
       systemctl enable --now puppet
+
+      # Run Puppet Agent
+      /opt/puppetlabs/bin/puppet agent -t || true
     SHELL
   end
 end
