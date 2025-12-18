@@ -39,7 +39,7 @@ Vagrant.configure("2") do |config|
       echo "*" > /etc/puppetlabs/puppet/autosign.conf
 
       # Install r10k
-      /opt/puppetlabs/puppet/bin/gem install r10k
+      /opt/puppetlabs/puppet/bin/gem install r10k --no-document
 
       # Install modules from Puppetfile
       cd /etc/puppetlabs/code/environments/production
