@@ -18,6 +18,7 @@ Vagrant.configure("2") do |config|
       # Set up /etc/hosts
       echo "192.168.56.10 puppet.example.com puppet" >> /etc/hosts
       echo "192.168.56.11 agent01.example.com agent01" >> /etc/hosts
+      echo "192.168.56.12 agent02.example.com agent02" >> /etc/hosts
 
       # Install OpenVox repository
       rpm -Uvh https://yum.voxpupuli.org/openvox8-release-el-9.noarch.rpm
@@ -66,6 +67,7 @@ Vagrant.configure("2") do |config|
       # Set up /etc/hosts
       echo "192.168.56.10 puppet.example.com puppet" >> /etc/hosts
       echo "192.168.56.11 agent01.example.com agent01" >> /etc/hosts
+      echo "192.168.56.12 agent02.example.com agent02" >> /etc/hosts
 
       # Install OpenVox repository
       rpm -Uvh https://yum.voxpupuli.org/openvox8-release-el-9.noarch.rpm
@@ -84,6 +86,46 @@ Vagrant.configure("2") do |config|
 
       # Run Puppet Agent
       /opt/puppetlabs/bin/puppet agent -t || true
+    SHELL
+  end
+
+  # Agent Node: agent02 (Ubuntu LTS)
+  config.vm.define "agent02" do |agent|
+    agent.vm.box = "bento/ubuntu-24.04"
+    agent.vm.hostname = "agent02.example.com"
+    agent.vm.network "private_network", ip: "192.168.56.12"
+
+    agent.vm.provider "parallels" do |prl|
+      prl.memory = 1024
+    end
+
+    agent.vm.provision "shell", inline: <<-SHELL
+      set -e
+
+      # Set up /etc/hosts
+      echo "192.168.56.10 puppet.example.com puppet" | sudo tee -a /etc/hosts > /dev/null
+      echo "192.168.56.11 agent01.example.com agent01" | sudo tee -a /etc/hosts > /dev/null
+      echo "192.168.56.12 agent02.example.com agent02" | sudo tee -a /etc/hosts > /dev/null
+
+      # Install OpenVox repository + agent (Debian/Ubuntu)
+      sudo apt-get update -y
+      sudo apt-get install -y curl ca-certificates
+      curl -fsSL -o /tmp/openvox8-release-ubuntu24.04.deb https://apt.voxpupuli.org/openvox8-release-ubuntu24.04.deb
+      sudo dpkg -i /tmp/openvox8-release-ubuntu24.04.deb
+      sudo apt-get update -y
+      sudo apt-get install -y openvox-agent
+
+      # Start the service (agent service is 'puppet')
+      sudo systemctl enable --now puppet
+
+      # Wait for Puppet Master to be ready
+      echo "Waiting for Puppet Master..."
+      while ! curl -k https://puppet:8140/status/v1/simple > /dev/null 2>&1; do
+        sleep 5
+      done
+
+      # Run Puppet Agent
+      sudo /opt/puppetlabs/bin/puppet agent -t || true
     SHELL
   end
 end
