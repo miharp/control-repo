@@ -3,3 +3,6 @@ Gemfile.lock
 .vagrant/
 .vscode/
 
+# Local eyaml keys (development/test only)
+keys/*.pem
+
