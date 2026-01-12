@@ -41,3 +41,21 @@ vagrant ssh agent01
 # or
 vagrant ssh agent02
 ```
+
+### Bolt validation
+
+This environment provisions OpenBolt (Bolt) on the Puppet master and includes a
+simple plan to validate Bolt can SSH to both agents.
+
+Run from your host:
+
+```bash
+./scripts/bolt-validate.sh
+```
+
+If you rebuilt the environment and the Bolt SSH key hasnt propagated to agents
+yet, re-run:
+
+```bash
+vagrant provision agent01 agent02
+```

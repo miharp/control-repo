@@ -3,6 +3,10 @@ Gemfile.lock
 .vagrant/
 .vscode/
 
+# Bolt/Vagrant provisioning artifacts (generated locally)
+.vagrant_bolt_keys/
+bolt-debug.log
+
 # Local eyaml keys (development/test only)
 keys/*.pem
 

@@ -1,0 +1,6 @@
+name: control_repo
+
+# Bolt project for this control-repo. Plans live under ./plans.
+# Run from the Puppet master VM:
+#   cd /etc/puppetlabs/code/environments/production
+#   sudo /opt/puppetlabs/bin/bolt plan run control_repo::validate

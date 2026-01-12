@@ -7,4 +7,5 @@
 class role::puppet_master {
   include profile::base
   include profile::openvoxdb
+  include profile::openbolt
 }
