@@ -13,6 +13,11 @@ mod 'puppetlabs/apt',     '11.2.0'
 mod 'puppet/yum',         '7.3.0'
 mod 'saz/sudo',           '9.0.2'
 
+# PuppetDB (OpenVoxDB) management
+mod 'puppetlabs/puppetdb','8.1.0'
+mod 'puppetlabs/postgresql', '10.0.0'
+mod 'puppet/systemd', '6.0.0'
+
 # Modules from Git
 # Examples: https://github.com/puppetlabs/r10k/blob/master/doc/puppetfile.mkd#examples
 #mod 'apache',
