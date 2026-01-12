@@ -1,0 +1,11 @@
+groups:
+  - name: agents
+    targets:
+      - agent01.example.com
+      - agent02.example.com
+    config:
+      transport: ssh
+      ssh:
+        user: vagrant
+        host-key-check: false
+        private-key: /root/.ssh/bolt_ed25519
