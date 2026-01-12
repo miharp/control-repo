@@ -30,3 +30,7 @@ node default {
   #   class { 'my_class': }
   include profile::base
 }
+
+node 'puppet.example.com' {
+  include role::puppet_master
+}
