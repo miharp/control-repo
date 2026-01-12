@@ -73,6 +73,16 @@ Vagrant.configure("2") do |config|
       done
       /opt/puppetlabs/bin/puppet agent -t || true
 
+      # Bolt validation support: create a dedicated SSH keypair on the master
+      # and publish the public key into the synced control-repo directory so
+      # agents can authorize it during their provisioning.
+      install -d -m 0700 /root/.ssh
+      if [ ! -f /root/.ssh/bolt_ed25519 ]; then
+        ssh-keygen -t ed25519 -f /root/.ssh/bolt_ed25519 -N ''
+      fi
+      install -d -m 0755 /etc/puppetlabs/code/environments/production/.vagrant_bolt_keys
+      cp -f /root/.ssh/bolt_ed25519.pub /etc/puppetlabs/code/environments/production/.vagrant_bolt_keys/bolt_ed25519.pub
+
       # Final stability wait: ensure puppetserver is serving requests after any
       # service refreshes triggered by convergence.
       echo "Waiting for Puppet Server to be stable..."
@@ -131,6 +141,16 @@ Vagrant.configure("2") do |config|
       # Install OpenVox Agent
       dnf install -y openvox-agent
 
+      # Bolt validation support: authorize the master's Bolt SSH key.
+      while [ ! -f /vagrant/.vagrant_bolt_keys/bolt_ed25519.pub ]; do
+        sleep 2
+      done
+      install -d -m 0700 /home/vagrant/.ssh
+      touch /home/vagrant/.ssh/authorized_keys
+      chmod 0600 /home/vagrant/.ssh/authorized_keys
+      chown -R vagrant:vagrant /home/vagrant/.ssh
+      grep -q -F "$(cat /vagrant/.vagrant_bolt_keys/bolt_ed25519.pub)" /home/vagrant/.ssh/authorized_keys || cat /vagrant/.vagrant_bolt_keys/bolt_ed25519.pub >> /home/vagrant/.ssh/authorized_keys
+
       # Avoid lock races: the puppet service may auto-start and run an agent
       # cycle in the background. Stop it before running our one-shot converge.
       systemctl stop puppet || true
@@ -179,6 +199,16 @@ Vagrant.configure("2") do |config|
       sudo dpkg -i /tmp/openvox8-release-ubuntu24.04.deb
       sudo apt-get update -y
       sudo apt-get install -y openvox-agent
+
+      # Bolt validation support: authorize the master's Bolt SSH key.
+      while [ ! -f /vagrant/.vagrant_bolt_keys/bolt_ed25519.pub ]; do
+        sleep 2
+      done
+      sudo install -d -m 0700 /home/vagrant/.ssh
+      sudo touch /home/vagrant/.ssh/authorized_keys
+      sudo chmod 0600 /home/vagrant/.ssh/authorized_keys
+      sudo chown -R vagrant:vagrant /home/vagrant/.ssh
+      grep -q -F "$(cat /vagrant/.vagrant_bolt_keys/bolt_ed25519.pub)" /home/vagrant/.ssh/authorized_keys || cat /vagrant/.vagrant_bolt_keys/bolt_ed25519.pub >> /home/vagrant/.ssh/authorized_keys
 
       # Avoid lock races: the puppet service may auto-start and run an agent
       # cycle in the background. Stop it before running our one-shot converge.
