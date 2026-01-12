@@ -1,4 +1,12 @@
 Vagrant.configure("2") do |config|
+  # The multi-machine environment is sensitive to puppetserver restarts during
+  # master convergence (e.g., when PuppetDB integration is applied). If agents
+  # start in parallel, they can hit transient connection-refused errors.
+  #
+  # Default to sequential bring-up for reliability; override by explicitly
+  # setting VAGRANT_NO_PARALLEL=0 when running Vagrant.
+  ENV['VAGRANT_NO_PARALLEL'] ||= '1'
+
   config.vm.box = "bento/centos-stream-9"
 
   # Master Node: puppet
@@ -9,7 +17,7 @@ Vagrant.configure("2") do |config|
     puppet.vm.provider "parallels" do |prl|
       prl.memory = 3072
       prl.cpus = 2
-    end
+    end 
 
     # Sync control-repo to production environment
     puppet.vm.synced_folder ".", "/etc/puppetlabs/code/environments/production"
@@ -19,6 +27,9 @@ Vagrant.configure("2") do |config|
       echo "192.168.56.10 puppet.example.com puppet" >> /etc/hosts
       echo "192.168.56.11 agent01.example.com agent01" >> /etc/hosts
       echo "192.168.56.12 agent02.example.com agent02" >> /etc/hosts
+
+      # Tools used by readiness checks
+      dnf install -y curl
 
       # Install OpenVox repository
       rpm -Uvh https://yum.voxpupuli.org/openvox8-release-el-9.noarch.rpm
@@ -49,8 +60,50 @@ Vagrant.configure("2") do |config|
       # Start the service
       systemctl enable --now puppetserver
 
-      # Run Puppet Agent
+      # Wait for Puppet Server to be ready
+      echo "Waiting for Puppet Server..."
+      while ! curl -k https://puppet:8140/status/v1/simple > /dev/null 2>&1; do
+        sleep 5
+      done
+
+      # Run Puppet Agent twice (2nd run converges after puppetserver restarts)
       /opt/puppetlabs/bin/puppet agent -t || true
+      while ! curl -k https://puppet:8140/status/v1/simple > /dev/null 2>&1; do
+        sleep 5
+      done
+      /opt/puppetlabs/bin/puppet agent -t || true
+
+      # Final stability wait: ensure puppetserver is serving requests after any
+      # service refreshes triggered by convergence.
+      echo "Waiting for Puppet Server to be stable..."
+      ok=0
+      while [ "$ok" -lt 3 ]; do
+        if curl -k https://puppet:8140/status/v1/simple > /dev/null 2>&1; then
+          ok=$((ok+1))
+        else
+          ok=0
+        fi
+        sleep 5
+      done
+
+      # Smoke-test PuppetDB/OpenVoxDB after convergence
+      echo "Waiting for OpenVoxDB (PuppetDB) HTTPS endpoint..."
+      for i in $(seq 1 30); do
+        if ss -lnt 2>/dev/null | grep -q ':8081'; then
+          break
+        fi
+        sleep 2
+      done
+
+      if ! systemctl is-active puppetdb > /dev/null 2>&1; then
+        echo "puppetdb service is not active"
+        systemctl status puppetdb --no-pager || true
+      fi
+
+      curl -sS --cacert /etc/puppetlabs/puppet/ssl/certs/ca.pem \
+        --cert /etc/puppetlabs/puppet/ssl/certs/puppet.example.com.pem \
+        --key /etc/puppetlabs/puppet/ssl/private_keys/puppet.example.com.pem \
+        https://puppet.example.com:8081/pdb/meta/v1/version || true
     SHELL
   end
 
@@ -72,20 +125,32 @@ Vagrant.configure("2") do |config|
       # Install OpenVox repository
       rpm -Uvh https://yum.voxpupuli.org/openvox8-release-el-9.noarch.rpm
 
+      # Tools used by readiness checks
+      dnf install -y curl
+
       # Install OpenVox Agent
       dnf install -y openvox-agent
 
-      # Start the service (agent service is 'puppet')
-      systemctl enable --now puppet
+      # Avoid lock races: the puppet service may auto-start and run an agent
+      # cycle in the background. Stop it before running our one-shot converge.
+      systemctl stop puppet || true
 
       # Wait for Puppet Master to be ready
       echo "Waiting for Puppet Master..."
-      while ! curl -k https://puppet:8140/status/v1/simple > /dev/null 2>&1; do
+      ok=0
+      while [ "$ok" -lt 3 ]; do
+        if curl -k https://puppet:8140/status/v1/simple > /dev/null 2>&1; then
+          ok=$((ok+1))
+        else
+          ok=0
+        fi
         sleep 5
       done
 
-      # Run Puppet Agent
-      /opt/puppetlabs/bin/puppet agent -t || true
+      # Development environment: keep the puppet service disabled and run
+      # puppet manually when needed.
+      /opt/puppetlabs/bin/puppet agent -t --waitforlock 60 || true
+      systemctl disable --now puppet || true
     SHELL
   end
 
@@ -115,17 +180,26 @@ Vagrant.configure("2") do |config|
       sudo apt-get update -y
       sudo apt-get install -y openvox-agent
 
-      # Start the service (agent service is 'puppet')
-      sudo systemctl enable --now puppet
+      # Avoid lock races: the puppet service may auto-start and run an agent
+      # cycle in the background. Stop it before running our one-shot converge.
+      sudo systemctl stop puppet || true
 
       # Wait for Puppet Master to be ready
       echo "Waiting for Puppet Master..."
-      while ! curl -k https://puppet:8140/status/v1/simple > /dev/null 2>&1; do
+      ok=0
+      while [ "$ok" -lt 3 ]; do
+        if curl -k https://puppet:8140/status/v1/simple > /dev/null 2>&1; then
+          ok=$((ok+1))
+        else
+          ok=0
+        fi
         sleep 5
       done
 
-      # Run Puppet Agent
-      sudo /opt/puppetlabs/bin/puppet agent -t || true
+      # Development environment: keep the puppet service disabled and run
+      # puppet manually when needed.
+      sudo /opt/puppetlabs/bin/puppet agent -t --waitforlock 60 || true
+      sudo systemctl disable --now puppet || true
     SHELL
   end
 end
