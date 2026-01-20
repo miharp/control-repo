@@ -6,6 +6,7 @@
 #   include role::puppet_master
 class role::puppet_master {
   include profile::base
+  include profile::openvox_server
   include profile::openvoxdb
   include profile::openbolt
 }
