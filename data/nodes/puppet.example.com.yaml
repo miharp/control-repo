@@ -2,7 +2,7 @@
 # Node-specific configuration for the Puppet master.
 
 # Pin openvox-server version
-profile::openvox_server::version: '8.11.0'
+profile::openvox_server::version: '8.12.1'
 
 # Use OpenVox package names with the upstream puppetdb module
 puppetdb::puppetdb_package: openvoxdb
