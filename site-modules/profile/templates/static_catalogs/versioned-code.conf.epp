@@ -1,0 +1,9 @@
+<%- | String $code_id_command, String $code_content_command | -%>
+# Managed by Puppet - do not edit
+# Configuration for Puppet Server's versioned-code-service
+# This enables static catalogs by providing code versioning commands
+
+versioned-code: {
+    code-id-command: <%= $code_id_command %>
+    code-content-command: <%= $code_content_command %>
+}
