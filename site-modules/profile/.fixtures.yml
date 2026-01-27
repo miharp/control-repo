@@ -1,0 +1,11 @@
+---
+fixtures:
+  forge_modules:
+    inifile:
+      repo: puppetlabs/inifile
+      ref: 6.2.0
+    stdlib:
+      repo: puppetlabs/stdlib
+      ref: 9.7.0
+  symlinks:
+    profile: "#{source_dir}"
