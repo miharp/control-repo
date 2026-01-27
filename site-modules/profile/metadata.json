@@ -5,7 +5,16 @@
   "summary": "Profile module",
   "license": "Apache-2.0",
   "source": "",
-  "dependencies": [],
+  "dependencies": [
+    {
+      "name": "puppetlabs/inifile",
+      "version_requirement": ">= 5.0.0 < 7.0.0"
+    },
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 8.0.0 < 10.0.0"
+    }
+  ],
   "requirements": [
     {
       "name": "puppet",
