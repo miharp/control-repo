@@ -68,6 +68,16 @@ describe 'profile::static_catalogs' do
             .with_value('/opt/puppetlabs/server/data/puppetserver/scripts/code_content.sh')
         }
 
+        # Puppetserver versioned-code.conf (HOCON format)
+        it {
+          is_expected.to contain_file('/etc/puppetlabs/puppetserver/conf.d/versioned-code.conf')
+            .with_ensure('file')
+            .with_owner('root')
+            .with_group('root')
+            .with_mode('0644')
+            .that_notifies('Service[puppetserver]')
+        }
+
         # Service notification
         it {
           is_expected.to contain_ini_setting('static_catalogs')
@@ -98,6 +108,11 @@ describe 'profile::static_catalogs' do
 
         it {
           is_expected.to contain_ini_setting('code_content_command')
+            .with_ensure('absent')
+        }
+
+        it {
+          is_expected.to contain_file('/etc/puppetlabs/puppetserver/conf.d/versioned-code.conf')
             .with_ensure('absent')
         }
       end
