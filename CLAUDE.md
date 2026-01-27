@@ -8,9 +8,21 @@ This is a Puppet control repository for OpenVox (a Vox Pupuli fork of Puppet). I
 
 ## Common Commands
 
-### Testing with Voxbox Container (preferred)
+### Testing with Local Bundle (CI authoritative)
 
-Use the [voxbox container](https://github.com/voxpupuli/container-voxbox) for consistent linting and testing:
+GitHub Actions CI uses the local bundle for linting - this is authoritative for PRs:
+
+```bash
+cd site-modules/profile
+bundle install                        # Install dependencies
+bundle exec rake validate lint check  # Validate syntax and lint
+bundle exec rake parallel_spec        # Run all rspec-puppet tests
+bundle exec rake spec SPEC=spec/classes/openvox_agent_spec.rb  # Run single spec
+```
+
+### Testing with Voxbox Container (alternative)
+
+The [voxbox container](https://github.com/voxpupuli/container-voxbox) can be used for testing but note that it may have different lint rules than the CI bundle:
 
 ```bash
 cd site-modules/profile
@@ -31,17 +43,8 @@ docker run --rm -e "SPEC=spec/classes/static_catalogs_spec.rb" -v $PWD:/repo ghc
 docker run --rm -v $PWD:/repo ghcr.io/voxpupuli/voxbox:8 validate
 ```
 
-### Testing with Local Bundle (alternative)
-
-```bash
-cd site-modules/profile
-bundle install                        # Install dependencies
-bundle exec rake validate lint check  # Validate syntax and lint
-bundle exec rake parallel_spec        # Run all rspec-puppet tests
-bundle exec rake spec SPEC=spec/classes/openvox_agent_spec.rb  # Run single spec
-```
-
 ### Module Management
+
 ```bash
 # Install modules from Puppetfile (on the Puppet master)
 /opt/puppetlabs/puppet/bin/r10k puppetfile install
