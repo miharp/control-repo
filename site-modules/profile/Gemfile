@@ -16,7 +16,7 @@ group :test do
   gem 'hiera-eyaml', require: false
 
   # Needed to build the test matrix based on metadata
-  gem 'puppet_metadata', '~> 3.2',  require: false
+  gem 'puppet_metadata', '~> 6.0',  require: false
   # metagem that pulls in all further requirements
   gem 'voxpupuli-test', '~> 13.0', require: false
 end
