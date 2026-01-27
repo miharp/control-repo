@@ -7,7 +7,8 @@
 # Static catalogs require:
 # - The `code_id_command` setting pointing to a script that returns a unique code version
 # - The `code_content_command` setting pointing to a script that retrieves file content
-# - The `static_catalogs` setting enabled
+# - The `static_catalogs` setting enabled in puppet.conf
+# - The versioned-code settings in puppetserver's HOCON configuration
 #
 # @param enabled
 #   Whether to enable static catalogs. Default: true.
@@ -20,6 +21,10 @@
 #   Path to the Puppet configuration directory.
 #   Default: /etc/puppetlabs/puppet
 #
+# @param puppetserver_confdir
+#   Path to the Puppet Server configuration directory.
+#   Default: /etc/puppetlabs/puppetserver/conf.d
+#
 # @example Basic usage
 #   include profile::static_catalogs
 #
@@ -29,9 +34,10 @@
 #   }
 #
 class profile::static_catalogs (
-  Boolean $enabled                       = true,
-  Stdlib::Absolutepath $scripts_dir      = '/opt/puppetlabs/server/data/puppetserver/scripts',
-  Stdlib::Absolutepath $puppet_confdir   = '/etc/puppetlabs/puppet',
+  Boolean $enabled                            = true,
+  Stdlib::Absolutepath $scripts_dir           = '/opt/puppetlabs/server/data/puppetserver/scripts',
+  Stdlib::Absolutepath $puppet_confdir        = '/etc/puppetlabs/puppet',
+  Stdlib::Absolutepath $puppetserver_confdir  = '/etc/puppetlabs/puppetserver/conf.d',
 ) {
   # Ensure scripts directory exists
   file { $scripts_dir:
@@ -88,6 +94,25 @@ class profile::static_catalogs (
   ini_setting { 'code_content_command':
     setting => 'code_content_command',
     value   => "${scripts_dir}/code_content.sh",
+  }
+
+  # Configure Puppet Server's versioned-code service (HOCON format)
+  # This is required for Puppet Server to actually use the code_id and code_content commands
+  $versioned_code_ensure = $enabled ? {
+    true  => 'file',
+    false => 'absent',
+  }
+
+  file { "${puppetserver_confdir}/versioned-code.conf":
+    ensure  => $versioned_code_ensure,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    content => epp('profile/static_catalogs/versioned-code.conf.epp', {
+        'code_id_command'      => "${scripts_dir}/code_id.sh",
+        'code_content_command' => "${scripts_dir}/code_content.sh",
+    }),
+    notify  => Service['puppetserver'],
   }
 
   # Ensure puppetserver service is defined
