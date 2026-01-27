@@ -1,0 +1,25 @@
+version: 2
+updates:
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+
+  # Maintain Ruby gem dependencies (site-modules/profile/Gemfile)
+  - package-ecosystem: bundler
+    directory: "/site-modules/profile"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    groups:
+      voxpupuli:
+        patterns:
+          - "voxpupuli-*"
+      puppet:
+        patterns:
+          - "puppet*"
+          - "hiera-*"
