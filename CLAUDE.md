@@ -8,7 +8,31 @@ This is a Puppet control repository for OpenVox (a Vox Pupuli fork of Puppet). I
 
 ## Common Commands
 
-### Testing (run from site-modules/profile/)
+### Testing with Voxbox Container (preferred)
+
+Use the [voxbox container](https://github.com/voxpupuli/container-voxbox) for consistent linting and testing:
+
+```bash
+cd site-modules/profile
+
+# Run puppet-lint
+docker run --rm -v $PWD:/repo ghcr.io/voxpupuli/voxbox:8 lint
+
+# Run all rake tasks list
+docker run --rm -v $PWD:/repo ghcr.io/voxpupuli/voxbox:8
+
+# Run spec tests
+docker run --rm -v $PWD:/repo ghcr.io/voxpupuli/voxbox:8 spec
+
+# Run a specific spec
+docker run --rm -e "SPEC=spec/classes/static_catalogs_spec.rb" -v $PWD:/repo ghcr.io/voxpupuli/voxbox:8 spec
+
+# Run syntax validation
+docker run --rm -v $PWD:/repo ghcr.io/voxpupuli/voxbox:8 validate
+```
+
+### Testing with Local Bundle (alternative)
+
 ```bash
 cd site-modules/profile
 bundle install                        # Install dependencies

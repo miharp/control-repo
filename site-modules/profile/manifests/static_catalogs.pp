@@ -109,8 +109,8 @@ class profile::static_catalogs (
     group   => 'root',
     mode    => '0644',
     content => epp('profile/static_catalogs/versioned-code.conf.epp', {
-        'code_id_command'      => "${scripts_dir}/code_id.sh",
-        'code_content_command' => "${scripts_dir}/code_content.sh",
+      'code_id_command'      => "${scripts_dir}/code_id.sh",
+      'code_content_command' => "${scripts_dir}/code_content.sh",
     }),
     notify  => Service['puppetserver'],
   }
@@ -118,7 +118,7 @@ class profile::static_catalogs (
   # Ensure puppetserver service is defined
   # Using ensure_resource to avoid duplicate declarations
   ensure_resource('service', 'puppetserver', {
-      ensure => 'running',
-      enable => true,
+    ensure => 'running',
+    enable => true,
   })
 }
