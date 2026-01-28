@@ -61,6 +61,7 @@ docker run --rm -v $PWD:/repo ghcr.io/voxpupuli/voxbox:8 validate
 ```
 
 ### Vagrant Development Environment
+
 ```bash
 vagrant up              # Start all VMs (puppet, agent01, agent02)
 vagrant ssh puppet      # SSH to the Puppet master
@@ -70,12 +71,14 @@ vagrant provision       # Re-run provisioning
 ```
 
 ### Running Puppet on Agents
+
 ```bash
 # From within an agent VM
 sudo /opt/puppetlabs/bin/puppet agent -t
 ```
 
 ### Bolt Validation
+
 ```bash
 ./scripts/bolt-validate.sh  # Run Bolt validation plan from host
 ```
@@ -83,6 +86,7 @@ sudo /opt/puppetlabs/bin/puppet agent -t
 ## Architecture
 
 ### Roles and Profiles Pattern
+
 - **[site-modules/role/](site-modules/role/)** - Node classification (one role per node type)
 - **[site-modules/profile/](site-modules/profile/)** - Technology-specific configurations composed into roles
 - **[modules/](modules/)** - External modules from Puppet Forge (managed via Puppetfile)
@@ -90,6 +94,7 @@ sudo /opt/puppetlabs/bin/puppet agent -t
 Roles include profiles, profiles include component modules. Example: `role::puppet_master` includes `profile::base`, `profile::openvox_server`, `profile::openvoxdb`, `profile::openbolt`.
 
 ### Hiera Data
+
 - **[hiera.yaml](hiera.yaml)** - Hierarchy configuration with eyaml and yaml backends
 - **[data/](data/)** - Hiera data files
   - `nodes/%{trusted.certname}.yaml` - Per-node data
@@ -97,11 +102,13 @@ Roles include profiles, profiles include component modules. Example: `role::pupp
 - **[keys/](keys/)** - eyaml PKCS7 keys (not committed, see keys/README.md for generation)
 
 ### Module Path (defined in environment.conf)
+
 1. `site-modules/` - Local modules (role, profile, adhoc)
 2. `modules/` - External Forge modules
 3. `$basemodulepath` - System modules
 
 ### Bolt Project
+
 - **[bolt-project.yaml](bolt-project.yaml)** - Project configuration
 - **[inventory.yaml](inventory.yaml)** - Target inventory for agents
 - **[plans/](plans/)** - Bolt plans (e.g., `control_repo::validate`)
@@ -110,7 +117,7 @@ Roles include profiles, profiles include component modules. Example: `role::pupp
 ## Vagrant Environment
 
 | VM | Hostname | IP | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | puppet | puppet.example.com | 192.168.56.10 | OpenVox Server + PuppetDB |
 | agent01 | agent01.example.com | 192.168.56.11 | CentOS Stream 9 agent |
 | agent02 | agent02.example.com | 192.168.56.12 | Ubuntu 24.04 agent |
@@ -120,6 +127,7 @@ The control-repo is synced to `/etc/puppetlabs/code/environments/production` on 
 ## Testing Patterns
 
 Tests use rspec-puppet with rspec-puppet-facts for multi-OS testing. Example spec structure:
+
 ```ruby
 describe 'profile::example' do
   on_supported_os.each do |os, os_facts|
