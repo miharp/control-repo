@@ -8,6 +8,16 @@ This is a Puppet control repository for OpenVox (a Vox Pupuli fork of Puppet). I
 
 ## Common Commands
 
+### Ruby Setup (for local testing)
+
+This project uses Ruby 3.4.8. Use [rbenv](https://github.com/rbenv/rbenv) to manage Ruby versions:
+
+```bash
+rbenv install 3.4.8    # Install the required Ruby version
+rbenv local 3.4.8      # Set for this directory (creates .ruby-version)
+ruby -v                # Verify: should show ruby 3.4.8
+```
+
 ### Testing with Local Bundle (CI authoritative)
 
 GitHub Actions CI uses the local bundle for linting - this is authoritative for PRs:
