@@ -3,6 +3,7 @@ Gemfile.lock
 .vagrant/
 .vscode/
 .mcp.json
+.ruby-version
 
 # Bolt/Vagrant provisioning artifacts (generated locally)
 .vagrant_bolt_keys/
