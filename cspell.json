@@ -1,0 +1,28 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "chrony",
+    "dport",
+    "mharp",
+    "openvox",
+    "yumrepo",
+    "NOPASSWD",
+    "puppetlabs",
+    "hiera",
+    "eyaml",
+    "rspec",
+    "certname",
+    "basemodulepath",
+    "openvoxdb",
+    "openbolt",
+    "voxbox",
+    "voxpupuli",
+    "Puppetfile"
+  ],
+  "ignorePaths": [
+    "modules/**",
+    "keys/**",
+    ".vagrant/**"
+  ]
+}
