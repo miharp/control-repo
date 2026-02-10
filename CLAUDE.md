@@ -10,7 +10,7 @@ This is a Puppet control repository for OpenVox (a Vox Pupuli fork of Puppet). I
 
 ### Ruby Setup (for local testing)
 
-This project uses Ruby 3.4.8. Use [rbenv](https://github.com/rbenv/rbenv) to manage Ruby versions:
+This project uses Ruby 3.4.8 locally (via rbenv). Note: CI uses Ruby 3.2.
 
 ```bash
 rbenv install 3.4.8    # Install the required Ruby version
@@ -29,6 +29,8 @@ bundle exec rake validate lint check  # Validate syntax and lint
 bundle exec rake parallel_spec        # Run all rspec-puppet tests
 bundle exec rake spec SPEC=spec/classes/openvox_agent_spec.rb  # Run single spec
 ```
+
+Lint rules come from the `voxpupuli-test` gem defaults. There is no `.puppet-lint.rc` or `.rubocop.yml` in this repo.
 
 ### Testing with Voxbox Container (alternative)
 
@@ -62,6 +64,8 @@ docker run --rm -v $PWD:/repo ghcr.io/voxpupuli/voxbox:8 validate
 
 ### Vagrant Development Environment
 
+Vagrant uses the **Parallels provider** (not VirtualBox). VMs provision sequentially by default (`VAGRANT_NO_PARALLEL=1`) due to puppetserver restart sensitivity.
+
 ```bash
 vagrant up              # Start all VMs (puppet, agent01, agent02)
 vagrant ssh puppet      # SSH to the Puppet master
@@ -87,19 +91,32 @@ sudo /opt/puppetlabs/bin/puppet agent -t
 
 ### Roles and Profiles Pattern
 
-- **[site-modules/role/](site-modules/role/)** - Node classification (one role per node type)
-- **[site-modules/profile/](site-modules/profile/)** - Technology-specific configurations composed into roles
-- **[modules/](modules/)** - External modules from Puppet Forge (managed via Puppetfile)
+- **site-modules/role/** - Node classification (one role per node type)
+- **site-modules/profile/** - Technology-specific configurations composed into roles
+- **modules/** - External modules from Puppet Forge (managed via Puppetfile)
 
-Roles include profiles, profiles include component modules. Example: `role::puppet_master` includes `profile::base`, `profile::openvox_server`, `profile::openvoxdb`, `profile::openbolt`.
+Roles include profiles, profiles include component modules. Example: `role::puppet_master` includes `profile::base`, `profile::openvox_server`, `profile::openvoxdb`, `profile::openbolt`, `profile::static_catalogs`.
+
+### Current Profiles
+
+| Profile | Purpose |
+| --- | --- |
+| `base` | Core config for all nodes (chrony, firewall, OpenVox repo, sudo) |
+| `openvox_agent` | Manages openvox-agent package with OS-specific versioning |
+| `openvox_server` | Manages openvox-server package on the Puppet master |
+| `openvoxdb` | Configures OpenVoxDB (PuppetDB fork) via puppetlabs/puppetdb |
+| `openbolt` | Installs OpenBolt (Bolt CLI) package |
+| `static_catalogs` | Enables Puppet Server static catalog optimization (code_id/code_content scripts) |
 
 ### Hiera Data
 
-- **[hiera.yaml](hiera.yaml)** - Hierarchy configuration with eyaml and yaml backends
-- **[data/](data/)** - Hiera data files
+- **hiera.yaml** - Hierarchy configuration with eyaml (encrypted) and yaml backends
+- **data/** - Hiera data files
   - `nodes/%{trusted.certname}.yaml` - Per-node data
-  - `common.yaml` - Default values
-- **[keys/](keys/)** - eyaml PKCS7 keys (not committed, see keys/README.md for generation)
+  - `common.yaml` - Default values (OpenVox release number, agent version)
+- **keys/** - eyaml PKCS7 keys (not committed, see keys/README.md for generation)
+
+Node-specific hiera data (e.g., `data/nodes/puppet.example.com.yaml`) overrides PuppetDB package names to use OpenVox equivalents (`openvoxdb`, `openvoxdb-termini`) and pins server versions.
 
 ### Module Path (defined in environment.conf)
 
@@ -109,10 +126,10 @@ Roles include profiles, profiles include component modules. Example: `role::pupp
 
 ### Bolt Project
 
-- **[bolt-project.yaml](bolt-project.yaml)** - Project configuration
-- **[inventory.yaml](inventory.yaml)** - Target inventory for agents
-- **[plans/](plans/)** - Bolt plans (e.g., `control_repo::validate`)
-- **[site-modules/adhoc/tasks/](site-modules/adhoc/tasks/)** - Bolt tasks
+- **bolt-project.yaml** - Project configuration
+- **inventory.yaml** - Target inventory for agents (SSH transport, vagrant user)
+- **plans/** - Bolt plans (e.g., `control_repo::validate`)
+- **site-modules/adhoc/tasks/** - Bolt tasks
 
 ## Vagrant Environment
 
@@ -140,3 +157,13 @@ end
 ```
 
 Spec files go in `site-modules/profile/spec/classes/` for class tests.
+
+### Test Dependencies
+
+- `.fixtures.yml` pulls forge modules (inifile, stdlib) and symlinks the profile module. When adding new module dependencies to profiles, update both `metadata.json` and `.fixtures.yml`.
+- `metadata.json` currently lists `operatingsystem_support` as RedHat 9 only. The `on_supported_os` helper in tests only generates facts for OSes listed there.
+- `spec/unit/hiera_eyaml_spec.rb` generates throwaway PKCS7 keypairs at test time (no private keys stored in repo).
+
+### Test Coverage
+
+Profiles with spec tests: `openvox_agent`, `static_catalogs`. Other profiles (`base`, `openvox_server`, `openvoxdb`, `openbolt`) do not yet have spec tests.
