@@ -1,5 +1,8 @@
 # OpenVox Control Repository
 
+[![CI](https://github.com/miharp/control-repo/actions/workflows/puppet.yml/badge.svg?branch=production)](https://github.com/miharp/control-repo/actions/workflows/puppet.yml)
+[![Apache-2 License](https://img.shields.io/github/license/miharp/control-repo.svg)](LICENSE)
+
 A Puppet control repository for managing an OpenVox development environment with a Puppet master and agents on CentOS Stream 9 and Ubuntu 24.04.
 
 ## Quick Start
