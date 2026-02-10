@@ -7,5 +7,38 @@ fixtures:
     stdlib:
       repo: puppetlabs/stdlib
       ref: 9.7.0
+    chrony:
+      repo: puppet/chrony
+      ref: 5.0.0
+    firewall:
+      repo: puppetlabs/firewall
+      ref: 8.2.0
+    sudo:
+      repo: saz/sudo
+      ref: 9.0.2
+    concat:
+      repo: puppetlabs/concat
+      ref: 9.1.0
+    yum:
+      repo: puppet/yum
+      ref: 7.3.0
+    apt:
+      repo: puppetlabs/apt
+      ref: 11.2.0
+    puppetdb:
+      repo: puppetlabs/puppetdb
+      ref: 8.1.0
+    postgresql:
+      repo: puppetlabs/postgresql
+      ref: 10.0.0
+    systemd:
+      repo: puppet/systemd
+      ref: 6.0.0
+    cron_core:
+      repo: puppetlabs/cron_core
+      ref: 2.0.2
+    yumrepo_core:
+      repo: puppetlabs/yumrepo_core
+      ref: 3.0.1
   symlinks:
     profile: "#{source_dir}"
