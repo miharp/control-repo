@@ -1,5 +1,9 @@
 ---
 fixtures:
+  repositories:
+    puppetdb:
+      repo: "https://github.com/voxpupuli/puppet-openvoxdb.git"
+      ref: "4291b6a"
   forge_modules:
     inifile:
       repo: puppetlabs/inifile
@@ -25,9 +29,6 @@ fixtures:
     apt:
       repo: puppetlabs/apt
       ref: 11.2.0
-    puppetdb:
-      repo: puppetlabs/puppetdb
-      ref: 8.1.0
     postgresql:
       repo: puppetlabs/postgresql
       ref: 10.0.0

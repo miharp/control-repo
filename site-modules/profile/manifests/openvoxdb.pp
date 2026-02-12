@@ -1,13 +1,10 @@
-# @summary Installs and configures OpenVoxDB (PuppetDB-compatible) on the Puppet master.
+# @summary Installs and configures OpenVoxDB on the Puppet master.
 #
-# This profile uses the upstream `puppetlabs/puppetdb` module to configure
-# OpenVoxDB (the OpenVox-packaged PuppetDB).
+# This profile uses the `voxpupuli/puppet-openvoxdb` module (a fork of
+# puppetlabs/puppetdb with OpenVox package-name defaults) to configure
+# OpenVoxDB.
 #
-# Package naming differences (OpenVox vs Puppet) should be handled via Hiera,
-# e.g.:
-#
-#   puppetdb::puppetdb_package: openvoxdb
-#   puppetdb::master::config::terminus_package: openvoxdb-termini
+# @see https://github.com/voxpupuli/puppet-openvoxdb
 #
 # @example
 #   include profile::openvoxdb

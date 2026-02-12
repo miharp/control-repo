@@ -104,7 +104,7 @@ Roles include profiles, profiles include component modules. Example: `role::pupp
 | `base` | Core config for all nodes (chrony, firewall, OpenVox repo, sudo) |
 | `openvox_agent` | Manages openvox-agent package with OS-specific versioning |
 | `openvox_server` | Manages openvox-server package on the Puppet master |
-| `openvoxdb` | Configures OpenVoxDB (PuppetDB fork) via puppetlabs/puppetdb |
+| `openvoxdb` | Configures OpenVoxDB via voxpupuli/puppet-openvoxdb (Git) |
 | `openbolt` | Installs OpenBolt (Bolt CLI) package |
 | `static_catalogs` | Enables Puppet Server static catalog optimization (code_id/code_content scripts) |
 
@@ -116,12 +116,12 @@ Roles include profiles, profiles include component modules. Example: `role::pupp
   - `common.yaml` - Default values (OpenVox release number, agent version)
 - **keys/** - eyaml PKCS7 keys (not committed, see keys/README.md for generation)
 
-Node-specific hiera data (e.g., `data/nodes/puppet.example.com.yaml`) overrides PuppetDB package names to use OpenVox equivalents (`openvoxdb`, `openvoxdb-termini`) and pins server versions.
+Node-specific hiera data (e.g., `data/nodes/puppet.example.com.yaml`) pins server versions and configures PostgreSQL repository management for OpenVoxDB.
 
 ### Module Path (defined in environment.conf)
 
 1. `site-modules/` - Local modules (role, profile, adhoc)
-2. `modules/` - External Forge modules
+2. `modules/` - External modules (Forge and Git-sourced via Puppetfile)
 3. `$basemodulepath` - System modules
 
 ### Bolt Project
@@ -160,10 +160,10 @@ Spec files go in `site-modules/profile/spec/classes/` for class tests.
 
 ### Test Dependencies
 
-- `.fixtures.yml` pulls forge modules (inifile, stdlib) and symlinks the profile module. When adding new module dependencies to profiles, update both `metadata.json` and `.fixtures.yml`.
+- `.fixtures.yml` pulls forge modules (inifile, stdlib, etc.) and the `puppet-openvoxdb` module from Git, then symlinks the profile module. When adding new module dependencies to profiles, update both `metadata.json` and `.fixtures.yml`.
 - `metadata.json` currently lists `operatingsystem_support` as RedHat 9 only. The `on_supported_os` helper in tests only generates facts for OSes listed there.
 - `spec/unit/hiera_eyaml_spec.rb` generates throwaway PKCS7 keypairs at test time (no private keys stored in repo).
 
 ### Test Coverage
 
-Profiles with spec tests: `openvox_agent`, `static_catalogs`. Other profiles (`base`, `openvox_server`, `openvoxdb`, `openbolt`) do not yet have spec tests.
+Profiles with spec tests: `openvox_agent`, `openvoxdb`, `static_catalogs`, `base`, `openvox_server`, `openbolt`. All profiles now have spec tests.
