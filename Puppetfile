@@ -13,8 +13,13 @@ mod 'puppetlabs/apt',     '11.2.0'
 mod 'puppet/yum',         '7.3.0'
 mod 'saz/sudo',           '9.0.2'
 
-# PuppetDB (OpenVoxDB) management
-mod 'puppetlabs/puppetdb','8.1.0'
+# OpenVoxDB management (Vox Pupuli fork of puppetlabs/puppetdb)
+# Not yet on Puppet Forge — pulled from Git. Pinned to main for OpenVox
+# package-name defaults (not available in any tagged release yet).
+# https://github.com/voxpupuli/puppet-openvoxdb
+mod 'puppetdb',
+  git: 'https://github.com/voxpupuli/puppet-openvoxdb.git',
+  commit: '4291b6a'
 mod 'puppetlabs/postgresql', '10.0.0'
 mod 'puppet/systemd', '6.0.0'
 
