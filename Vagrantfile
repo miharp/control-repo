@@ -28,6 +28,9 @@ Vagrant.configure("2") do |config|
       echo "192.168.56.11 agent01.example.com agent01" >> /etc/hosts
       echo "192.168.56.12 agent02.example.com agent02" >> /etc/hosts
 
+      # Update all packages
+      dnf update -y
+
       # Tools used by readiness checks
       dnf install -y curl
 
@@ -132,6 +135,9 @@ Vagrant.configure("2") do |config|
       echo "192.168.56.11 agent01.example.com agent01" >> /etc/hosts
       echo "192.168.56.12 agent02.example.com agent02" >> /etc/hosts
 
+      # Update all packages
+      dnf update -y
+
       # Install OpenVox repository
       rpm -Uvh https://yum.voxpupuli.org/openvox8-release-el-9.noarch.rpm
 
@@ -192,8 +198,11 @@ Vagrant.configure("2") do |config|
       echo "192.168.56.11 agent01.example.com agent01" | sudo tee -a /etc/hosts > /dev/null
       echo "192.168.56.12 agent02.example.com agent02" | sudo tee -a /etc/hosts > /dev/null
 
-      # Install OpenVox repository + agent (Debian/Ubuntu)
+      # Update all packages
       sudo apt-get update -y
+      sudo apt-get upgrade -y
+
+      # Install OpenVox repository + agent (Debian/Ubuntu)
       sudo apt-get install -y curl ca-certificates
       curl -fsSL -o /tmp/openvox8-release-ubuntu24.04.deb https://apt.voxpupuli.org/openvox8-release-ubuntu24.04.deb
       sudo dpkg -i /tmp/openvox8-release-ubuntu24.04.deb
