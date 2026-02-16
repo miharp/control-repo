@@ -20,10 +20,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Read Ruby version
+        id: ruby-version
+        run: echo "version=$(cat .ruby-version)" >> "$GITHUB_OUTPUT"
+        working-directory: .
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2'
+          ruby-version: ${{ steps.ruby-version.outputs.version }}
           bundler-cache: true
           working-directory: site-modules/profile
 
