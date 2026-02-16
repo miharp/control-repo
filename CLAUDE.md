@@ -10,12 +10,11 @@ This is a Puppet control repository for OpenVox (a Vox Pupuli fork of Puppet). I
 
 ### Ruby Setup (for local testing)
 
-This project uses Ruby 3.4.8 locally (via rbenv). Note: CI uses Ruby 3.2.
+This project uses Ruby 3.2.8 (pinned in `.ruby-version`) to match Puppet Enterprise. Both local development and CI use the same version.
 
 ```bash
-rbenv install 3.4.8    # Install the required Ruby version
-rbenv local 3.4.8      # Set for this directory (creates .ruby-version)
-ruby -v                # Verify: should show ruby 3.4.8
+rbenv install 3.2.8    # Install the required Ruby version
+ruby -v                # Verify: should show ruby 3.2.8
 ```
 
 ### Testing with Local Bundle (CI authoritative)
@@ -162,7 +161,7 @@ Spec files go in `site-modules/profile/spec/classes/` for class tests.
 
 - `.fixtures.yml` pulls forge modules (inifile, stdlib, etc.) and the `puppet-openvoxdb` module from Git, then symlinks the profile module. When adding new module dependencies to profiles, update both `metadata.json` and `.fixtures.yml`.
 - `metadata.json` currently lists `operatingsystem_support` as RedHat 9 only. The `on_supported_os` helper in tests only generates facts for OSes listed there.
-- `spec/unit/hiera_eyaml_spec.rb` generates throwaway PKCS7 keypairs at test time (no private keys stored in repo).
+- `site-modules/profile/spec/unit/hiera_eyaml_spec.rb` generates throwaway PKCS7 keypairs at test time (no private keys stored in repo).
 
 ### Test Coverage
 
