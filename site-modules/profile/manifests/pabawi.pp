@@ -15,10 +15,19 @@ class profile::pabawi {
     before  => Package['nodejs'],
   }
 
-  # Ensure /etc/pabawi exists before integrations create subdirectories under it.
+  # Ensure parent directories exist before integrations create cert/ssl subdirs.
   file { '/etc/pabawi':
     ensure => directory,
     before => Class['pabawi'],
+  }
+
+  file { '/opt/pabawi/certs':
+    ensure  => directory,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    require => File['/opt/pabawi'],
+    before  => Class['pabawi'],
   }
 
   class { 'pabawi':
