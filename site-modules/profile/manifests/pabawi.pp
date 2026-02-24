@@ -76,6 +76,18 @@ class profile::pabawi {
   # Restart pabawi when .env changes (the module doesn't subscribe service to concat).
   Concat['pabawi_env_file'] ~> Service['pabawi']
 
+  # The pabawi module copies private keys with source permissions (0600/root).
+  # Override mode and group so the pabawi service user can read them.
+  File <| title == '/opt/pabawi/certs/key.pem' |> {
+    group => 'pabawi',
+    mode  => '0640',
+  }
+
+  File <| title == '/etc/pabawi/ssl/puppetserver/key.pem' |> {
+    group => 'pabawi',
+    mode  => '0640',
+  }
+
   # Open firewall port for the pabawi web interface.
   firewall { '200 allow pabawi web interface':
     dport => 3000,

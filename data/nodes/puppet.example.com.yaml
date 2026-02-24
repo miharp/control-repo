@@ -25,13 +25,13 @@ pabawi::integrations::bolt::command_whitelist:
   - 'task run'
 
 # PuppetDB: copy Puppet master SSL certs so pabawi can authenticate
-pabawi::integrations::puppetdb::server_url: 'https://localhost:8081'
+pabawi::integrations::puppetdb::server_url: 'https://puppet.example.com:8081'
 pabawi::integrations::puppetdb::ssl_ca_source: 'file:///etc/puppetlabs/puppet/ssl/certs/ca.pem'
 pabawi::integrations::puppetdb::ssl_cert_source: 'file:///etc/puppetlabs/puppet/ssl/certs/puppet.example.com.pem'
 pabawi::integrations::puppetdb::ssl_key_source: 'file:///etc/puppetlabs/puppet/ssl/private_keys/puppet.example.com.pem'
 
 # Puppetserver: same certs work for the server API
-pabawi::integrations::puppetserver::server_url: 'https://localhost:8140'
+pabawi::integrations::puppetserver::server_url: 'https://puppet.example.com:8140'
 pabawi::integrations::puppetserver::ssl_ca_source: 'file:///etc/puppetlabs/puppet/ssl/certs/ca.pem'
 pabawi::integrations::puppetserver::ssl_cert_source: 'file:///etc/puppetlabs/puppet/ssl/certs/puppet.example.com.pem'
 pabawi::integrations::puppetserver::ssl_key_source: 'file:///etc/puppetlabs/puppet/ssl/private_keys/puppet.example.com.pem'
