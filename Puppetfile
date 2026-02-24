@@ -22,6 +22,7 @@ mod 'puppetdb',
   commit: '4291b6a'
 mod 'puppetlabs/postgresql', '10.0.0'
 mod 'puppet/systemd', '6.0.0'
+mod 'example42/pabawi', '0.1.1'
 
 # Modules from Git
 # Examples: https://github.com/puppetlabs/r10k/blob/master/doc/puppetfile.mkd#examples
