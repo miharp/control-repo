@@ -11,3 +11,18 @@ puppetdb::postgres_version: '13'
 # Do not manage the external PostgreSQL (PGDG) repository.
 puppetdb::manage_package_repo: false
 puppetdb::database::postgresql::manage_package_repo: false
+
+# Pabawi: enable integrations available on the Puppet master
+pabawi::integrations:
+  - bolt
+  - puppetdb
+  - puppetserver
+
+pabawi::integrations::bolt::project_path: '/etc/puppetlabs/bolt'
+pabawi::integrations::bolt::command_whitelist:
+  - 'plan run'
+  - 'task run'
+
+pabawi::integrations::puppetdb::server_url: 'https://localhost:8081'
+
+pabawi::integrations::puppetserver::server_url: 'https://localhost:8140'
