@@ -45,4 +45,32 @@ class profile::pabawi {
     require => File['/opt/pabawi/app/bin'],
     before  => Service['pabawi'],
   }
+
+  # The pabawi module writes .env to backend/.env, but the app's working
+  # directory is /opt/pabawi/app and dotenv reads from process.cwd()/.env.
+  # Symlink the root .env to the managed backend .env so dotenv finds it.
+  file { '/opt/pabawi/app/.env':
+    ensure  => link,
+    target  => '/opt/pabawi/app/backend/.env',
+    require => Vcsrepo['/opt/pabawi/app'],
+    notify  => Service['pabawi'],
+  }
+
+  # Bind to all interfaces so pabawi is reachable on the private network
+  # (the module defaults HOST to localhost/loopback only).
+  concat::fragment { 'pabawi_env_host':
+    target  => 'pabawi_env_file',
+    content => "HOST=0.0.0.0\n",
+    order   => '05',
+  }
+
+  # Restart pabawi when .env changes (the module doesn't subscribe service to concat).
+  Concat['pabawi_env_file'] ~> Service['pabawi']
+
+  # Open firewall port for the pabawi web interface.
+  firewall { '200 allow pabawi web interface':
+    dport => 3000,
+    proto => 'tcp',
+    jump  => 'ACCEPT',
+  }
 }
