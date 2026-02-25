@@ -62,14 +62,7 @@ class profile::openvox_gui (
   file { '/opt/openvox-gui-src/build-frontend.sh':
     ensure  => file,
     mode    => '0755',
-    content => @("END"),
-      #!/bin/bash
-      set -e
-      cd /opt/openvox-gui-src/frontend
-      npm install
-      npm install @rollup/rollup-linux-arm64-gnu
-      npm run build
-      END
+    source  => 'puppet:///modules/profile/openvox_gui/build-frontend.sh',
     require => Exec['clone openvox-gui'],
   }
 
@@ -88,8 +81,8 @@ class profile::openvox_gui (
   file { '/opt/openvox-gui-src/install.conf':
     ensure  => file,
     content => epp('profile/openvox_gui/install.conf.epp', {
-        'app_port'       => $app_port,
-        'admin_password' => $admin_password,
+      'app_port'       => $app_port,
+      'admin_password' => $admin_password,
     }),
     require => Exec['clone openvox-gui'],
   }
@@ -110,26 +103,7 @@ class profile::openvox_gui (
 
   # Manage the sudoers rules the installer creates so the sudo class doesn't purge them.
   sudo::conf { 'openvox-gui':
-    content => @("END"),
-      # OpenVox GUI - allow the service user to run r10k deployments
-      puppet ALL=(root) NOPASSWD: /opt/puppetlabs/puppet/bin/r10k deploy *
-      # OpenVox GUI - allow reading PuppetDB config files
-      puppet ALL=(root) NOPASSWD: /usr/bin/cat /etc/puppetlabs/puppetdb/conf.d/*
-      # OpenVox GUI - allow restarting Puppet services
-      puppet ALL=(root) NOPASSWD: /usr/bin/systemctl restart puppetserver
-      puppet ALL=(root) NOPASSWD: /usr/bin/systemctl restart puppetdb
-      puppet ALL=(root) NOPASSWD: /usr/bin/systemctl restart puppet
-      puppet ALL=(root) NOPASSWD: /usr/bin/systemctl stop puppetserver
-      puppet ALL=(root) NOPASSWD: /usr/bin/systemctl stop puppetdb
-      puppet ALL=(root) NOPASSWD: /usr/bin/systemctl stop puppet
-      puppet ALL=(root) NOPASSWD: /usr/bin/systemctl start puppetserver
-      puppet ALL=(root) NOPASSWD: /usr/bin/systemctl start puppetdb
-      puppet ALL=(root) NOPASSWD: /usr/bin/systemctl start puppet
-      puppet ALL=(root) NOPASSWD: /usr/bin/systemctl restart openvox-gui
-      puppet ALL=(root) NOPASSWD: /usr/bin/systemctl status puppetserver
-      puppet ALL=(root) NOPASSWD: /usr/bin/systemctl status puppetdb
-      puppet ALL=(root) NOPASSWD: /usr/bin/systemctl status puppet
-      END
+    source  => 'puppet:///modules/profile/openvox_gui/sudoers-openvox-gui',
     require => Exec['install openvox-gui'],
   }
 
