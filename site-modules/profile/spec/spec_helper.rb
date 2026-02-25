@@ -17,13 +17,6 @@ RSpec.configure do |c|
   c.fixture_path = fixture_path if c.respond_to?(:fixture_path=)
   c.module_path = File.join(fixture_path, 'modules')
 
-  # rspec-puppet will try to (re)create the module-under-test link for each
-  # example group. Ensure it doesn't error when the link already exists.
-  c.prepend_before(:context) do
-    module_link = File.join(fixture_path, 'modules', 'profile')
-    FileUtils.rm_rf(module_link)
-  end
-
   c.default_facts = {
     os: {
       family: 'RedHat',

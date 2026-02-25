@@ -98,21 +98,23 @@ class profile::static_catalogs (
 
   # Configure Puppet Server's versioned-code service (HOCON format)
   # This is required for Puppet Server to actually use the code_id and code_content commands
-  $versioned_code_ensure = $enabled ? {
-    true  => 'file',
-    false => 'absent',
-  }
-
-  file { "${puppetserver_confdir}/versioned-code.conf":
-    ensure  => $versioned_code_ensure,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    content => epp('profile/static_catalogs/versioned-code.conf.epp', {
-      'code_id_command'      => "${scripts_dir}/code_id.sh",
-      'code_content_command' => "${scripts_dir}/code_content.sh",
-    }),
-    notify  => Service['puppetserver'],
+  if $enabled {
+    file { "${puppetserver_confdir}/versioned-code.conf":
+      ensure  => file,
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      content => epp('profile/static_catalogs/versioned-code.conf.epp', {
+        'code_id_command'      => "${scripts_dir}/code_id.sh",
+        'code_content_command' => "${scripts_dir}/code_content.sh",
+      }),
+      notify  => Service['puppetserver'],
+    }
+  } else {
+    file { "${puppetserver_confdir}/versioned-code.conf":
+      ensure => absent,
+      notify => Service['puppetserver'],
+    }
   }
 
   # Ensure puppetserver service is defined
