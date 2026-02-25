@@ -4,6 +4,9 @@
 # Pin openvox-server version
 profile::openvox_server::version: '8.12.1'
 
+# OpenVox GUI admin credentials (change after first login)
+profile::openvox_gui::admin_password: 'puppet'
+
 # Use the OS-provided PostgreSQL on EL9 (default is 13) to avoid bringing in the
 # external postgresql.org repository.
 puppetdb::postgres_version: '13'

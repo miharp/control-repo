@@ -19,4 +19,19 @@ class profile::openvox_server (
   package { 'openvox-server':
     ensure => $package_version,
   }
+
+  # Send reports to PuppetDB so they appear in dashboards and reporting tools.
+  ini_setting { 'puppetserver reports':
+    ensure  => present,
+    path    => '/etc/puppetlabs/puppet/puppet.conf',
+    section => 'server',
+    setting => 'reports',
+    value   => 'store,puppetdb',
+    notify  => Service['puppetserver'],
+  }
+
+  service { 'puppetserver':
+    ensure => running,
+    enable => true,
+  }
 }
