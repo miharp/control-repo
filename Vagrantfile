@@ -60,6 +60,14 @@ Vagrant.configure("2") do |config|
       cd /etc/puppetlabs/code/environments/production
       /opt/puppetlabs/puppet/bin/r10k puppetfile install
 
+      # Force clock sync before Puppet CA initialization. Parallels VMs can boot
+      # with significant clock skew; if the clock is wrong when puppetserver first
+      # starts, it bakes a bad timestamp into the CRL that causes "CRL not yet valid"
+      # errors until manually regenerated.
+      systemctl stop chronyd 2>/dev/null || true
+      chronyd -q 'pool pool.ntp.org iburst' || true
+      systemctl start chronyd
+
       # Start the service
       systemctl enable --now puppetserver
 
