@@ -18,7 +18,7 @@ group :test do
   # Needed to build the test matrix based on metadata
   gem 'puppet_metadata', '~> 6.0',  require: false
   # metagem that pulls in all further requirements
-  gem 'voxpupuli-test', '~> 13.0', require: false
+  gem 'voxpupuli-test', '~> 14.0', require: false
 end
 
 # The system_tests group is used in gha-puppet's beaker workflow.
