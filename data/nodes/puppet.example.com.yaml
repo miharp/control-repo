@@ -6,8 +6,8 @@ profile::openvox_server::version: '8.12.1'
 
 # Use the OS-provided PostgreSQL on EL9 (default is 13) to avoid bringing in the
 # external postgresql.org repository.
-puppetdb::postgres_version: '13'
+openvoxdb::postgres_version: '13'
 
 # Do not manage the external PostgreSQL (PGDG) repository.
-puppetdb::manage_package_repo: false
-puppetdb::database::postgresql::manage_package_repo: false
+openvoxdb::manage_package_repo: false
+openvoxdb::database::postgresql::manage_package_repo: false
