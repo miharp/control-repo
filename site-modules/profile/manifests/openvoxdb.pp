@@ -9,6 +9,6 @@
 # @example
 #   include profile::openvoxdb
 class profile::openvoxdb {
-  class { 'puppetdb': }
-  class { 'puppetdb::master::config': }
+  class { 'openvoxdb': }
+  class { 'openvoxdb::master::config': }
 }

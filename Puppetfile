@@ -17,9 +17,9 @@ mod 'saz/sudo',           '9.0.2'
 # Not yet on Puppet Forge — pulled from Git. Pinned to main for OpenVox
 # package-name defaults (not available in any tagged release yet).
 # https://github.com/voxpupuli/puppet-openvoxdb
-mod 'puppetdb',
+mod 'openvoxdb',
   git: 'https://github.com/voxpupuli/puppet-openvoxdb.git',
-  commit: '4291b6a'
+  commit: 'b32a25f'
 mod 'puppetlabs/postgresql', '10.0.0'
 mod 'puppet/systemd', '6.0.0'
 

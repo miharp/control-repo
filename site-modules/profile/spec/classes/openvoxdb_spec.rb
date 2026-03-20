@@ -9,8 +9,8 @@ describe 'profile::openvoxdb' do
 
       it { is_expected.to compile }
 
-      it { is_expected.to contain_class('puppetdb') }
-      it { is_expected.to contain_class('puppetdb::master::config') }
+      it { is_expected.to contain_class('openvoxdb') }
+      it { is_expected.to contain_class('openvoxdb::master::config') }
     end
   end
 end
