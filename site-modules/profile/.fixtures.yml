@@ -1,9 +1,9 @@
 ---
 fixtures:
   repositories:
-    puppetdb:
+    openvoxdb:
       repo: "https://github.com/voxpupuli/puppet-openvoxdb.git"
-      ref: "4291b6a"
+      ref: "b32a25f"
   forge_modules:
     inifile:
       repo: puppetlabs/inifile
