@@ -3,7 +3,6 @@
 
 # Pin openvox-server version
 profile::openvox_server::version: '8.12.1'
-profile::puppetboard_web::secret_key: 'replace-me-with-a-real-puppetboard-secret'
 
 # Use the OS-provided PostgreSQL on EL9 (default is 13) to avoid bringing in the
 # external postgresql.org repository.
