@@ -10,5 +10,8 @@
 #   include profile::openvoxdb
 class profile::openvoxdb {
   class { 'openvoxdb': }
-  class { 'openvoxdb::master::config': }
+  class { 'openvoxdb::master::config':
+    manage_report_processor => true,
+    enable_reports          => true,
+  }
 }
