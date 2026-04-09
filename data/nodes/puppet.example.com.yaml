@@ -4,10 +4,19 @@
 # Pin openvox-server version
 profile::openvox_server::version: '8.12.1'
 
-# Use the OS-provided PostgreSQL on EL9 (default is 13) to avoid bringing in the
+# Use the OS-provided PostgreSQL on EL10 (default is 16) to avoid bringing in the
 # external postgresql.org repository.
-openvoxdb::postgres_version: '13'
+openvoxdb::postgres_version: '16'
 
 # Do not manage the external PostgreSQL (PGDG) repository.
 openvoxdb::manage_package_repo: false
 openvoxdb::database::postgresql::manage_package_repo: false
+
+# EL10: puppet-postgresql doesn't know EL10's default PostgreSQL version, so it
+# falls into the PGDG code path with versioned paths. Override all path/service
+# globals so pick() in params.pp uses the AppStream layout regardless of branch.
+# DNF5 on EL10 has deprecated modularity, so manage_dnf_module must stay false.
+postgresql::globals::datadir: '/var/lib/pgsql/data'
+postgresql::globals::confdir: '/var/lib/pgsql/data'
+postgresql::globals::bindir: '/usr/bin'
+postgresql::globals::service_name: 'postgresql'
