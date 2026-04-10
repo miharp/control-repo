@@ -11,6 +11,7 @@ Vagrant.configure("2") do |config|
 
   # Master Node: puppet
   config.vm.define "puppet" do |puppet|
+    puppet.vm.box = "bento/centos-stream-10"
     puppet.vm.hostname = "puppet.example.com"
     puppet.vm.network "private_network", ip: "192.168.56.10"
     
@@ -35,7 +36,7 @@ Vagrant.configure("2") do |config|
       dnf install -y curl
 
       # Install OpenVox repository
-      rpm -Uvh https://yum.voxpupuli.org/openvox8-release-el-9.noarch.rpm
+      rpm -Uvh https://yum.voxpupuli.org/openvox8-release-el-10.noarch.rpm
 
       # Install OpenVox Server
       dnf install -y openvox-server
