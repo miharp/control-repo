@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is a Puppet control repository for OpenVox (a Vox Pupuli fork of Puppet). It manages a development environment with an OpenVox Server (Puppet master) and agents running on CentOS Stream 9 and Ubuntu 24.04.
+This is a Puppet control repository for OpenVox (a Vox Pupuli fork of Puppet). It manages a development environment with an OpenVox Server (Puppet master) running on CentOS Stream 10 and agents running on CentOS Stream 9 and Ubuntu 24.04.
 
 ## Common Commands
 
@@ -132,13 +132,19 @@ Node-specific hiera data (e.g., `data/nodes/puppet.example.com.yaml`) pins serve
 
 ## Vagrant Environment
 
-| VM | Hostname | IP | Description |
-| --- | --- | --- | --- |
-| puppet | puppet.example.com | 192.168.56.10 | OpenVox Server + PuppetDB |
-| agent01 | agent01.example.com | 192.168.56.11 | CentOS Stream 9 agent |
-| agent02 | agent02.example.com | 192.168.56.12 | Ubuntu 24.04 agent |
+| VM | Hostname | IP | OS | Description |
+| --- | --- | --- | --- | --- |
+| puppet | puppet.example.com | 192.168.56.10 | CentOS Stream 10 | OpenVox Server + PuppetDB |
+| agent01 | agent01.example.com | 192.168.56.11 | CentOS Stream 9 | OpenVox agent |
+| agent02 | agent02.example.com | 192.168.56.12 | Ubuntu 24.04 | OpenVox agent |
 
 The control-repo is synced to `/etc/puppetlabs/code/environments/production` on the Puppet master.
+
+## CentOS Stream 10 Notes (puppet VM)
+
+- **PostgreSQL 16**: EL10's AppStream ships PostgreSQL 16. The `puppet-postgresql` module doesn't have an EL10 entry in its `default_version` map, so without overrides it falls into the PGDG code path with versioned paths (`/var/lib/pgsql/16/`, `/usr/pgsql-16/bin`, `postgresql-16` service). The AppStream layout uses unversioned paths (`/var/lib/pgsql/data`, `/usr/bin`, `postgresql`). Override `postgresql::globals` in hiera to force the AppStream layout (see `data/nodes/puppet.example.com.yaml`).
+- **DNF5 / no modularity**: EL10 ships DNF5, which has dropped the module system. Always set `manage_dnf_module: false` for any module that tries to enable a DNF module stream (e.g., `openvoxdb::manage_dnf_module: false`).
+- **OpenVox repo**: Use the `el-10` release RPM (`openvox8-release-el-10.noarch.rpm`), not the `el-9` one.
 
 ## Testing Patterns
 
@@ -160,7 +166,7 @@ Spec files go in `site-modules/profile/spec/classes/` for class tests.
 ### Test Dependencies
 
 - `.fixtures.yml` pulls forge modules (inifile, stdlib, etc.) and the `puppet-openvoxdb` module from Git, then symlinks the profile module. When adding new module dependencies to profiles, update both `metadata.json` and `.fixtures.yml`.
-- `metadata.json` currently lists `operatingsystem_support` as RedHat 9 only. The `on_supported_os` helper in tests only generates facts for OSes listed there.
+- `metadata.json` currently lists `operatingsystem_support` for RedHat 9 and RedHat 10. The `on_supported_os` helper in tests only generates facts for OSes listed there. RedHat 10 fact sets are not yet in facterdb, so test coverage for that platform will appear automatically once facterdb ships them.
 - `site-modules/profile/spec/unit/hiera_eyaml_spec.rb` generates throwaway PKCS7 keypairs at test time (no private keys stored in repo).
 
 ### Test Coverage
