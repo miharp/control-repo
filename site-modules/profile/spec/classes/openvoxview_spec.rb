@@ -13,6 +13,15 @@ describe 'profile::openvoxview' do
       it {
         is_expected.to contain_class('openvoxview')
           .with_version('0.1.18')
+          .with_listen_address('0.0.0.0')
+          .with_listen_port(5000)
+      }
+
+      it {
+        is_expected.to contain_firewall('100 allow openvoxview')
+          .with_dport(5000)
+          .with_proto('tcp')
+          .with_jump('ACCEPT')
       }
     end
   end
