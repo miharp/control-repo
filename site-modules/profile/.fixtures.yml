@@ -4,6 +4,9 @@ fixtures:
     openvoxdb:
       repo: "https://github.com/voxpupuli/puppet-openvoxdb.git"
       ref: "b32a25f"
+    openvoxview:
+      repo: "https://github.com/voxpupuli/puppet-openvoxview.git"
+      ref: "v1.3.0"
   forge_modules:
     inifile:
       repo: puppetlabs/inifile
@@ -32,9 +35,12 @@ fixtures:
     postgresql:
       repo: puppetlabs/postgresql
       ref: 10.0.0
+    archive:
+      repo: puppet/archive
+      ref: 8.1.0
     systemd:
       repo: puppet/systemd
-      ref: 6.0.0
+      ref: 8.3.1
     cron_core:
       repo: puppetlabs/cron_core
       ref: 2.0.2
