@@ -21,7 +21,14 @@ mod 'openvoxdb',
   git: 'https://github.com/voxpupuli/puppet-openvoxdb.git',
   commit: 'b32a25f'
 mod 'puppetlabs/postgresql', '10.0.0'
-mod 'puppet/systemd', '6.0.0'
+mod 'puppet/archive', '8.1.0'
+mod 'puppet/systemd', '8.3.1'
+
+# OpenVoxView (not yet on Forge)
+# https://github.com/voxpupuli/puppet-openvoxview
+mod 'openvoxview',
+  git: 'https://github.com/voxpupuli/puppet-openvoxview.git',
+  tag: 'v1.3.0'
 
 # Modules from Git
 # Examples: https://github.com/puppetlabs/r10k/blob/master/doc/puppetfile.mkd#examples
