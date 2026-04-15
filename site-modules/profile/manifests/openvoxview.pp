@@ -17,10 +17,21 @@ class profile::openvoxview (
   String  $listen_address = '0.0.0.0',
   Integer $listen_port    = 5000,
 ) {
+  # The upstream module hardcodes linux_amd64 in the download URL.
+  # Override the archive source to use the correct architecture.
+  $arch = $facts['os']['hardware'] ? {
+    'aarch64' => 'arm64',
+    default   => 'amd64',
+  }
+
   class { 'openvoxview':
     version        => $version,
     listen_address => $listen_address,
     listen_port    => $listen_port,
+  }
+
+  Archive <| title == "/tmp/openvoxview-${version}.tar.gz" |> {
+    source => "https://github.com/voxpupuli/openvoxview/releases/download/v${version}/openvoxview_${version}_linux_${arch}.tar.gz",
   }
 
   firewall { '100 allow openvoxview':
