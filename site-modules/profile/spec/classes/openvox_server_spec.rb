@@ -10,10 +10,17 @@ describe 'profile::openvox_server' do
 
       it { is_expected.to compile.with_all_deps }
 
-      it {
-        is_expected.to contain_package('openvox-server')
-          .with_ensure('8.12.1-1.el9')
-      }
+      if os_facts[:os]['family'] == 'RedHat'
+        it {
+          is_expected.to contain_package('openvox-server')
+            .with_ensure("8.12.1-1.el#{os_facts[:os]['release']['major']}")
+        }
+      else
+        it {
+          is_expected.to contain_package('openvox-server')
+            .with_ensure('8.12.1')
+        }
+      end
     end
   end
 end
