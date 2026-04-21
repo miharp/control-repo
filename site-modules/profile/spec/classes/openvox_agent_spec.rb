@@ -9,6 +9,14 @@ describe 'profile::openvox_agent' do
       let(:params) { { version: '1.0.0' } }
 
       it { is_expected.to compile }
+
+      if os_facts[:os]['name'] == 'Ubuntu'
+        it { is_expected.to contain_class('apt::update') }
+        it {
+          is_expected.to contain_package('openvox-agent')
+            .that_requires('Class[apt::update]')
+        }
+      end
     end
   end
 end

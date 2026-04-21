@@ -28,6 +28,12 @@
         "9",
         "10"
       ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "24.04"
+      ]
     }
   ]
 }

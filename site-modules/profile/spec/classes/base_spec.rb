@@ -35,18 +35,20 @@ describe 'profile::base' do
           .with_content('vagrant ALL=(ALL) NOPASSWD: ALL')
       }
 
-      it {
-        is_expected.to contain_package('openvox8-release')
-          .with_ensure('present')
-          .with_provider('rpm')
-      }
+      if os_facts[:os]['family'] == 'RedHat'
+        it {
+          is_expected.to contain_package('openvox8-release')
+            .with_ensure('present')
+            .with_provider('rpm')
+        }
 
-      it {
-        is_expected.to contain_yumrepo('openvox8')
-          .with_ensure('present')
-          .with_metadata_expire('300')
-          .that_requires('Package[openvox8-release]')
-      }
+        it {
+          is_expected.to contain_yumrepo('openvox8')
+            .with_ensure('present')
+            .with_metadata_expire('300')
+            .that_requires('Package[openvox8-release]')
+        }
+      end
     end
   end
 end
