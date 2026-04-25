@@ -1,8 +1,10 @@
 ---
 # Node-specific configuration for the Puppet master.
 
-# Pin openvox-server version
-profile::openvox_server::version: '8.12.1'
+# Pre-release test: openvox-server 8.13.0 RC snapshot
+# Installed directly from the artifact URL; remove source and revert version once GA ships.
+profile::openvox_server::version: '8.13.0-0.1SNAPSHOT.2026.04.24T1621.el10'
+profile::openvox_server::source: 'https://artifacts.voxpupuli.org/openvox-server/8.13.0-0.1SNAPSHOT.2026.04.24T1621/openvox-server-8.13.0-0.1SNAPSHOT.2026.04.24T1621.el10.noarch.rpm'
 
 # Pin OpenVoxView application version
 profile::openvoxview::version: '0.1.18'
