@@ -7,6 +7,16 @@ Vagrant.configure("2") do |config|
   # setting VAGRANT_NO_PARALLEL=0 when running Vagrant.
   ENV['VAGRANT_NO_PARALLEL'] ||= '1'
 
+  # Set OPENVOX_TEST_REPO=1 to install from the pre-release testing repository
+  # instead of the production repository during provisioning.
+  openvox_test_repo = ENV['OPENVOX_TEST_REPO'] == '1'
+  yum_release_base = openvox_test_repo \
+    ? 'https://s3.osuosl.org/openvox-artifacts/repo_test/yum' \
+    : 'https://yum.voxpupuli.org'
+  apt_release_base = openvox_test_repo \
+    ? 'https://s3.osuosl.org/openvox-artifacts/repo_test/apt' \
+    : 'https://apt.voxpupuli.org'
+
   config.vm.box = "bento/centos-stream-9"
 
   # Master Node: puppet
@@ -36,7 +46,7 @@ Vagrant.configure("2") do |config|
       dnf install -y curl
 
       # Install OpenVox repository
-      rpm -Uvh https://yum.voxpupuli.org/openvox8-release-el-10.noarch.rpm
+      rpm -Uvh #{yum_release_base}/openvox8-release-el-10.noarch.rpm
 
       # Install OpenVox Server
       dnf install -y openvox-server
@@ -148,7 +158,7 @@ Vagrant.configure("2") do |config|
       dnf update -y
 
       # Install OpenVox repository
-      rpm -Uvh https://yum.voxpupuli.org/openvox8-release-el-9.noarch.rpm
+      rpm -Uvh #{yum_release_base}/openvox8-release-el-9.noarch.rpm
 
       # Tools used by readiness checks
       dnf install -y curl
@@ -213,7 +223,7 @@ Vagrant.configure("2") do |config|
 
       # Install OpenVox repository + agent (Debian/Ubuntu)
       sudo apt-get install -y curl ca-certificates
-      curl -fsSL -o /tmp/openvox8-release-ubuntu24.04.deb https://apt.voxpupuli.org/openvox8-release-ubuntu24.04.deb
+      curl -fsSL -o /tmp/openvox8-release-ubuntu24.04.deb #{apt_release_base}/openvox8-release-ubuntu24.04.deb
       sudo dpkg -i /tmp/openvox8-release-ubuntu24.04.deb
       sudo apt-get update -y
       sudo apt-get install -y openvox-agent

@@ -52,10 +52,15 @@ describe 'profile::base' do
       elsif os_facts[:os]['name'] == 'Ubuntu'
         it { is_expected.to contain_exec('openvox8-apt-key') }
         it {
+          is_expected.to contain_file('/etc/apt/sources.list.d/openvox8-release.list')
+            .with_ensure('absent')
+        }
+        it {
           is_expected.to contain_apt__source('openvox8')
             .with_location('https://apt.voxpupuli.org/')
             .with_release("ubuntu#{os_facts[:os]['release']['full']}")
             .with_repos('openvox8')
+            .with_keyring('/etc/apt/keyrings/openvox-keyring.gpg')
         }
       end
     end

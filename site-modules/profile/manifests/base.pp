@@ -50,6 +50,7 @@ class profile::base (
       baseurl         => $yum_baseurl,
       metadata_expire => '300',
       require         => Package["openvox${release}-release"],
+      before          => Package['openvox-agent'],
     }
   } elsif $facts['os']['name'] == 'Ubuntu' {
     if $use_test_repo {
@@ -63,15 +64,26 @@ class profile::base (
     include apt
 
     exec { "openvox${release}-apt-key":
-      command => "/usr/bin/curl -fsSL ${apt_base}/openvox-keyring.gpg -o /etc/apt/trusted.gpg.d/openvox-keyring.gpg",
-      creates => '/etc/apt/trusted.gpg.d/openvox-keyring.gpg',
+      command => "/usr/bin/install -d -m 0755 /etc/apt/keyrings && \
+                  /usr/bin/curl -fsSL ${apt_base}/openvox-keyring.gpg \
+                  -o /etc/apt/keyrings/openvox-keyring.gpg",
+      creates => '/etc/apt/keyrings/openvox-keyring.gpg',
+    }
+
+    # Remove the source file dropped by the openvox-release deb to avoid
+    # conflicting signed-by values for the same repo URL.
+    file { "/etc/apt/sources.list.d/openvox${release}-release.list":
+      ensure  => absent,
+      require => Exec["openvox${release}-apt-key"],
+      notify  => Class['apt::update'],
     }
 
     apt::source { "openvox${release}":
       location => "${apt_base}/",
       release  => $apt_dist,
       repos    => "openvox${release}",
-      require  => Exec["openvox${release}-apt-key"],
+      keyring  => '/etc/apt/keyrings/openvox-keyring.gpg',
+      require  => File["/etc/apt/sources.list.d/openvox${release}-release.list"],
     }
   }
 }
