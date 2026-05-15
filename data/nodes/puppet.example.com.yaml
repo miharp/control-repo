@@ -1,14 +1,19 @@
 ---
 # Node-specific configuration for the Puppet master.
 
-# Pin openvox-server version
-profile::openvox_server::version: '8.12.1'
+profile::openvox_server::version: '8.13.0'
 
 # Pin OpenVoxView application version
 profile::openvoxview::version: '0.1.18'
 
 # Use the OS-provided PostgreSQL on EL10 (default is 16) to avoid bringing in the
 # external postgresql.org repository.
+# Pre-release test: openvoxdb 8.13.0 RC snapshot
+# Installed directly from the artifact URL; remove these once GA ships.
+profile::openvoxdb::package_version: '8.13.0-0.1SNAPSHOT.2026.04.24T1629.el10'
+profile::openvoxdb::package_source: 'https://artifacts.voxpupuli.org/openvoxdb/8.13.0-0.1SNAPSHOT.2026.04.24T1629/openvoxdb-8.13.0-0.1SNAPSHOT.2026.04.24T1629.el10.noarch.rpm'
+profile::openvoxdb::termini_source: 'https://artifacts.voxpupuli.org/openvoxdb/8.13.0-0.1SNAPSHOT.2026.04.24T1629/openvoxdb-termini-8.13.0-0.1SNAPSHOT.2026.04.24T1629.el10.noarch.rpm'
+
 openvoxdb::postgres_version: '16'
 
 # Do not manage the external PostgreSQL (PGDG) repository.

@@ -21,6 +21,24 @@ describe 'profile::openvox_server' do
             .with_ensure('8.12.1')
         }
       end
+
+      context 'with source URL (pre-release install)' do
+        let(:params) do
+          {
+            version: '8.13.0-0.1SNAPSHOT.2026.04.24T1621.el10',
+            source: 'https://artifacts.voxpupuli.org/openvox-server/8.13.0-0.1SNAPSHOT.2026.04.24T1621/openvox-server-8.13.0-0.1SNAPSHOT.2026.04.24T1621.el10.noarch.rpm',
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+
+        it {
+          is_expected.to contain_package('openvox-server')
+            .with_ensure('8.13.0-0.1SNAPSHOT.2026.04.24T1621.el10')
+            .with_source('https://artifacts.voxpupuli.org/openvox-server/8.13.0-0.1SNAPSHOT.2026.04.24T1621/openvox-server-8.13.0-0.1SNAPSHOT.2026.04.24T1621.el10.noarch.rpm')
+            .with_provider('rpm')
+        }
+      end
     end
   end
 end
