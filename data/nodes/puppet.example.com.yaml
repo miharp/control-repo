@@ -4,7 +4,7 @@
 profile::openvox_server::version: '8.13.0'
 
 # Pin OpenVoxView application version
-profile::openvoxview::version: '0.1.18'
+profile::openvoxview::version: '1.4.0'
 
 # Use the OS-provided PostgreSQL on EL10 (default is 16) to avoid bringing in the
 # external postgresql.org repository.
