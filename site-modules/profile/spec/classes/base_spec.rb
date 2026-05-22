@@ -6,7 +6,7 @@ describe 'profile::base' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
-      let(:params) { { release: 8 } }
+      let(:params) { { release: 8, eyaml_secret: 'test_canary_value' } }
       let(:pre_condition) do
         "class { 'profile::openvox_agent': version => '8.24.2' }"
       end

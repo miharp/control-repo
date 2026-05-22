@@ -1,0 +1,6 @@
+---
+# Canary value: validates that hiera-eyaml is functional on every puppet run.
+# If catalog compilation fails with "hiera_eyaml library is not present", an
+# agent or puppetserver package upgrade has broken eyaml compatibility.
+# See: https://github.com/OpenVoxProject/puppet-runtime/pull/126
+profile::base::eyaml_secret: ENC[PKCS7,MIIBeQYJKoZIhvcNAQcDoIIBajCCAWYCAQAxggEhMIIBHQIBADAFMAACAQAwDQYJKoZIhvcNAQEBBQAEggEAf2o4OvHh5b4UG8d4IhyICWYnGTN0QLErr+5tHJzAHJcgDJv63G6Poo/aMco7KDYH37luZVgTqra2A8SY/Twn7SwnQgNPpY+hEL2r5gHbCXVr3R2EMG1OnogT/sJTLkYuNtTHav/dHQK5y0rrCeqZMD0tPl95S2EdMT9T57TWQ5Bwce7bf+Bukmasj6S3/O0EqjBrkO+6VphEbGNEkMsS4xCJJxMHukcVQoCYvKq+ecMQ3BmomLZ9ZzV5CJIGegymHYwfMIyGnBM5Y5DbU6PAXPLuM122riCwcQkXUCKVRiQ0+5/GTQgKBTUib6xMMkP7yBn14SW151vB/n5RfSWUQTA8BgkqhkiG9w0BBwEwHQYJYIZIAWUDBAEqBBDXWjgGwIFB+ay0QexCnhWEgBBX1YnxGriSsGwaTOY9tYFw]

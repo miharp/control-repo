@@ -4,8 +4,13 @@
 #   The OS release version.
 # @param use_test_repo
 #   When true, point to the pre-release testing repository instead of production.
+# @param eyaml_secret
+#   Eyaml canary value. Encrypted in hiera to validate eyaml is functional on
+#   every puppet run. If eyaml breaks (e.g. agent upgrade ships incompatible
+#   hiera-eyaml), catalog compilation will fail here rather than silently.
 class profile::base (
   Integer $release,
+  String  $eyaml_secret,
   Boolean $use_test_repo = false,
 ) {
   include chrony
