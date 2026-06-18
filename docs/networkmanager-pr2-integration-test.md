@@ -150,6 +150,40 @@ the read path is wrong.
   and `ipv6.method` correctly.
 - `general_state` normalization is right (`activating` → `connecting`).
 
+## Extended path coverage (against `71883c2`, after the bug fixes)
+
+`puppet apply` scenarios in `tests/networkmanager-pr2/` (sync to `/vagrant` on the
+agent). All on a slaveless bridge, `reapply => false`.
+
+| Test | Manifest | Result |
+| --- | --- | --- |
+| 1. Delete via `ensure => absent` | `t1a_present` → `t1b_absent` | ✅ Creating → Deleting → idempotent → profile gone |
+| 2. Guard: gateway + default route | `t2a_guard_default_route` | ✅ raises "declares both ipv4_gateway and a default route" |
+| 2. Guard: connected net in routes | `t2b_guard_connected` | ✅ raises "declares connected network … created automatically" |
+| 3. `ipv4_routes => []` removal | `t3a_withroute` → `t3b_emptyroute` | ✅ route removed, idempotent (`ipv4.routes` empty) |
+| 4. IPv6 manual (addr/dns/gw/route) | `t4_ipv6` | ✅ applied + idempotent + clean `get` round-trip (string keys) |
+| 5. Optional route fields | `t5_optional` | ✅ dest-only and dest+next_hop both stored, idempotent |
+| 6. Granular update churn | `t6a_initial` → `t6b_changed` | ✅ only the 2nd address / gateway / route diffed, then idempotent |
+
+### New minor finding — validation runs *after* `nmcli connection add`
+
+The guard tests (2a/2b) correctly raise, but each leaves a **bare, unconfigured
+profile** behind (`nm-pr2-guard-a`, `nm-pr2-guard-b`):
+
+```text
+Error: ... Could not evaluate: Connection 'nm-pr2-guard-a' declares both ipv4_gateway and a default route in ipv4_routes
+# afterwards:
+$ nmcli -t -f name connection show | grep nm-pr2-guard
+nm-pr2-guard-a
+nm-pr2-guard-b
+```
+
+`create_connection` runs `nmcli connection add` first and only then calls
+`apply_connection_settings`, which is where `validate_routes!` raises. A failed
+run therefore litters a half-created profile (and on a real ethernet device a
+bare autoconnect profile could even come up). Suggested fix: validate before
+`nmcli connection add` (or move the route checks into the type's `validate`).
+
 ## Suggested module-side regression tests
 
 - A provider unit test that round-trips a route through `get` and validates the
