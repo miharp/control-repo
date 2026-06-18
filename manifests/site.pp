@@ -34,3 +34,9 @@ node default {
 node 'puppet.example.com' {
   include role::puppet_master
 }
+
+# TEMP: networkmanager PR #2 test target. Remove with the test branch.
+node 'agent01.example.com' {
+  include profile::base
+  include profile::networkmanager_test
+}

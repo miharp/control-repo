@@ -30,6 +30,16 @@ mod 'openvoxview',
   git: 'https://github.com/voxpupuli/puppet-openvoxview.git',
   tag: 'v1.3.0'
 
+# --- TEMP: testing voxpupuli/puppet-networkmanager PR #2 (branch: improvements) ---
+# Remove before merging this control-repo branch back. r10k does not resolve
+# module dependencies, so extlib (a networkmanager dependency) is listed too.
+# Pin to the PR head SHA instead of the branch for a frozen test.
+mod 'networkmanager',
+  git: 'https://github.com/voxpupuli/puppet-networkmanager.git',
+  branch: 'improvements'
+# pin alternative: commit: 'bdeb997d5274a8038f20c45791ae81c4d71fa84b'
+mod 'puppet/extlib', '7.5.1'
+
 # Modules from Git
 # Examples: https://github.com/puppetlabs/r10k/blob/master/doc/puppetfile.mkd#examples
 #mod 'apache',
