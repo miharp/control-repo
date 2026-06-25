@@ -37,3 +37,40 @@ jobs:
 
       - name: Run tests
         run: bundle exec rake parallel_spec
+
+  acceptance:
+    name: Beaker ${{ matrix.setfile }}
+    runs-on: ubuntu-latest
+    env:
+      # Install the test and system_tests groups (skip development/release) so
+      # voxpupuli-acceptance and beaker are available.
+      BUNDLE_WITHOUT: development:release
+    strategy:
+      fail-fast: false
+      matrix:
+        setfile:
+          - almalinux9-64
+    defaults:
+      run:
+        working-directory: site-modules/profile
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read Ruby version
+        id: ruby-version
+        run: echo "version=$(cat .ruby-version)" >> "$GITHUB_OUTPUT"
+        working-directory: .
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ steps.ruby-version.outputs.version }}
+          bundler-cache: true
+          working-directory: site-modules/profile
+
+      - name: Run acceptance tests
+        run: bundle exec rake beaker
+        env:
+          BEAKER_HYPERVISOR: docker
+          BEAKER_PUPPET_COLLECTION: openvox8
+          BEAKER_SETFILE: ${{ matrix.setfile }}
