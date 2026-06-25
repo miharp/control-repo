@@ -5,7 +5,7 @@ rescue LoadError
 end
 
 begin
-  require 'beaker-rspec/rake_task'
+  require 'voxpupuli/acceptance/rake'
 rescue LoadError
   # Allowed to fail, only needed in acceptance
 end
