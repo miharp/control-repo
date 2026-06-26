@@ -14,10 +14,3 @@ mod 'puppetlabs/postgresql', '10.6.1'
 mod 'puppetlabs/stdlib',     '9.7.0'
 mod 'puppetlabs/vcsrepo',    '7.0.0'
 mod 'saz/sudo',              '9.0.2'
-
-# Core resource types (yumrepo, cron). These ship with the puppet-agent AIO
-# package on real nodes, but are pinned explicitly so r10k and onceover (which
-# runs against a gem-installed Puppet without the AIO core modules) both have
-# them. Keeps the control repo self-contained and deterministic.
-mod 'puppetlabs/cron_core',    '2.0.2'
-mod 'puppetlabs/yumrepo_core', '3.0.1'

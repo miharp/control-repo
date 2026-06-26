@@ -57,8 +57,15 @@ jobs:
       # Onceover compiles every role against the real-fact node factsets in
       # spec/factsets/. It deploys the Puppetfile modules itself into its
       # working directory, so no separate r10k step is needed.
+      #
+      # --auto_vendored resolves the core modules that ship vendored with the
+      # OpenVox agent (yumrepo_core, cron_core, ...) and injects them into
+      # onceover's temporary Puppetfile only, so the production Puppetfile stays
+      # free of these AIO-bundled modules. Resolution is served from the
+      # committed cache in spec/vendored_modules/ (no GitHub API call at run
+      # time).
       - name: Run onceover
-        run: bundle exec onceover run spec
+        run: bundle exec onceover run spec --auto_vendored
 
   acceptance:
     name: Beaker ${{ matrix.setfile }}

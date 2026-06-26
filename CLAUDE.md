@@ -66,8 +66,8 @@ for role-level compilation.
 ```bash
 # From the control-repo root (uses the root Gemfile, not site-modules/profile)
 bundle install
-bundle exec onceover run spec        # Compile all roles against their factsets
-bundle exec onceover show repo       # Show the parsed test matrix
+bundle exec onceover run spec --auto_vendored   # Compile all roles against their factsets
+bundle exec onceover show repo                  # Show the parsed test matrix
 ```
 
 Config and fixtures live in `spec/`:
@@ -82,10 +82,17 @@ Config and fixtures live in `spec/`:
   and supplies the `profile::base::eyaml_secret` canary as plaintext from
   `spec/data/common.yaml`. Real per-node and common data still load from `data/`.
   The production root `hiera.yaml` (with eyaml intact) is untouched.
+- `spec/vendored_modules/*.json` — cached resolution for `--auto_vendored`.
 
-Note: the Puppetfile pins `puppetlabs/cron_core` and `puppetlabs/yumrepo_core`
-explicitly. These ship with the AIO agent on real nodes, but Onceover runs
-against a gem-installed Puppet without them, so they must be in the Puppetfile.
+Core resource types like `yumrepo` and `cron` come from modules that ship
+**vendored with the OpenVox agent** (`yumrepo_core`, `cron_core`, ...). On real
+nodes they are on the `$basemodulepath`, so they are deliberately **not** in the
+Puppetfile. Onceover runs against a gem-installed Puppet that lacks them, so
+`--auto_vendored` resolves them from the agent's component manifests and injects
+them into Onceover's *temporary* Puppetfile only. The committed cache in
+`spec/vendored_modules/` lets this work without a GitHub API call at run time;
+regenerate it with `bundle exec rake generate_vendor_cache` if the Puppet
+version changes.
 
 ### Module Management
 
