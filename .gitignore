@@ -11,3 +11,5 @@ bolt-debug.log
 # Local eyaml keys (development/test only)
 keys/*.pem
 
+# Onceover working directory (generated temp control-repo for spec runs)
+.onceover/

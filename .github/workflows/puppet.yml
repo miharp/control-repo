@@ -38,6 +38,35 @@ jobs:
       - name: Run tests
         run: bundle exec rake parallel_spec
 
+  onceover:
+    name: Onceover (control-repo)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Read Ruby version
+        id: ruby-version
+        run: echo "version=$(cat .ruby-version)" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ steps.ruby-version.outputs.version }}
+          bundler-cache: true
+
+      # Onceover compiles every role against the real-fact node factsets in
+      # spec/factsets/. It deploys the Puppetfile modules itself into its
+      # working directory, so no separate r10k step is needed.
+      #
+      # --auto_vendored resolves the core modules that ship vendored with the
+      # OpenVox agent (yumrepo_core, cron_core, ...) and injects them into
+      # onceover's temporary Puppetfile only, so the production Puppetfile stays
+      # free of these AIO-bundled modules. Resolution is served from the
+      # committed cache in spec/vendored_modules/ (no GitHub API call at run
+      # time).
+      - name: Run onceover
+        run: bundle exec onceover run spec --auto_vendored
+
   acceptance:
     name: Beaker ${{ matrix.setfile }}
     runs-on: ubuntu-latest

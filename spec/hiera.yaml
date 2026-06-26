@@ -1,0 +1,39 @@
+---
+# Onceover-only Hiera configuration.
+#
+# Onceover uses spec/hiera.yaml in preference to the repo's root hiera.yaml when
+# it exists. This override deliberately DROPS the eyaml backend so that
+# control-repo-wide compilation testing needs no PKCS7 keys — the real keys
+# (keys/*.pem) are gitignored and absent in CI, and the committed canary in
+# data/common.eyaml can only be decrypted by the production private key.
+#
+# The eyaml canary (profile::base::eyaml_secret) is instead supplied as a
+# plaintext placeholder from spec/data/common.yaml. All other lookups (per-node
+# overrides, common defaults) still resolve from the real data/ directory, so
+# the role -> profile -> module composition is exercised with production data.
+#
+# This file is NOT used on real nodes — those use the root hiera.yaml with the
+# eyaml backend intact.
+version: 5
+
+# NOTE: Hiera 5 resolves a relative `datadir` relative to the directory holding
+# this config file (spec/). So `data` below is spec/data (the test override) and
+# `../data` is the control-repo's real data/ directory.
+hierarchy:
+  - name: "Onceover test overrides (plaintext eyaml canary)"
+    data_hash: yaml_data
+    datadir: data
+    paths:
+      - "common.yaml"
+
+  - name: "Per-node data"
+    data_hash: yaml_data
+    datadir: ../data
+    paths:
+      - "nodes/%{trusted.certname}.yaml"
+
+  - name: "Common defaults"
+    data_hash: yaml_data
+    datadir: ../data
+    paths:
+      - "common.yaml"

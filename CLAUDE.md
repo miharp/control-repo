@@ -54,6 +54,46 @@ docker run --rm -e "SPEC=spec/classes/static_catalogs_spec.rb" -v $PWD:/repo ghc
 docker run --rm -v $PWD:/repo ghcr.io/voxpupuli/voxbox:8 validate
 ```
 
+### Control-Repo Testing with Onceover
+
+[Onceover](https://github.com/voxpupuli/onceover) compiles **every role** against
+representative node factsets, exercising the full `role -> profile -> module`
+composition with the control-repo's own Hiera data. This complements the
+per-module rspec-puppet suite (which tests profiles in isolation). It runs in
+CI (the `Onceover` job in `.github/workflows/puppet.yml`) and is authoritative
+for role-level compilation.
+
+```bash
+# From the control-repo root (uses the root Gemfile, not site-modules/profile)
+bundle install
+bundle exec onceover run spec --auto_vendored   # Compile all roles against their factsets
+bundle exec onceover show repo                  # Show the parsed test matrix
+```
+
+Config and fixtures live in `spec/`:
+
+- `spec/onceover.yaml` — which roles compile on which nodes (`test_matrix`).
+  `role::puppet_master` runs only on `puppet.example.com`; the `profile::base`
+  roles run on both agents.
+- `spec/factsets/*.json` — **real** facts captured from the Vagrant VMs (EL10,
+  EL9, Ubuntu 24.04). See `spec/factsets/README.md` to regenerate them.
+- `spec/hiera.yaml` — Onceover-only Hiera config. It drops the eyaml backend so
+  no PKCS7 keys are needed (the real `keys/*.pem` are gitignored / absent in CI)
+  and supplies the `profile::base::eyaml_secret` canary as plaintext from
+  `spec/data/common.yaml`. Real per-node and common data still load from `data/`.
+  The production root `hiera.yaml` (with eyaml intact) is untouched.
+- `spec/vendored_modules/*.json` — cached resolution for `--auto_vendored`.
+
+Core resource types like `yumrepo` and `cron` come from modules that ship
+**vendored with the OpenVox agent** (`yumrepo_core`, `cron_core`, ...). On real
+nodes they are on the `$basemodulepath`, so they are deliberately **not** in the
+Puppetfile. Onceover runs against a gem-installed Puppet that lacks them, so
+`--auto_vendored` resolves them from the agent's component manifests and injects
+them into Onceover's *temporary* Puppetfile only. The committed cache in
+`spec/vendored_modules/` lets this work without a GitHub API call at run time;
+regenerate it with `bundle exec rake generate_vendor_cache` if the Puppet
+version changes.
+
 ### Module Management
 
 ```bash
@@ -172,3 +212,7 @@ Spec files go in `site-modules/profile/spec/classes/` for class tests.
 ### Test Coverage
 
 Profiles with spec tests: `openvox_agent`, `openvoxdb`, `static_catalogs`, `base`, `openvox_server`, `openbolt`. All profiles now have spec tests.
+
+Roles are covered by Onceover (see "Control-Repo Testing with Onceover" above):
+`puppet_master`, `database_server`, `webserver`, `example` all compile against
+real-fact node factsets.
