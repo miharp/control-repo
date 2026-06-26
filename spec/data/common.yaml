@@ -1,0 +1,8 @@
+---
+# Onceover-only override (see spec/hiera.yaml).
+#
+# profile::base requires a String $eyaml_secret, normally decrypted from
+# data/common.eyaml via the eyaml backend. Onceover drops the eyaml backend so
+# it needs no PKCS7 keys; this plaintext placeholder satisfies the parameter so
+# every role compiles. It is never used on real nodes.
+profile::base::eyaml_secret: 'onceover-test-canary'

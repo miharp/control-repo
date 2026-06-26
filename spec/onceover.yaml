@@ -1,0 +1,52 @@
+# Onceover configuration — control-repo-wide compilation testing.
+#
+# Onceover compiles each role against a representative node factset (real facts
+# captured from the Vagrant VMs, see spec/factsets/). This complements the
+# per-module rspec-puppet suite in site-modules/profile by exercising the full
+# role -> profile -> module composition with the control-repo's own hiera data.
+#
+# Run from the control-repo root:
+#   bundle exec onceover run spec
+
+# Roles under test.
+classes:
+  - role::puppet_master
+  - role::database_server
+  - role::webserver
+  - role::example
+
+# Node factsets (filenames in spec/factsets/, named after each node's certname
+# so that trusted.certname resolves the right nodes/%{trusted.certname}.yaml).
+nodes:
+  - puppet.example.com
+  - agent01.example.com
+  - agent02.example.com
+
+# Roles that are just profile::base on a generic node. These are exercised on
+# both agents to catch cross-OS (RedHat/Debian) regressions in the base profile.
+class_groups:
+  master_role:
+    - role::puppet_master
+  base_roles:
+    - role::database_server
+    - role::webserver
+    - role::example
+
+node_groups:
+  master:
+    - puppet.example.com
+  agents:
+    - agent01.example.com
+    - agent02.example.com
+
+# Map roles to the nodes they actually run on:
+#   - puppet_master only on the master (EL10), where the node hiera data pins
+#     server versions and the EL10 postgresql/openvoxdb overrides.
+#   - base_roles on both agents (EL9 + Ubuntu 24.04).
+test_matrix:
+  - master:
+      classes: master_role
+      tests: spec
+  - agents:
+      classes: base_roles
+      tests: spec
