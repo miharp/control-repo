@@ -3,8 +3,4 @@ message: "This node is using common data"
 profile::base::release: 8
 profile::openvox_agent::version: '8.28.1'
 
-# TEMP TEST (uncommitted): validate openvox-agent 8.28.1 from the pre-release
-# testing repo before it promotes to stable. Revert both lines below when done.
-profile::base::use_test_repo: true
-
 
