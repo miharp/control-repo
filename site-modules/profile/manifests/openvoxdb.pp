@@ -14,6 +14,10 @@
 #   Direct RPM URL for the openvoxdb package. Intended for pre-release testing.
 # @param termini_source
 #   Direct RPM URL for the openvoxdb-termini package. Intended for pre-release testing.
+# @param java_package
+#   Optional JRE package to install before openvoxdb. Direct rpm installs do
+#   not resolve dependencies, so a pre-release openvoxdb needing a newer Java
+#   (e.g. java-25-openjdk-headless) must have it installed first.
 #
 # @example
 #   include profile::openvoxdb
@@ -21,6 +25,7 @@ class profile::openvoxdb (
   Optional[String] $package_version = undef,
   Optional[String] $package_source  = undef,
   Optional[String] $termini_source  = undef,
+  Optional[String] $java_package    = undef,
 ) {
   class { 'openvoxdb': }
   class { 'openvoxdb::master::config':
@@ -33,6 +38,11 @@ class profile::openvoxdb (
       ensure   => $package_version,
       source   => $package_source,
       provider => 'rpm',
+    }
+
+    if $java_package {
+      ensure_packages([$java_package])
+      Package[$java_package] -> Package['openvoxdb']
     }
   }
 

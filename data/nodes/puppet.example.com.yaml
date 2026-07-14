@@ -10,6 +10,11 @@ profile::openvox_agent::source: 'https://s3.osuosl.org/openvox-artifacts/openvox
 profile::openvox_server::version: '9.0.0-0.1SNAPSHOT.2026.07.13T2158.el10'
 profile::openvox_server::source: 'https://s3.osuosl.org/openvox-artifacts/openvox-server/9.0.0-0.1SNAPSHOT.2026.07.13T2158/openvox-server-9.0.0-0.1SNAPSHOT.2026.07.13T2158.el10.noarch.rpm'
 
+# OpenVox 9 requires Java 25 (jre-25-headless); rpm URL installs do not
+# resolve dependencies, so install it explicitly first.
+profile::openvox_server::java_package: 'java-25-openjdk-headless'
+profile::openvoxdb::java_package: 'java-25-openjdk-headless'
+
 profile::openvoxdb::package_version: '9.0.0-0.1SNAPSHOT.2026.07.13T2224.el10'
 profile::openvoxdb::package_source: 'https://s3.osuosl.org/openvox-artifacts/openvoxdb/9.0.0-0.1SNAPSHOT.2026.07.13T2224/openvoxdb-9.0.0-0.1SNAPSHOT.2026.07.13T2224.el10.noarch.rpm'
 profile::openvoxdb::termini_source: 'https://s3.osuosl.org/openvox-artifacts/openvoxdb/9.0.0-0.1SNAPSHOT.2026.07.13T2224/openvoxdb-termini-9.0.0-0.1SNAPSHOT.2026.07.13T2224.el10.noarch.rpm'
