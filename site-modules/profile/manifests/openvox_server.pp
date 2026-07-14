@@ -21,6 +21,11 @@ class profile::openvox_server (
       source   => $source,
       provider => 'rpm',
     }
+
+    # Direct rpm installs do not resolve dependencies, and a pre-release
+    # server may require a matching agent. If the agent package is managed
+    # in this catalog, upgrade it first (no-op edge when it is not).
+    Package <| title == 'openvox-agent' |> -> Package['openvox-server']
   } elsif $facts['os']['family'] == 'RedHat' {
     $package_version = "${version}-1.el${facts['os']['release']['major']}"
     package { 'openvox-server':

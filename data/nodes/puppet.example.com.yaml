@@ -1,18 +1,24 @@
 ---
 # Node-specific configuration for the Puppet master.
 
-profile::openvox_server::version: '8.13.0'
+# Pre-release test: OpenVox 9.0.0 snapshots (agent, server, openvoxdb).
+# Installed directly from the artifact URLs (not yet in the test repo);
+# remove these pins once GA ships.
+profile::openvox_agent::version: '9.0.0.alpha2.84.g673553fbd-1.el10'
+profile::openvox_agent::source: 'https://s3.osuosl.org/openvox-artifacts/openvox-agent/9.0.0.alpha2.84.g673553fbd/openvox-agent-9.0.0.alpha2.84.g673553fbd-1.el10.aarch64.rpm'
+
+profile::openvox_server::version: '9.0.0-0.1SNAPSHOT.2026.07.13T2158.el10'
+profile::openvox_server::source: 'https://s3.osuosl.org/openvox-artifacts/openvox-server/9.0.0-0.1SNAPSHOT.2026.07.13T2158/openvox-server-9.0.0-0.1SNAPSHOT.2026.07.13T2158.el10.noarch.rpm'
+
+profile::openvoxdb::package_version: '9.0.0-0.1SNAPSHOT.2026.07.13T2224.el10'
+profile::openvoxdb::package_source: 'https://s3.osuosl.org/openvox-artifacts/openvoxdb/9.0.0-0.1SNAPSHOT.2026.07.13T2224/openvoxdb-9.0.0-0.1SNAPSHOT.2026.07.13T2224.el10.noarch.rpm'
+profile::openvoxdb::termini_source: 'https://s3.osuosl.org/openvox-artifacts/openvoxdb/9.0.0-0.1SNAPSHOT.2026.07.13T2224/openvoxdb-termini-9.0.0-0.1SNAPSHOT.2026.07.13T2224.el10.noarch.rpm'
 
 # Pin OpenVoxView application version
 profile::openvoxview::version: '1.4.0'
 
 # Use the OS-provided PostgreSQL on EL10 (default is 16) to avoid bringing in the
 # external postgresql.org repository.
-# Pre-release test: openvoxdb 8.13.0 RC snapshot
-# Installed directly from the artifact URL; remove these once GA ships.
-profile::openvoxdb::package_version: '8.13.0-0.1SNAPSHOT.2026.04.24T1629.el10'
-profile::openvoxdb::package_source: 'https://artifacts.voxpupuli.org/openvoxdb/8.13.0-0.1SNAPSHOT.2026.04.24T1629/openvoxdb-8.13.0-0.1SNAPSHOT.2026.04.24T1629.el10.noarch.rpm'
-profile::openvoxdb::termini_source: 'https://artifacts.voxpupuli.org/openvoxdb/8.13.0-0.1SNAPSHOT.2026.04.24T1629/openvoxdb-termini-8.13.0-0.1SNAPSHOT.2026.04.24T1629.el10.noarch.rpm'
 
 openvoxdb::postgres_version: '16'
 

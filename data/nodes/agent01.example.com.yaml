@@ -1,0 +1,6 @@
+---
+# Pre-release test: OpenVox 9.0.0 alpha agent (EL9 aarch64).
+# Installed directly from the artifact URL (not yet in the test repo);
+# remove these pins once GA ships.
+profile::openvox_agent::version: '9.0.0.alpha2.84.g673553fbd-1.el9'
+profile::openvox_agent::source: 'https://s3.osuosl.org/openvox-artifacts/openvox-agent/9.0.0.alpha2.84.g673553fbd/openvox-agent-9.0.0.alpha2.84.g673553fbd-1.el9.aarch64.rpm'
