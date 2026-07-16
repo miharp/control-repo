@@ -1,23 +1,14 @@
 ---
 # Node-specific configuration for the Puppet master.
 
-# Pre-release test: OpenVox 9.0.0 snapshots (agent, server, openvoxdb).
-# Installed directly from the artifact URLs (not yet in the test repo);
-# remove these pins once GA ships.
-profile::openvox_agent::version: '9.0.0.alpha2.84.g673553fbd-1.el10'
-profile::openvox_agent::source: 'https://s3.osuosl.org/openvox-artifacts/openvox-agent/9.0.0.alpha2.84.g673553fbd/openvox-agent-9.0.0.alpha2.84.g673553fbd-1.el10.aarch64.rpm'
-
-profile::openvox_server::version: '9.0.0-0.1SNAPSHOT.2026.07.13T2158.el10'
-profile::openvox_server::source: 'https://s3.osuosl.org/openvox-artifacts/openvox-server/9.0.0-0.1SNAPSHOT.2026.07.13T2158/openvox-server-9.0.0-0.1SNAPSHOT.2026.07.13T2158.el10.noarch.rpm'
-
-# OpenVox 9 requires Java 25 (jre-25-headless); rpm URL installs do not
-# resolve dependencies, so install it explicitly first.
-profile::openvox_server::java_package: 'java-25-openjdk-headless'
-profile::openvoxdb::java_package: 'java-25-openjdk-headless'
-
-profile::openvoxdb::package_version: '9.0.0-0.1SNAPSHOT.2026.07.13T2224.el10'
-profile::openvoxdb::package_source: 'https://s3.osuosl.org/openvox-artifacts/openvoxdb/9.0.0-0.1SNAPSHOT.2026.07.13T2224/openvoxdb-9.0.0-0.1SNAPSHOT.2026.07.13T2224.el10.noarch.rpm'
-profile::openvoxdb::termini_source: 'https://s3.osuosl.org/openvox-artifacts/openvoxdb/9.0.0-0.1SNAPSHOT.2026.07.13T2224/openvoxdb-termini-9.0.0-0.1SNAPSHOT.2026.07.13T2224.el10.noarch.rpm'
+# Pre-release test: OpenVox 9.0.0~beta1 (agent, server, openvoxdb) from the
+# new openvox9 repositories. Note the ~ sorts OLDER than the previous alpha2/
+# SNAPSHOT installs, so applying this is a package downgrade (intentional —
+# it lets the final 9.0.0 upgrade cleanly). Remove the pins once GA ships.
+profile::base::release: 9
+profile::openvox_agent::version: '9.0.0~beta1'
+profile::openvox_server::version: '9.0.0~beta1'
+profile::openvoxdb::package_version: '9.0.0~beta1-1.el10'
 
 # Pin OpenVoxView application version
 profile::openvoxview::version: '1.4.0'

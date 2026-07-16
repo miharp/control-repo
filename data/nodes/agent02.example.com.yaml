@@ -1,6 +1,10 @@
 ---
-# Pre-release test: OpenVox 9.0.0 alpha agent (Ubuntu 24.04 arm64).
-# Installed directly from the artifact URL (not yet in the test repo);
-# remove these pins once GA ships.
-profile::openvox_agent::version: '9.0.0.alpha2.84.g673553fbd-1+ubuntu24.04'
-profile::openvox_agent::source: 'https://s3.osuosl.org/openvox-artifacts/openvox-agent/9.0.0.alpha2.84.g673553fbd/openvox-agent_9.0.0.alpha2.84.g673553fbd-1+ubuntu24.04_arm64.deb'
+# Pre-release test: OpenVox 9.0.0~beta1 agent (Ubuntu 24.04 arm64).
+# The openvox9 apt repository only publishes amd64/armhf indexes (arm64 is
+# missing as of 2026-07-16, reported upstream), so install the arm64 .deb
+# directly from the artifact URL. The repo stays on openvox8 (common.yaml)
+# until arm64 is published. Note the ~ sorts OLDER than the previous alpha2
+# install, so applying this is a package downgrade (intentional).
+# Remove these pins once GA ships.
+profile::openvox_agent::version: '9.0.0~beta1-1+ubuntu24.04'
+profile::openvox_agent::source: 'https://s3.osuosl.org/openvox-artifacts/openvox-agent/9.0.0~beta1/openvox-agent_9.0.0~beta1-1+ubuntu24.04_arm64.deb'

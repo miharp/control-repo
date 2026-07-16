@@ -37,6 +37,26 @@ describe 'profile::openvoxdb' do
             .with_provider('rpm')
         }
       end
+
+      context 'with package_version only (repo pin)' do
+        let(:params) do
+          { package_version: '9.0.0~beta1-1.el10' }
+        end
+
+        it { is_expected.to compile }
+
+        it {
+          is_expected.to contain_package('openvoxdb')
+            .with_ensure('9.0.0~beta1-1.el10')
+            .without_source
+        }
+
+        it {
+          is_expected.to contain_package('openvoxdb-termini')
+            .with_ensure('9.0.0~beta1-1.el10')
+            .without_source
+        }
+      end
     end
   end
 end
