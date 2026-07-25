@@ -10,7 +10,7 @@ fixtures:
   forge_modules:
     inifile:
       repo: puppetlabs/inifile
-      ref: 6.2.0
+      ref: 6.4.1
     stdlib:
       repo: puppetlabs/stdlib
       ref: 9.7.0
@@ -19,7 +19,7 @@ fixtures:
       ref: 5.0.0
     firewall:
       repo: puppetlabs/firewall
-      ref: 8.2.0
+      ref: 8.5.0
     sudo:
       repo: saz/sudo
       ref: 9.0.2
@@ -28,13 +28,13 @@ fixtures:
       ref: 9.1.0
     yum:
       repo: puppet/yum
-      ref: 7.3.0
+      ref: 8.1.1
     apt:
       repo: puppetlabs/apt
-      ref: 11.2.0
+      ref: 11.3.2
     postgresql:
       repo: puppetlabs/postgresql
-      ref: 10.0.0
+      ref: 10.6.3
     archive:
       repo: puppet/archive
       ref: 8.1.0
