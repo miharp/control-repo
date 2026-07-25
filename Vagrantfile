@@ -38,12 +38,26 @@ Vagrant.configure("2") do |config|
       echo "192.168.56.10 puppet.example.com puppet" >> /etc/hosts
       echo "192.168.56.11 agent01.example.com agent01" >> /etc/hosts
       echo "192.168.56.12 agent02.example.com agent02" >> /etc/hosts
+      echo "192.168.56.13 compiler.example.com compiler" >> /etc/hosts
 
       # Update all packages
       dnf update -y
 
       # Tools used by readiness checks
       dnf install -y curl
+
+
+      # pp_role has to be in the CSR before the certificate is issued: it is an
+      # X.509 extension, so it cannot be added to a signed cert afterwards
+      # without re-issuing. Anything that authorizes on role -- codavox's
+      # publisher, and puppetserver's own auth.conf -- depends on it being here
+      # from the first boot.
+      install -d -m 0755 /etc/puppetlabs/puppet
+      tee /etc/puppetlabs/puppet/csr_attributes.yaml > /dev/null <<'CSRYAML'
+---
+extension_requests:
+  pp_role: openvox_server
+CSRYAML
 
       # Install OpenVox repository
       rpm -Uvh #{yum_release_base}/openvox8-release-el-10.noarch.rpm
@@ -173,6 +187,113 @@ EYAML
     SHELL
   end
 
+
+  # Compiler Node: runs OpenVox Server, but defers the CA to the primary.
+  #
+  # A compiler compiles catalogs and serves file content; it does not issue
+  # certificates. That is what makes it the node codavox exists for -- the
+  # publisher on the primary distributes resolved code to compilers, and each
+  # compiler answers which exact version it is serving.
+  config.vm.define "compiler" do |compiler|
+    compiler.vm.box = "bento/centos-stream-10"
+    compiler.vm.hostname = "compiler.example.com"
+    compiler.vm.network "private_network", ip: "192.168.56.13"
+
+    compiler.vm.provider "parallels" do |prl|
+      prl.memory = 3072
+      prl.cpus = 2
+    end
+
+    compiler.vm.provision "shell", inline: <<-SHELL
+      # Set up /etc/hosts
+      echo "192.168.56.10 puppet.example.com puppet" >> /etc/hosts
+      echo "192.168.56.11 agent01.example.com agent01" >> /etc/hosts
+      echo "192.168.56.12 agent02.example.com agent02" >> /etc/hosts
+      echo "192.168.56.13 compiler.example.com compiler" >> /etc/hosts
+
+      dnf update -y
+      dnf install -y curl git
+
+      # pp_role has to be in the CSR before the certificate is issued: it is an
+      # X.509 extension, so it cannot be added to a signed cert afterwards
+      # without re-issuing. codavox's publisher authorizes on exactly this --
+      # a certificate signed by the CA only proves the peer is some enrolled
+      # node, and every agent in the estate clears that bar.
+      install -d -m 0755 /etc/puppetlabs/puppet
+      tee /etc/puppetlabs/puppet/csr_attributes.yaml > /dev/null <<'CSRYAML'
+---
+extension_requests:
+  pp_role: openvox_compiler
+CSRYAML
+
+      rpm -Uvh #{yum_release_base}/openvox8-release-el-10.noarch.rpm
+      dnf install -y openvox-server
+
+      # Point at the primary for both catalogs and the CA before enrolling, so
+      # the certificate is issued by the primary's CA rather than a second one
+      # this node would otherwise stand up for itself.
+      /opt/puppetlabs/bin/puppet config set --section main server puppet.example.com
+      /opt/puppetlabs/bin/puppet config set --section main ca_server puppet.example.com
+      /opt/puppetlabs/bin/puppet config set --section main certname compiler.example.com
+
+      systemctl enable --now firewalld
+      firewall-cmd --add-port=8140/tcp --permanent
+      firewall-cmd --reload
+
+      # Clock sync before enrolling. A skewed clock at certificate issuance
+      # produces "CRL not yet valid" errors that persist until regenerated.
+      systemctl stop chronyd 2>/dev/null || true
+      chronyd -q 'pool pool.ntp.org iburst' || true
+      systemctl start chronyd
+
+      # Wait for the primary's CA to be serving before requesting a certificate.
+      echo "Waiting for the primary..."
+      ok=0
+      while [ "$ok" -lt 3 ]; do
+        if curl -k https://puppet:8140/status/v1/simple > /dev/null 2>&1; then
+          ok=$((ok+1))
+        else
+          ok=0
+        fi
+        sleep 5
+      done
+
+      # Enrol. The primary autosigns in this environment, so the signed
+      # certificate comes back carrying pp_role from csr_attributes.yaml.
+      /opt/puppetlabs/bin/puppet ssl bootstrap --waitforcert 10 || true
+
+      # Serve catalogs with the primary's CA material, and disable this node's
+      # own CA service so it never issues a certificate.
+      SSLDIR=/etc/puppetlabs/puppet/ssl
+      tee /etc/puppetlabs/puppetserver/conf.d/webserver.conf > /dev/null <<HOCON
+webserver: {
+    access-log-config: /etc/puppetlabs/puppetserver/request-logging.xml
+    client-auth: want
+    ssl-host: 0.0.0.0
+    ssl-port: 8140
+    ssl-cert: ${SSLDIR}/certs/compiler.example.com.pem
+    ssl-key: ${SSLDIR}/private_keys/compiler.example.com.pem
+    ssl-ca-cert: ${SSLDIR}/certs/ca.pem
+    ssl-crl-path: ${SSLDIR}/crl.pem
+}
+HOCON
+
+      ca_cfg=/etc/puppetlabs/puppetserver/services.d/ca.cfg
+      sed -i \
+        -e 's|^puppetlabs.services.ca.certificate-authority-service/|#puppetlabs.services.ca.certificate-authority-service/|' \
+        -e 's|^#puppetlabs.services.ca.certificate-authority-disabled-service/|puppetlabs.services.ca.certificate-authority-disabled-service/|' \
+        "$ca_cfg"
+
+      systemctl enable --now puppetserver
+
+      # Development environment: converge once, then leave the agent off and run
+      # it by hand, matching the other nodes.
+      systemctl stop puppet || true
+      /opt/puppetlabs/bin/puppet agent -t --waitforlock 60 || true
+      systemctl disable --now puppet || true
+    SHELL
+  end
+
   # Agent Node: agent01
   config.vm.define "agent01" do |agent|
     agent.vm.hostname = "agent01.example.com"
@@ -187,9 +308,23 @@ EYAML
       echo "192.168.56.10 puppet.example.com puppet" >> /etc/hosts
       echo "192.168.56.11 agent01.example.com agent01" >> /etc/hosts
       echo "192.168.56.12 agent02.example.com agent02" >> /etc/hosts
+      echo "192.168.56.13 compiler.example.com compiler" >> /etc/hosts
 
       # Update all packages
       dnf update -y
+
+
+      # pp_role has to be in the CSR before the certificate is issued: it is an
+      # X.509 extension, so it cannot be added to a signed cert afterwards
+      # without re-issuing. Anything that authorizes on role -- codavox's
+      # publisher, and puppetserver's own auth.conf -- depends on it being here
+      # from the first boot.
+      install -d -m 0755 /etc/puppetlabs/puppet
+      tee /etc/puppetlabs/puppet/csr_attributes.yaml > /dev/null <<'CSRYAML'
+---
+extension_requests:
+  pp_role: openvox_agent
+CSRYAML
 
       # Install OpenVox repository
       rpm -Uvh #{yum_release_base}/openvox8-release-el-9.noarch.rpm
@@ -250,6 +385,7 @@ EYAML
       echo "192.168.56.10 puppet.example.com puppet" | sudo tee -a /etc/hosts > /dev/null
       echo "192.168.56.11 agent01.example.com agent01" | sudo tee -a /etc/hosts > /dev/null
       echo "192.168.56.12 agent02.example.com agent02" | sudo tee -a /etc/hosts > /dev/null
+      echo "192.168.56.13 compiler.example.com compiler" | sudo tee -a /etc/hosts > /dev/null
 
       # Update all packages
       sudo apt-get update -y
@@ -257,6 +393,19 @@ EYAML
 
       # Install OpenVox repository + agent (Debian/Ubuntu)
       sudo apt-get install -y curl ca-certificates
+
+      # pp_role has to be in the CSR before the certificate is issued: it is an
+      # X.509 extension, so it cannot be added to a signed cert afterwards
+      # without re-issuing. Anything that authorizes on role -- codavox's
+      # publisher, and puppetserver's own auth.conf -- depends on it being here
+      # from the first boot.
+      sudo install -d -m 0755 /etc/puppetlabs/puppet
+      sudo tee /etc/puppetlabs/puppet/csr_attributes.yaml > /dev/null <<'CSRYAML'
+---
+extension_requests:
+  pp_role: openvox_agent
+CSRYAML
+
       curl -fsSL -o /tmp/openvox8-release-ubuntu24.04.deb #{apt_release_base}/openvox8-release-ubuntu24.04.deb
       sudo dpkg -i /tmp/openvox8-release-ubuntu24.04.deb
       sudo apt-get update -y
