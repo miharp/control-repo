@@ -11,7 +11,6 @@
 # Roles under test.
 classes:
   - role::puppet_master
-  - role::compiler
   - role::database_server
   - role::webserver
   - role::example
@@ -20,7 +19,6 @@ classes:
 # so that trusted.certname resolves the right nodes/%{trusted.certname}.yaml).
 nodes:
   - puppet.example.com
-  - compiler.example.com
   - agent01.example.com
   - agent02.example.com
 
@@ -29,8 +27,6 @@ nodes:
 class_groups:
   master_role:
     - role::puppet_master
-  compiler_role:
-    - role::compiler
   base_roles:
     - role::database_server
     - role::webserver
@@ -39,8 +35,6 @@ class_groups:
 node_groups:
   master:
     - puppet.example.com
-  compiler:
-    - compiler.example.com
   agents:
     - agent01.example.com
     - agent02.example.com
@@ -52,9 +46,6 @@ node_groups:
 test_matrix:
   - master:
       classes: master_role
-      tests: spec
-  - compiler:
-      classes: compiler_role
       tests: spec
   - agents:
       classes: base_roles
