@@ -7,6 +7,9 @@ fixtures:
     openvoxview:
       repo: "https://github.com/voxpupuli/puppet-openvoxview.git"
       ref: "v1.3.0"
+    codavox:
+      repo: "https://github.com/miharp/puppet-codavox.git"
+      ref: "v0.2.0"
   forge_modules:
     inifile:
       repo: puppetlabs/inifile

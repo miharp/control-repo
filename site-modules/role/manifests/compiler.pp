@@ -13,7 +13,12 @@
 #
 # @example
 #   include role::compiler
+# It pulls code with the codavox agent. Whether OpenVox Server actually *serves*
+# from that code is a separate switch — `profile::codavox::agent::wire_server` —
+# because pointing a compiler at codavox before its agent has converged fails
+# every catalog compile.
 class role::compiler {
   include profile::base
   include profile::openvox_server
+  include profile::codavox::agent
 }

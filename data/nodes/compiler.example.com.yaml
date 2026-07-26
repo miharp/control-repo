@@ -4,3 +4,9 @@
 # Same server package as the primary; the difference is that its CA service is
 # disabled and it enrols against the primary's CA, which provisioning sets up.
 profile::openvox_server::version: '8.15.1'
+
+# codavox agent. wire_server stays false until this node has converged: pointing
+# OpenVox Server at codavox before code-id can answer fails every catalog
+# compile. Confirm with `codavox code-id production` here and `codavox compilers`
+# on the primary, then flip it.
+profile::codavox::agent::wire_server: false
