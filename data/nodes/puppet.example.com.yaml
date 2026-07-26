@@ -43,5 +43,12 @@ postgresql::globals::service_name: 'postgresql'
 # unpack.
 #
 # So codavox gets its own environment. See codavox-basedir/README.md.
+# Static catalogs are off here, and the hand-written code_id scripts are removed
+# with them. This node serves `production` from the synced working tree, so no
+# script can name that content honestly: git HEAD does not change when an
+# uncommitted edit does, and the fallback invents a timestamp. codavox answers the
+# question properly, on the compiler, for codavox_test.
+profile::static_catalogs::enabled: false
+
 codavox::basedir: '/etc/puppetlabs/code/environments/production/codavox-basedir'
 codavox::publish_listen: ':8150'

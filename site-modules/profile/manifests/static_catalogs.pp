@@ -1,8 +1,27 @@
-# @summary Enables static catalogs on the Puppet Server.
+# @summary Configures OpenVox Server's own static-catalog commands. Superseded.
 #
-# This profile configures Puppet Server to use static catalogs, which
-# improve agent performance by inlining file metadata and content into
-# the compiled catalog.
+# Static catalogs inline file metadata into the catalog, which requires the server
+# to answer "which version of the code is this?" for every compile — the
+# `code_id`. This profile answered it with hand-written scripts, and
+# [codavox](https://github.com/miharp/codavox) now answers it properly. Prefer
+# `profile::codavox::agent` with `wire_server => true`.
+#
+# # Why this is off on the primary
+#
+# The scripts cannot produce a correct `code_id` here. `code_id.sh` returns
+# `git rev-parse HEAD`, but the primary serves `production` from the Vagrant
+# synced *working tree* — so an uncommitted edit changes the content the server
+# hands out while leaving the `code_id` identical. Two catalogs then claim the
+# same version over different files, which is the exact failure static catalogs
+# exist to prevent.
+#
+# It is worse when there is no git checkout at all: the script falls through to
+# `date +%s`, inventing a `code_id` that describes nothing, and writes a warning
+# to stderr while exiting 0 — which OpenVox Server logs at ERROR on every single
+# compile.
+#
+# Setting `enabled => false` removes the settings *and* the scripts, so nothing is
+# left behind still claiming to version the code.
 #
 # Static catalogs require:
 # - The `code_id_command` setting pointing to a script that returns a unique code version
@@ -34,12 +53,27 @@
 #   }
 #
 class profile::static_catalogs (
-  Boolean $enabled                            = true,
+  Boolean $enabled                            = false,
   Stdlib::Absolutepath $scripts_dir           = '/opt/puppetlabs/server/data/puppetserver/scripts',
   Stdlib::Absolutepath $puppet_confdir        = '/etc/puppetlabs/puppet',
   Stdlib::Absolutepath $puppetserver_confdir  = '/etc/puppetlabs/puppetserver/conf.d',
 ) {
-  # Ensure scripts directory exists
+  $script_ensure = $enabled ? {
+    true  => 'file',
+    false => 'absent',
+  }
+  # An absent file takes no source, so these go undef when disabled.
+  $code_id_source = $enabled ? {
+    true  => 'puppet:///modules/profile/static_catalogs/code_id.sh',
+    false => undef,
+  }
+  $code_content_source = $enabled ? {
+    true  => 'puppet:///modules/profile/static_catalogs/code_content.sh',
+    false => undef,
+  }
+
+  # The directory is left alone either way: puppetserver owns it and may hold
+  # other scripts, so removing it would reach beyond this profile.
   file { $scripts_dir:
     ensure => directory,
     owner  => 'puppet',
@@ -49,21 +83,21 @@ class profile::static_catalogs (
 
   # Deploy code_id script
   file { "${scripts_dir}/code_id.sh":
-    ensure  => file,
+    ensure  => $script_ensure,
     owner   => 'puppet',
     group   => 'puppet',
     mode    => '0755',
-    source  => 'puppet:///modules/profile/static_catalogs/code_id.sh',
+    source  => $code_id_source,
     require => File[$scripts_dir],
   }
 
   # Deploy code_content script
   file { "${scripts_dir}/code_content.sh":
-    ensure  => file,
+    ensure  => $script_ensure,
     owner   => 'puppet',
     group   => 'puppet',
     mode    => '0755',
-    source  => 'puppet:///modules/profile/static_catalogs/code_content.sh',
+    source  => $code_content_source,
     require => File[$scripts_dir],
   }
 

@@ -7,9 +7,35 @@ describe 'profile::static_catalogs' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      context 'with default parameters' do
+      # The default is now disabled: this profile is superseded by codavox, and the
+      # scripts it deploys cannot name the served content honestly.
+      context 'with default parameters (disabled)' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('profile::static_catalogs') }
+
+        # Disabling must remove the scripts, not just the settings. Leaving them
+        # behind is a half-off state, and they are the part that fabricates ids.
+        it {
+          is_expected.to contain_file('/opt/puppetlabs/server/data/puppetserver/scripts/code_id.sh')
+            .with_ensure('absent')
+        }
+        it {
+          is_expected.to contain_file('/opt/puppetlabs/server/data/puppetserver/scripts/code_content.sh')
+            .with_ensure('absent')
+        }
+        it { is_expected.to contain_ini_setting('static_catalogs').with_ensure('absent') }
+        it { is_expected.to contain_ini_setting('code_id_command').with_ensure('absent') }
+        it { is_expected.to contain_ini_setting('code_content_command').with_ensure('absent') }
+        it {
+          is_expected.to contain_file('/etc/puppetlabs/puppetserver/conf.d/versioned-code.conf')
+            .with_ensure('absent')
+        }
+      end
+
+      context 'when explicitly enabled' do
+        let(:params) { { enabled: true } }
+
+        it { is_expected.to compile.with_all_deps }
 
         # Scripts directory
         it {
@@ -91,10 +117,17 @@ describe 'profile::static_catalogs' do
         }
       end
 
+      # Redundant with the default now, kept explicit so a future default flip
+      # cannot quietly stop testing the disabled path.
       context 'with enabled => false' do
         let(:params) { { enabled: false } }
 
         it { is_expected.to compile.with_all_deps }
+
+        it {
+          is_expected.to contain_file('/opt/puppetlabs/server/data/puppetserver/scripts/code_id.sh')
+            .with_ensure('absent')
+        }
 
         it {
           is_expected.to contain_ini_setting('static_catalogs')
@@ -118,7 +151,7 @@ describe 'profile::static_catalogs' do
       end
 
       context 'with custom scripts_dir' do
-        let(:params) { { scripts_dir: '/opt/custom/scripts' } }
+        let(:params) { { enabled: true, scripts_dir: '/opt/custom/scripts' } }
 
         it { is_expected.to compile.with_all_deps }
 
