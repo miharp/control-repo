@@ -15,13 +15,8 @@ mod 'puppetlabs/stdlib',     '9.7.0'
 mod 'puppetlabs/vcsrepo',    '7.0.0'
 # yumrepo left Puppet core, so it has to be declared to exist in a compile-only
 # environment. Real nodes get it bundled with openvox-agent, which is why
-# profile::base worked on them while onceover failed on every RedHat role.
+# profile::base worked on them while onceover failed on every RedHat role with
+# "Unknown resource type: 'yumrepo'". site-modules/profile/.fixtures.yml already
+# declared it for the module's own specs; the control repo never shipped it.
 mod 'puppetlabs/yumrepo_core', '3.0.1'
 mod 'saz/sudo',              '9.0.2'
-
-# Not on the Forge yet, so pinned by tag rather than floating on a branch:
-# codavox exists to make code versions deterministic, and resolving its own
-# module non-deterministically would undercut that.
-mod 'codavox',
-  git: 'https://github.com/miharp/puppet-codavox.git',
-  tag: 'v0.2.0'
