@@ -7,10 +7,10 @@ describe 'profile::codavox::publisher' do
     context "on #{os}" do
       let(:facts) { os_facts }
       # In the control repo this comes from data/nodes/puppet.example.com.yaml.
-      # codavox refuses to start a publisher with no staging directory, so the
-      # class cannot compile without it either.
+      # codavox refuses to start a publisher with no basedir, so the class cannot
+      # compile without it either.
       let(:pre_condition) do
-        "class { 'codavox': staging => '/etc/puppetlabs/code/environments' }"
+        "class { 'codavox': basedir => '/etc/puppetlabs/code/environments' }"
       end
 
       context 'with default parameters' do

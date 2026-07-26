@@ -31,9 +31,10 @@ postgresql::globals::confdir: '/var/lib/pgsql/data'
 postgresql::globals::bindir: '/usr/bin'
 postgresql::globals::service_name: 'postgresql'
 
-# codavox publisher. `staging` is r10k's basedir — the directory holding one
-# subdirectory per environment, which on this node is the codedir r10k already
-# deploys into. Pointing it one level higher gives a publisher that starts
-# cleanly and advertises nothing.
-codavox::staging: '/etc/puppetlabs/code/environments'
+# codavox publisher. `basedir` is r10k's basedir — the directory holding one
+# subdirectory per environment, which on this node is the codedir the control
+# repo is synced into. codavox writes nothing here; it only reads and seals it.
+# Pointing it one level higher gives a publisher that starts cleanly and
+# advertises nothing.
+codavox::basedir: '/etc/puppetlabs/code/environments'
 codavox::publish_listen: ':8150'

@@ -24,4 +24,4 @@ mod 'saz/sudo',              '9.0.2'
 # module non-deterministically would undercut that.
 mod 'codavox',
   git: 'https://github.com/miharp/puppet-codavox.git',
-  tag: 'v0.1.0'
+  tag: 'v0.2.0'
