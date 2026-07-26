@@ -31,10 +31,17 @@ postgresql::globals::confdir: '/var/lib/pgsql/data'
 postgresql::globals::bindir: '/usr/bin'
 postgresql::globals::service_name: 'postgresql'
 
-# codavox publisher. `basedir` is r10k's basedir — the directory holding one
-# subdirectory per environment, which on this node is the codedir the control
-# repo is synced into. codavox writes nothing here; it only reads and seals it.
-# Pointing it one level higher gives a publisher that starts cleanly and
-# advertises nothing.
-codavox::basedir: '/etc/puppetlabs/code/environments'
+# codavox publisher. `basedir` holds one subdirectory per environment, and codavox
+# only reads it — it writes nothing there and keeps no copy.
+#
+# Deliberately NOT /etc/puppetlabs/code/environments. That holds `production`,
+# the Vagrant synced checkout of this repo and the dev environment: edits there
+# must appear on the next agent run with no deploy step, so it cannot be made to
+# depend on r10k or on a codavox reseal. Sealing it also fails outright — a
+# working tree carries build artifacts, and .onceover/ holds rspec-puppet fixture
+# symlinks whose targets are absolute macOS host paths, which codavox refuses to
+# unpack.
+#
+# So codavox gets its own environment. See codavox-basedir/README.md.
+codavox::basedir: '/etc/puppetlabs/code/environments/production/codavox-basedir'
 codavox::publish_listen: ':8150'

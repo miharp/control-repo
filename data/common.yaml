@@ -20,6 +20,17 @@ codavox::environmentpath: '/opt/puppetlabs/codavox/environments'
 # The publisher every compiler polls. One URL for the whole estate.
 codavox::agent_publisher: 'https://puppet.example.com:8150'
 
+# codavox has no package repository yet (miharp/codavox#42), so the package is
+# installed straight from a release asset. Written out as a literal rather than
+# assembled from a version and an architecture fact: a URL a profile builds is a
+# URL nobody can grep for, and this is data, not logic.
+#
+# Both codavox nodes here are aarch64 (Apple silicon Parallels), so arm64 is
+# right for this estate. A node on another architecture overrides this key in
+# data/nodes/<certname>.yaml. The module already picks the rpm/dpkg provider by
+# OS family, which is what installing from a file requires.
+codavox::package_source: 'https://github.com/miharp/codavox/releases/download/v0.5.0/codavox_0.5.0_linux_arm64.rpm'
+
 # Compilers are authorized by the pp_role in their certificate, which
 # csr_attributes.yaml writes before enrolment — see role::compiler. An estate
 # whose compiler certificates predate codavox would list them under

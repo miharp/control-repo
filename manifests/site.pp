@@ -34,3 +34,11 @@ node default {
 node 'puppet.example.com' {
   include role::puppet_master
 }
+
+# Without this the compiler falls into `node default` and gets profile::base
+# only, so role::compiler never runs on it — which is how it stayed for the whole
+# life of the compiler VM. Onceover compiles role::compiler happily, because
+# compiling a role proves nothing about whether a node is classified into it.
+node 'compiler.example.com' {
+  include role::compiler
+}
