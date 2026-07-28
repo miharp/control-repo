@@ -1,36 +1,39 @@
 #!/bin/bash
-# code_id.sh - Returns a unique code identifier for static catalogs
+# code_id.sh - Returns the code_id (version identity) for an environment.
 # Usage: code_id.sh <environment>
-# Called by Puppet Server with: code_id_command = /path/to/code_id.sh
+# Called by Puppet Server for every static catalog compile, once per compile.
+#
+# The code_id must be deterministic for a given deployed version and must match
+# what code_content.sh can resolve. Both derive from the same commit:
+#   - r10k deploy: the signature recorded in .r10k-deploy.json (a commit sha)
+#   - otherwise:   the checked-out git HEAD
+# There is no timestamp last resort. A time-based code_id names a version that
+# nothing can serve and differs on every compiler, which is worse than failing.
 
-set -e
+set -euo pipefail
 
-# The environment name is passed as the first argument
-ENVIRONMENT="$1"
+ENVIRONMENT="${1:-}"
+if [ -z "$ENVIRONMENT" ]; then
+  echo "Expected an environment" >&2
+  exit 1
+fi
 
-# Determine the environment path (standard location)
-ENVIRONMENTPATH="/etc/puppetlabs/code/environments"
-ENVDIR="${ENVIRONMENTPATH}/${ENVIRONMENT}"
-
+ENVDIR="/etc/puppetlabs/code/environments/${ENVIRONMENT}"
 if [ ! -d "$ENVDIR" ]; then
   echo "Environment directory not found: $ENVDIR" >&2
   exit 1
 fi
 
-# Check for r10k deployment signature first
+# Prefer the r10k deploy signature so the id matches exactly what r10k deployed.
 if [ -f "${ENVDIR}/.r10k-deploy.json" ]; then
-  # Extract signature from r10k deploy file
-  /opt/puppetlabs/puppet/bin/ruby -rjson -e \
-    "puts JSON.parse(File.read('${ENVDIR}/.r10k-deploy.json'))['signature']"
-  exit 0
+  exec /opt/puppetlabs/puppet/bin/ruby -rjson -e \
+    "puts JSON.parse(File.read('${ENVDIR}/.r10k-deploy.json')).fetch('signature')"
 fi
 
-# Fall back to git commit hash
+# Otherwise use git HEAD. code_content.sh resolves content at this same commit.
 if command -v git >/dev/null 2>&1 && [ -d "${ENVDIR}/.git" ]; then
-  git --git-dir "${ENVDIR}/.git" rev-parse HEAD
-  exit 0
+  exec git --git-dir "${ENVDIR}/.git" rev-parse HEAD
 fi
 
-# Last resort: use timestamp (not ideal for static catalogs)
-echo "warning: no git or r10k signature available, using timestamp" >&2
-date +%s
+echo "code_id: ${ENVDIR} has neither an r10k deploy signature nor a git checkout" >&2
+exit 1
