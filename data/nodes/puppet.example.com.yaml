@@ -1,7 +1,7 @@
 ---
 # Node-specific configuration for the Puppet master.
 
-profile::openvox_server::version: '8.15.1'
+profile::openvox_server::version: '8.15.2'
 
 # Pin OpenVoxView application version
 profile::openvoxview::version: '1.4.0'
