@@ -94,6 +94,38 @@ them into Onceover's *temporary* Puppetfile only. The committed cache in
 regenerate it with `bundle exec rake generate_vendor_cache` if the Puppet
 version changes.
 
+### Acceptance Testing with Beaker
+
+[Beaker](https://github.com/voxpupuli/beaker) (via `voxpupuli-acceptance`)
+provisions a real node, installs OpenVox, applies a manifest, and re-applies it
+to prove idempotency. It runs in CI (the `Beaker` job in
+`.github/workflows/puppet.yml`) and is authoritative for "does this actually
+apply", which neither rspec-puppet nor Onceover can answer.
+
+```bash
+cd site-modules/profile
+BUNDLE_WITHOUT=development:release bundle install   # needs the system_tests group
+
+# Add BEAKER_destroy=no to keep the container alive for debugging
+BEAKER_HYPERVISOR=docker \
+BEAKER_PUPPET_COLLECTION=openvox8 \
+BEAKER_SETFILE=almalinux9-64 \
+  bundle exec rake beaker
+```
+
+- Tests live in `site-modules/profile/spec/acceptance/`.
+- `spec/spec_helper_acceptance.rb` is just
+  `require 'voxpupuli/acceptance/spec_helper_acceptance'` + `configure_beaker`.
+  Node definitions come from `voxpupuli-acceptance`'s built-in setfiles,
+  selected by `BEAKER_SETFILE` — there are no local nodeset files.
+- Beaker deps are in the `system_tests` group of
+  `site-modules/profile/Gemfile`, which is **not** installed by a plain
+  `bundle install` in CI (CI sets `BUNDLE_WITHOUT=development:release`).
+- `spec/acceptance/example_spec.rb` is a smoke test using the empty
+  `profile::example` class, so the harness itself is verified without depending
+  on external repos. Profiles that need real package repos should be added
+  deliberately.
+
 ### Module Management
 
 ```bash
@@ -134,7 +166,7 @@ sudo /opt/puppetlabs/bin/puppet agent -t
 - **site-modules/profile/** - Technology-specific configurations composed into roles
 - **modules/** - External modules from Puppet Forge (managed via Puppetfile)
 
-Roles include profiles, profiles include component modules. Example: `role::puppet_master` includes `profile::base`, `profile::openvox_server`, `profile::openvoxdb`, `profile::openbolt`, `profile::static_catalogs`.
+Roles include profiles, profiles include component modules. Example: `role::puppet_master` includes `profile::base`, `profile::openvox_server`, `profile::openvoxdb`, `profile::openbolt`, `profile::static_catalogs`, `profile::openvoxview`.
 
 ### Current Profiles
 
@@ -145,7 +177,9 @@ Roles include profiles, profiles include component modules. Example: `role::pupp
 | `openvox_server` | Manages openvox-server package on the Puppet master |
 | `openvoxdb` | Configures OpenVoxDB via voxpupuli/puppet-openvoxdb (Git) |
 | `openbolt` | Installs OpenBolt (Bolt CLI) package |
+| `openvoxview` | Installs OpenVoxView, a web UI for browsing reports/catalogs from the local PuppetDB |
 | `static_catalogs` | Enables Puppet Server static catalog optimization (code_id/code_content scripts) |
+| `example` | Intentionally empty; used as the Beaker smoke-test subject |
 
 ### Hiera Data
 
@@ -205,14 +239,35 @@ Spec files go in `site-modules/profile/spec/classes/` for class tests.
 
 ### Test Dependencies
 
-- `.fixtures.yml` pulls forge modules (inifile, stdlib, etc.) and the `puppet-openvoxdb` module from Git, then symlinks the profile module. When adding new module dependencies to profiles, update both `metadata.json` and `.fixtures.yml`.
-- `metadata.json` currently lists `operatingsystem_support` for RedHat 9 and RedHat 10. The `on_supported_os` helper in tests only generates facts for OSes listed there. RedHat 10 fact sets are not yet in facterdb, so test coverage for that platform will appear automatically once facterdb ships them.
+- `.fixtures.yml` pulls forge modules (inifile, stdlib, etc.) and the
+  `puppet-openvoxdb` and `puppet-openvoxview` modules from Git, then symlinks
+  the profile module. Fixtures are resolved from `.fixtures.yml`, **not** the
+  control-repo `Puppetfile`, so adding a module dependency to a profile means
+  updating **three** files: `metadata.json`, `.fixtures.yml`, and `Puppetfile`.
+- `metadata.json` currently lists `operatingsystem_support` for RedHat 9, RedHat 10, and Ubuntu 24.04. The `on_supported_os` helper in tests only generates facts for OSes listed there. RedHat 10 fact sets are not yet in facterdb, so test coverage for that platform will appear automatically once facterdb ships them.
 - `site-modules/profile/spec/unit/hiera_eyaml_spec.rb` generates throwaway PKCS7 keypairs at test time (no private keys stored in repo).
 
 ### Test Coverage
 
-Profiles with spec tests: `openvox_agent`, `openvoxdb`, `static_catalogs`, `base`, `openvox_server`, `openbolt`. All profiles now have spec tests.
+Three layers, each covering what the others cannot. All three run in CI on
+every PR; see the README's Testing section for the shareable write-up.
+
+| Layer | Tool | Scope | Run from |
+| --- | --- | --- | --- |
+| Unit | rspec-puppet (`voxpupuli-test`) | Each profile class in isolation | `site-modules/profile/` |
+| Compilation | Onceover | Every role, against real node facts + repo Hiera | repo root |
+| Acceptance | Beaker (`voxpupuli-acceptance`) | Real apply on a real node, idempotency | `site-modules/profile/` |
+
+Note the two separate bundles: the root `Gemfile` is for Onceover only;
+`site-modules/profile/Gemfile` covers rspec-puppet and Beaker.
+
+Profiles with spec tests: `openvox_agent`, `openvoxdb`, `static_catalogs`,
+`base`, `openvox_server`, `openbolt`, `openvoxview`. All profiles except
+`example` (the empty Beaker smoke-test subject) have spec tests.
 
 Roles are covered by Onceover (see "Control-Repo Testing with Onceover" above):
 `puppet_master`, `database_server`, `webserver`, `example` all compile against
 real-fact node factsets.
+
+Acceptance coverage is currently the `profile::example` smoke test only (see
+"Acceptance Testing with Beaker" above).
