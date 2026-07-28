@@ -67,37 +67,41 @@ class profile::static_catalogs (
     require => File[$scripts_dir],
   }
 
-  # Configure puppet.conf settings using ini_setting
-  # The [server] section is used for Puppet Server settings
-  $ensure_value = $enabled ? {
-    true  => 'present',
-    false => 'absent',
+  $static_catalogs_ensure = $enabled ? {
+    true    => 'present',
+    default => 'absent',
   }
 
-  Ini_setting {
-    ensure  => $ensure_value,
+  # static_catalogs is a real Puppet setting (defaults to true); set it in
+  # puppet.conf [server] to make the intent explicit.
+  ini_setting { 'static_catalogs':
+    ensure  => $static_catalogs_ensure,
     path    => "${puppet_confdir}/puppet.conf",
     section => 'server',
+    setting => 'static_catalogs',
+    value   => $enabled,
     notify  => Service['puppetserver'],
   }
 
-  ini_setting { 'static_catalogs':
-    setting => 'static_catalogs',
-    value   => $enabled,
-  }
-
-  ini_setting { 'code_id_command':
+  # code_id_command and code_content_command are NOT Puppet settings; Puppet
+  # Server reads them from versioned-code.conf (below), not puppet.conf. Earlier
+  # revisions wrote them here, where they did nothing. Purge them so a node that
+  # ran the old profile does not keep two inert, misleading lines.
+  ini_setting { 'purge inert code_id_command':
+    ensure  => 'absent',
+    path    => "${puppet_confdir}/puppet.conf",
+    section => 'server',
     setting => 'code_id_command',
-    value   => "${scripts_dir}/code_id.sh",
   }
 
-  ini_setting { 'code_content_command':
+  ini_setting { 'purge inert code_content_command':
+    ensure  => 'absent',
+    path    => "${puppet_confdir}/puppet.conf",
+    section => 'server',
     setting => 'code_content_command',
-    value   => "${scripts_dir}/code_content.sh",
   }
 
-  # Configure Puppet Server's versioned-code service (HOCON format)
-  # This is required for Puppet Server to actually use the code_id and code_content commands
+  # This is the setting that actually plugs the commands into Puppet Server.
   $versioned_code_ensure = $enabled ? {
     true  => 'file',
     false => 'absent',
