@@ -50,22 +50,23 @@ describe 'profile::static_catalogs' do
             .with_value(true)
         }
 
+        # code_id_command and code_content_command are not Puppet settings;
+        # Puppet Server reads them from versioned-code.conf, not puppet.conf.
+        # The profile purges them so an old, inert pair does not linger.
         it {
-          is_expected.to contain_ini_setting('code_id_command')
-            .with_ensure('present')
+          is_expected.to contain_ini_setting('purge inert code_id_command')
+            .with_ensure('absent')
             .with_path('/etc/puppetlabs/puppet/puppet.conf')
             .with_section('server')
             .with_setting('code_id_command')
-            .with_value('/opt/puppetlabs/server/data/puppetserver/scripts/code_id.sh')
         }
 
         it {
-          is_expected.to contain_ini_setting('code_content_command')
-            .with_ensure('present')
+          is_expected.to contain_ini_setting('purge inert code_content_command')
+            .with_ensure('absent')
             .with_path('/etc/puppetlabs/puppet/puppet.conf')
             .with_section('server')
             .with_setting('code_content_command')
-            .with_value('/opt/puppetlabs/server/data/puppetserver/scripts/code_content.sh')
         }
 
         # Puppetserver versioned-code.conf (HOCON format)
@@ -101,13 +102,14 @@ describe 'profile::static_catalogs' do
             .with_ensure('absent')
         }
 
+        # The purge is unconditional, so it stays absent here too.
         it {
-          is_expected.to contain_ini_setting('code_id_command')
+          is_expected.to contain_ini_setting('purge inert code_id_command')
             .with_ensure('absent')
         }
 
         it {
-          is_expected.to contain_ini_setting('code_content_command')
+          is_expected.to contain_ini_setting('purge inert code_content_command')
             .with_ensure('absent')
         }
 
@@ -132,9 +134,12 @@ describe 'profile::static_catalogs' do
             .with_ensure('file')
         }
 
+        # scripts_dir drives the versioned-code.conf command paths, which is
+        # what actually points Puppet Server at the scripts.
         it {
-          is_expected.to contain_ini_setting('code_id_command')
-            .with_value('/opt/custom/scripts/code_id.sh')
+          is_expected.to contain_file('/etc/puppetlabs/puppetserver/conf.d/versioned-code.conf')
+            .with_content(%r{/opt/custom/scripts/code_id\.sh})
+            .with_content(%r{/opt/custom/scripts/code_content\.sh})
         }
       end
     end
