@@ -67,10 +67,15 @@ class profile::static_catalogs (
     require => File[$scripts_dir],
   }
 
+  $static_catalogs_ensure = $enabled ? {
+    true    => 'present',
+    default => 'absent',
+  }
+
   # static_catalogs is a real Puppet setting (defaults to true); set it in
   # puppet.conf [server] to make the intent explicit.
   ini_setting { 'static_catalogs':
-    ensure  => $enabled ? { true => 'present', false => 'absent' },
+    ensure  => $static_catalogs_ensure,
     path    => "${puppet_confdir}/puppet.conf",
     section => 'server',
     setting => 'static_catalogs',
