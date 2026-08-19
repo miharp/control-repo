@@ -81,7 +81,12 @@ class profile::openvox_gui (
 
   # Run the installer. The credentials file only exists after a fully
   # successful install, and the VERSION comparison re-runs the installer when
-  # the pinned release changes, giving an upgrade path.
+  # the pinned release changes, giving an upgrade path. The installer suggests
+  # deleting config/.credentials after noting the password -- don't: Puppet
+  # uses it as the install-complete marker, and the same password already sits
+  # in install.conf and config/.env anyway. Note the installer's final health
+  # check can race a slow first service start and fail the exec even though
+  # the install completed; the next run converges via this guard.
   exec { 'install openvox-gui':
     command => '/bin/bash install.sh -c install.conf',
     cwd     => $src_dir,
