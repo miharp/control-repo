@@ -18,6 +18,13 @@ PUPPET_SSL_CA=/etc/puppetlabs/puppet/ssl/certs/ca.pem
 PUPPET_CONFDIR=/etc/puppetlabs/puppet
 PUPPET_CODEDIR=/etc/puppetlabs/code
 
+# Serve the GUI over HTTPS with the master's own Puppet certs (the service
+# user "puppet" can read the private key; the cert covers the FQDN only, so
+# always browse to https://puppet.example.com:<port>).
+SSL_ENABLED=true
+SSL_CERT_PATH=/etc/puppetlabs/puppet/ssl/certs/puppet.example.com.pem
+SSL_KEY_PATH=/etc/puppetlabs/puppet/ssl/private_keys/puppet.example.com.pem
+
 # The firewall is managed by puppetlabs/firewall, nodes are classified via
 # roles in site manifests (not the GUI's ENC), Node.js and the frontend build
 # are handled by profile::openvox_gui, and a dev VM needs no agent package

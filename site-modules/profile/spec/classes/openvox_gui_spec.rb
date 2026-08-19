@@ -29,6 +29,7 @@ describe 'profile::openvox_gui' do
           .with_content(%r{^BUILD_FRONTEND=false$})
           .with_content(%r{^CONFIGURE_ENC=false$})
           .with_content(%r{^CONFIGURE_FIREWALL=false$})
+          .with_content(%r{^SSL_ENABLED=true$})
       }
 
       it {
@@ -36,8 +37,6 @@ describe 'profile::openvox_gui' do
           .with_command('/bin/bash install.sh -c install.conf')
           .with_cwd('/opt/openvox-gui-src')
       }
-
-      it { is_expected.to contain_sudo__conf('openvox-gui') }
 
       it {
         is_expected.to contain_service('openvox-gui')

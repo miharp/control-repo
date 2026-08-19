@@ -93,12 +93,10 @@ class profile::openvox_gui (
     timeout => 900,
   }
 
-  # The installer drops sudoers rules for the service user. profile::base's
-  # sudo class purges unmanaged content, so re-declare them via sudo::conf.
-  sudo::conf { 'openvox-gui':
-    source  => 'puppet:///modules/profile/openvox_gui/sudoers-openvox-gui',
-    require => Exec['install openvox-gui'],
-  }
+  # The installer writes /etc/sudoers.d/openvox-gui-users (~50 rules for CA,
+  # Bolt, r10k, and log access). profile::base's sudo class purges unmanaged
+  # sudoers.d content, so the node's hiera sets sudo::purge_ignore to leave
+  # that installer-owned file alone (see data/nodes/puppet.example.com.yaml).
 
   service { 'openvox-gui':
     ensure  => running,
