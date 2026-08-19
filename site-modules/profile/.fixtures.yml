@@ -41,6 +41,9 @@ fixtures:
     systemd:
       repo: puppet/systemd
       ref: 8.3.1
+    vcsrepo:
+      repo: puppetlabs/vcsrepo
+      ref: 7.0.0
     cron_core:
       repo: puppetlabs/cron_core
       ref: 2.0.2

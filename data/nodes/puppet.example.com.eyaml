@@ -1,0 +1,7 @@
+---
+# Encrypted per-node secrets for the Puppet master (eyaml backend).
+# Edit with: eyaml edit --pkcs7-private-key=keys/private_key.pkcs7.pem \
+#   --pkcs7-public-key=keys/public_key.pkcs7.pem data/nodes/puppet.example.com.eyaml
+
+# Initial admin password for the OpenVox GUI web console.
+profile::openvox_gui::admin_password: ENC[PKCS7,MIIBiQYJKoZIhvcNAQcDoIIBejCCAXYCAQAxggEhMIIBHQIBADAFMAACAQAwDQYJKoZIhvcNAQEBBQAEggEADsK+ZxlFGB63Z2vOfjjCU9I1A/aRPW77rabPfEc2Vnf2XeuCwANVXEh8GoBsnruxJG9RP17qz8JyPl25pxhLr2PZVSmR9fIB/qZ/jqdfsVnOaLOzVOvB2HARtrv6Ok5HRw5LAggABjnJUkWLpaOJ3HP3Wv02SA4dh8cz+LAe1UuP8fdDTxzl6aiDGcarN36QE9YRKi6w9dRJy5f4xCQnpT38WBUwG4XG9q3n2i0Cz5exQ0WnBJ1f1QrEEWOf00o5GkIHwa7uB4LHTGnjan4oIlbc9XqCEK8PzZVT5kufhks+vV5FkZaS0dUNfuJr8fBscDnnNUj40a6PUY5OFEqhjDBMBgkqhkiG9w0BBwEwHQYJYIZIAWUDBAEqBBBN/XHlykxyoEW33B9urh7ngCDSA6k8onDM03L3UypPq4A2ZiKzGRtSTk22B/j5IWtKCQ==]

@@ -26,7 +26,9 @@ Vagrant.configure("2") do |config|
     puppet.vm.network "private_network", ip: "192.168.56.10"
     
     puppet.vm.provider "parallels" do |prl|
-      prl.memory = 3072
+      # 4GB: the master runs the puppetserver and puppetdb JVMs, PostgreSQL,
+      # OpenVoxView, and OpenVox GUI (uvicorn + a one-time npm frontend build).
+      prl.memory = 4096
       prl.cpus = 2
     end 
 

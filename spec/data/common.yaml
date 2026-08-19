@@ -6,3 +6,8 @@
 # it needs no PKCS7 keys; this plaintext placeholder satisfies the parameter so
 # every role compiles. It is never used on real nodes.
 profile::base::eyaml_secret: 'onceover-test-canary'
+
+# profile::openvox_gui requires a String $admin_password, normally decrypted
+# from data/nodes/puppet.example.com.eyaml. Same placeholder arrangement as
+# the eyaml canary above.
+profile::openvox_gui::admin_password: 'onceover-test-password'

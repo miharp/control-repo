@@ -38,6 +38,7 @@
     "onceover",
     "ntpservers",
     "openbolt",
+    "cvquesty",
     "openvox",
     "openvoxdb",
     "openvoxview",
@@ -51,10 +52,13 @@
     "puppetserver",
     "Rakefile",
     "rspec",
+    "rollup",
     "rubocop",
     "setfile",
     "setfiles",
     "stdlib",
+    "sudoers",
+    "uvicorn",
     "vcsrepo",
     "voxbox",
     "voxpupuli",
@@ -62,6 +66,7 @@
     "yumrepo"
   ],
   "ignorePaths": [
+    "**/*.eyaml",
     "modules/**",
     "keys/**",
     ".vagrant/**"

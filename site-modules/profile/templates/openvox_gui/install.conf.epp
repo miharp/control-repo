@@ -1,0 +1,37 @@
+<%- | Integer $app_port, String $admin_password | -%>
+# Managed by Puppet - do not edit
+# Unattended installation configuration for openvox-gui (install.sh -c)
+
+INSTALL_DIR=/opt/openvox-gui
+APP_PORT=<%= $app_port %>
+APP_HOST=0.0.0.0
+
+PUPPET_SERVER_HOST=puppet.example.com
+PUPPET_SERVER_PORT=8140
+PUPPETDB_HOST=puppet.example.com
+PUPPETDB_PORT=8081
+
+PUPPET_SSL_CERT=/etc/puppetlabs/puppet/ssl/certs/puppet.example.com.pem
+PUPPET_SSL_KEY=/etc/puppetlabs/puppet/ssl/private_keys/puppet.example.com.pem
+PUPPET_SSL_CA=/etc/puppetlabs/puppet/ssl/certs/ca.pem
+
+PUPPET_CONFDIR=/etc/puppetlabs/puppet
+PUPPET_CODEDIR=/etc/puppetlabs/code
+
+# The firewall is managed by puppetlabs/firewall, nodes are classified via
+# roles in site manifests (not the GUI's ENC), Node.js and the frontend build
+# are handled by profile::openvox_gui, and a dev VM needs no agent package
+# mirror.
+CONFIGURE_FIREWALL=false
+CONFIGURE_SELINUX=true
+CONFIGURE_ENC=false
+CONFIGURE_PKG_REPO=false
+BUILD_FRONTEND=false
+INSTALL_NODEJS=false
+
+SERVICE_USER=puppet
+SERVICE_GROUP=puppet
+
+AUTH_BACKEND=local
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=<%= $admin_password %>
