@@ -12,7 +12,9 @@ profile::openvox_gui::version: '3.10.6'
 
 # The OpenVox GUI installer owns /etc/sudoers.d/openvox-gui-users (~50 rules
 # for CA, Bolt, r10k, and log access). Keep profile::base's sudo purge from
-# deleting it.
+# deleting it. Deliberately not a glob: the installer's timestamped
+# .bak.* backups of that file are left to the purge, so the agent run
+# after an install/upgrade removes them.
 sudo::purge_ignore: 'openvox-gui-users'
 
 # openvoxdb comes from the openvox8 repository like every other package. It was
