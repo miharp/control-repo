@@ -178,7 +178,7 @@ Roles include profiles, profiles include component modules. Example: `role::pupp
 | `openvoxdb` | Configures OpenVoxDB via voxpupuli/puppet-openvoxdb (Git) |
 | `openbolt` | Installs OpenBolt (Bolt CLI) package |
 | `openvoxview` | Installs OpenVoxView, a web UI for browsing reports/catalogs from the local PuppetDB |
-| `openvox_gui` | Installs [OpenVox GUI](https://github.com/cvquesty/openvox-gui) (port 4567), a management console (CA, orchestration, PQL) that runs alongside OpenVoxView; wraps the upstream installer with a pinned release tag |
+| `openvox_gui` | Installs [OpenVox GUI](https://github.com/cvquesty/openvox-gui) (port 4567), a management console (CA, orchestration, PQL) that runs alongside OpenVoxView; thin wrapper around the [miharp/openvox_gui](https://github.com/miharp/puppet-openvox_gui) module (Git-sourced in the Puppetfile) |
 | `static_catalogs` | Enables Puppet Server static catalog optimization (code_id/code_content scripts) |
 | `example` | Intentionally empty; used as the Beaker smoke-test subject |
 
@@ -242,7 +242,7 @@ Spec files go in `site-modules/profile/spec/classes/` for class tests.
 ### Test Dependencies
 
 - `.fixtures.yml` pulls forge modules (inifile, stdlib, etc.) and the
-  `puppet-openvoxdb` and `puppet-openvoxview` modules from Git, then symlinks
+  `puppet-openvoxdb`, `puppet-openvoxview`, and `puppet-openvox_gui` modules from Git, then symlinks
   the profile module. Fixtures are resolved from `.fixtures.yml`, **not** the
   control-repo `Puppetfile`, so adding a module dependency to a profile means
   updating **three** files: `metadata.json`, `.fixtures.yml`, and `Puppetfile`.

@@ -7,16 +7,16 @@
   "source": "",
   "dependencies": [
     {
+      "name": "miharp/openvox_gui",
+      "version_requirement": ">= 0.1.0 < 1.0.0"
+    },
+    {
       "name": "puppetlabs/inifile",
       "version_requirement": ">= 5.0.0 < 7.0.0"
     },
     {
       "name": "puppetlabs/stdlib",
       "version_requirement": ">= 8.0.0 < 10.0.0"
-    },
-    {
-      "name": "puppetlabs/vcsrepo",
-      "version_requirement": ">= 6.0.0 < 8.0.0"
     }
   ],
   "requirements": [
