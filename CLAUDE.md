@@ -246,6 +246,11 @@ Spec files go in `site-modules/profile/spec/classes/` for class tests.
   the profile module. Fixtures are resolved from `.fixtures.yml`, **not** the
   control-repo `Puppetfile`, so adding a module dependency to a profile means
   updating **three** files: `metadata.json`, `.fixtures.yml`, and `Puppetfile`.
+  Exception: modules not published to the Forge (e.g. the Git-sourced
+  `miharp/openvox_gui`) must stay **out of `metadata.json`** — the Beaker job
+  installs the profile module with Forge dependency resolution on the test
+  host, which fails on any dependency the Forge cannot serve. Declare those in
+  `.fixtures.yml` and the `Puppetfile` only.
 - `metadata.json` currently lists `operatingsystem_support` for RedHat 9, RedHat 10, and Ubuntu 24.04. The `on_supported_os` helper in tests only generates facts for OSes listed there. RedHat 10 fact sets are not yet in facterdb, so test coverage for that platform will appear automatically once facterdb ships them.
 - `site-modules/profile/spec/unit/hiera_eyaml_spec.rb` generates throwaway PKCS7 keypairs at test time (no private keys stored in repo).
 
