@@ -26,4 +26,4 @@ mod 'saz/sudo',              '9.0.2'
 # resolve dependencies of Git-sourced modules).
 mod 'openvox_gui',
   git: 'https://github.com/miharp/puppet-openvox_gui.git',
-  ref: 'v0.1.0'
+  ref: 'v0.1.1'
