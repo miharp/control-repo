@@ -6,6 +6,17 @@ profile::openvox_server::version: '8.15.2'
 # Pin OpenVoxView application version
 profile::openvoxview::version: '1.4.0'
 
+# Pin OpenVox GUI release (git tag without the leading 'v'). The admin
+# password lives in nodes/puppet.example.com.eyaml.
+profile::openvox_gui::version: '3.10.6'
+
+# The OpenVox GUI installer owns /etc/sudoers.d/openvox-gui-users (~50 rules
+# for CA, Bolt, r10k, and log access). Keep profile::base's sudo purge from
+# deleting it. Deliberately not a glob: the installer's timestamped
+# .bak.* backups of that file are left to the purge, so the agent run
+# after an install/upgrade removes them.
+sudo::purge_ignore: 'openvox-gui-users'
+
 # openvoxdb comes from the openvox8 repository like every other package. It was
 # previously pinned to an April 2026 snapshot and fetched from two hardcoded
 # artifact URLs, which was a workaround for 8.13.0 not being released yet; both

@@ -20,3 +20,10 @@ mod 'puppetlabs/vcsrepo',    '7.0.0'
 # declared it for the module's own specs; the control repo never shipped it.
 mod 'puppetlabs/yumrepo_core', '3.0.1'
 mod 'saz/sudo',              '9.0.2'
+
+# Not yet published to the Forge; consumed straight from Git at a release
+# tag. Depends on vcsrepo and stdlib, both declared above (r10k does not
+# resolve dependencies of Git-sourced modules).
+mod 'openvox_gui',
+  git: 'https://github.com/miharp/puppet-openvox_gui.git',
+  ref: 'v0.1.1'
