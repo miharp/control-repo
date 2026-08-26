@@ -32,6 +32,16 @@ describe 'profile::openvox_gui' do
           .with_jump('ACCEPT')
       }
 
+      it 'manages the console Bolt inventory with SSH settings only' do
+        expect(subject).to contain_file('/etc/puppetlabs/bolt/inventory.yaml')
+          .with(owner: 'root', group: 'bolt', mode: '0640')
+          .with_content(%r{^config:\n  ssh:\n    user: bolt\n    private-key: /etc/puppetlabs/bolt/id_bolt\n})
+          .with_content(%r{tmpdir: /home/bolt/.bolt/tmp})
+          .that_requires('Class[openvox_gui]')
+      end
+
+      it { expect(catalogue.resource('file', '/etc/puppetlabs/bolt/inventory.yaml')[:content]).not_to match(%r{groups:|_plugin}) }
+
       context 'with a custom port' do
         let(:params) { super().merge(app_port: 8443) }
 

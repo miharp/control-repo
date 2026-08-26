@@ -11,6 +11,7 @@
 # Roles under test.
 classes:
   - role::puppet_master
+  - role::agent
   - role::database_server
   - role::webserver
   - role::example
@@ -28,6 +29,7 @@ class_groups:
   master_role:
     - role::puppet_master
   base_roles:
+    - role::agent
     - role::database_server
     - role::webserver
     - role::example
@@ -42,7 +44,8 @@ node_groups:
 # Map roles to the nodes they actually run on:
 #   - puppet_master only on the master (EL10), where the node hiera data pins
 #     server versions and the EL10 postgresql/openvoxdb overrides.
-#   - base_roles on both agents (EL9 + Ubuntu 24.04).
+#   - base_roles (role::agent, the default node, plus the placeholder
+#     roles) on both agents (EL9 + Ubuntu 24.04).
 test_matrix:
   - master:
       classes: master_role

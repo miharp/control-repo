@@ -166,7 +166,7 @@ sudo /opt/puppetlabs/bin/puppet agent -t
 - **site-modules/profile/** - Technology-specific configurations composed into roles
 - **modules/** - External modules from Puppet Forge (managed via Puppetfile)
 
-Roles include profiles, profiles include component modules. Example: `role::puppet_master` includes `profile::base`, `profile::openvox_server`, `profile::openvoxdb`, `profile::openbolt`, `profile::static_catalogs`, `profile::openvoxview`, `profile::openvox_gui`.
+Roles include profiles, profiles include component modules. Example: `role::puppet_master` includes `profile::base`, `profile::openvox_server`, `profile::openvoxdb`, `profile::openbolt`, `profile::static_catalogs`, `profile::openvoxview`, `profile::openvox_gui`, `profile::bolt_target`. Nodes without a node definition get `role::agent` (`profile::base` + `profile::bolt_target`).
 
 ### Current Profiles
 
@@ -178,7 +178,8 @@ Roles include profiles, profiles include component modules. Example: `role::pupp
 | `openvoxdb` | Configures OpenVoxDB via voxpupuli/puppet-openvoxdb (Git) |
 | `openbolt` | Installs OpenBolt (Bolt CLI) package |
 | `openvoxview` | Installs OpenVoxView, a web UI for browsing reports/catalogs from the local PuppetDB |
-| `openvox_gui` | Installs [OpenVox GUI](https://github.com/cvquesty/openvox-gui) (port 4567), a management console (CA, orchestration, PQL) that runs alongside OpenVoxView; thin wrapper around the [miharp/openvox_gui](https://github.com/miharp/puppet-openvox_gui) module (Git-sourced in the Puppetfile) |
+| `openvox_gui` | Installs [OpenVox GUI](https://github.com/cvquesty/openvox-gui) (port 4567), a management console (CA, orchestration, PQL) that runs alongside OpenVoxView; thin wrapper around the [miharp/openvox_gui](https://github.com/miharp/puppet-openvox_gui) module (Git-sourced in the Puppetfile). Also manages the console's Bolt inventory (SSH settings only; targets come from OpenVoxDB) |
+| `bolt_target` | Makes a node reachable by the GUI's orchestration: `openvox_gui::bolt_target` (bolt user, `~/.bolt/tmp`, authorized keys collected from PuppetDB via the console's `openvox_gui_bolt_pubkey` fact) plus passwordless sudo for that user via saz/sudo. Included by `role::agent` (the default node) and `role::puppet_master` |
 | `static_catalogs` | Enables Puppet Server static catalog optimization (code_id/code_content scripts) |
 | `example` | Intentionally empty; used as the Beaker smoke-test subject |
 

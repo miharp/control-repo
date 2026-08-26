@@ -12,4 +12,5 @@ class role::puppet_master {
   include profile::static_catalogs
   include profile::openvoxview
   include profile::openvox_gui
+  include profile::bolt_target
 }
