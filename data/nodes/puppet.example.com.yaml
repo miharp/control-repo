@@ -8,7 +8,7 @@ profile::openvoxview::version: '1.4.0'
 
 # Pin OpenVox GUI release (git tag without the leading 'v'). The admin
 # password lives in nodes/puppet.example.com.eyaml.
-profile::openvox_gui::version: '3.10.6'
+profile::openvox_gui::version: '3.12.0'
 
 # The OpenVox GUI installer owns /etc/sudoers.d/openvox-gui-users (~50 rules
 # for CA, Bolt, r10k, and log access). Keep profile::base's sudo purge from
