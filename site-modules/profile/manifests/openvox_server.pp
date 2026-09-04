@@ -31,21 +31,27 @@ class profile::openvox_server (
       ensure_packages([$java_package])
       Package[$java_package] -> Package['openvox-server']
     }
+
+    # rpm resolves no dependencies, so the (managed) agent must already
+    # satisfy the server's agent requirement before the server is installed.
+    # No-op edge when the agent package is not in the catalog.
+    Package <| title == 'openvox-agent' |> -> Package['openvox-server']
   } elsif $facts['os']['family'] == 'RedHat' {
     $package_version = "${version}-1.el${facts['os']['release']['major']}"
     package { 'openvox-server':
       ensure => $package_version,
     }
+
+    # Server and agent pin each other's major version (openvox-server 8.x
+    # requires openvox-agent < 9.0.0~, 9.x requires >= 9.0.0~), so neither can
+    # cross a major on its own: a lone agent upgrade fails on the installed
+    # server's dependency. Let dnf move the server first, which upgrades the
+    # agent in the same transaction, then the agent resource applies its own
+    # pin (e.g. a newer rpm from the artifact bucket) on top.
+    Package['openvox-server'] -> Package <| title == 'openvox-agent' |>
   } else {
     package { 'openvox-server':
       ensure => $version,
     }
   }
-
-  # A 9.x server requires a 9.x agent. If the agent package is managed in this
-  # catalog (it always is via profile::base), upgrade it first so the server's
-  # dependency is satisfied by the pinned agent rather than whatever the repo
-  # happens to resolve. Direct rpm installs resolve no dependencies at all, so
-  # there the ordering is mandatory. No-op edge when the agent is unmanaged.
-  Package <| title == 'openvox-agent' |> -> Package['openvox-server']
 }
