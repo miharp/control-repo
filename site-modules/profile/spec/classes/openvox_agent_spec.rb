@@ -25,6 +25,12 @@ describe 'profile::openvox_agent' do
           is_expected.to contain_package('openvox-agent')
             .that_requires('Class[apt::update]')
         }
+        it {
+          is_expected.to contain_exec('apt-get update for openvox-agent')
+            .with_provider('shell')
+            .that_requires('Class[apt::update]')
+            .that_comes_before('Package[openvox-agent]')
+        }
       end
 
       context 'with source URL (pre-release install)' do

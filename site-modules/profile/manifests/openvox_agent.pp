@@ -51,6 +51,18 @@ class profile::openvox_agent (
     } elsif $facts['os']['name'] == 'Ubuntu' {
       $package_version = "${version}-1+ubuntu${facts['os']['release']['full']}"
       include apt
+      # profile::base only refreshes the index when a source file changes, so
+      # a pin moved forward on an unchanged repo was applied against a stale
+      # index ("Version ... was not found"). Refresh it once when the
+      # installed version differs from the pin; a no-op otherwise.
+      exec { 'apt-get update for openvox-agent':
+        command  => 'apt-get update',
+        unless   => "dpkg-query -W -f='\${Version}' openvox-agent | grep -qx '${package_version}'",
+        path     => ['/usr/bin', '/bin'],
+        provider => 'shell',
+        require  => Class['apt::update'],
+        before   => Package['openvox-agent'],
+      }
       $package_require = Class['apt::update']
     } else {
       $package_version = $version
