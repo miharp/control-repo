@@ -207,6 +207,22 @@ Node-specific hiera data (e.g., `data/nodes/puppet.example.com.yaml`) pins serve
 - **plans/** - Bolt plans (e.g., `control_repo::validate`)
 - **site-modules/adhoc/tasks/** - Bolt tasks
 
+## OpenVox 9 Branch
+
+`production` is the OpenVox 8 line. The long-lived `openvox9` branch is
+`production` plus a single data commit (the three `data/nodes/*.yaml` files:
+`profile::base::release: 9` and the 9.x server/agent pins), so the lab can run
+either major:
+
+- Switch the lab by checking out `production` or `openvox9` (the shared folder
+  updates the master immediately) and running `puppet agent -t` on the master
+  first, then the agents. The server profile orders the server package before
+  the agent so dnf moves both in one transaction in either direction.
+- General changes (profiles, Vagrantfile, tooling) go to `production` through
+  a normal PR; only 9-specific data lives on `openvox9`. When `production`
+  moves, rebase `openvox9` onto it and `git push --force-with-lease`. Never
+  open a PR from `openvox9`.
+
 ## Vagrant Environment
 
 | VM | Hostname | IP | OS | Description |
