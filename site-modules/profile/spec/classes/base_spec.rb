@@ -8,7 +8,7 @@ describe 'profile::base' do
       let(:facts) { os_facts }
       let(:params) { { release: 8, eyaml_secret: 'test_canary_value' } }
       let(:pre_condition) do
-        "class { 'profile::openvox_agent': version => '8.24.2' }"
+        "class { 'profile::openvox_agent': version => '8.24.2', server => 'puppet.example.com' }"
       end
 
       it { is_expected.to compile.with_all_deps }
