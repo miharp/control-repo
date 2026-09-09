@@ -1,0 +1,8 @@
+---
+# OpenVox 9.0.0~rc1 agent (Ubuntu 24.04 arm64); this is the openvox9 branch.
+# The openvox9 apt component publishes arm64 indexes and carries rc1 as of
+# 2026-09-09, so the pin comes from the repo (it was installed from the
+# artifact bucket while the repo lagged at beta2). Remove the pins once GA
+# ships.
+profile::base::release: 9
+profile::openvox_agent::version: '9.0.0~rc1'

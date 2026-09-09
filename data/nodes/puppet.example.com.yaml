@@ -1,7 +1,14 @@
 ---
 # Node-specific configuration for the Puppet master.
 
-profile::openvox_server::version: '8.15.2'
+# OpenVox 9 stack (this is the openvox9 branch). As of 2026-09-09 the
+# openvox9 EL10 repo carries server 9.0.0~rc1 (released today, requires agent
+# >= 9.0.0~rc1), agent 9.0.0~rc1 and (since 2026-09-09 evening) openvoxdb
+# 9.0.0~rc1, so everything comes from the repo. Note the ~ sorts OLDER than the 9.0.0 GA versions,
+# so GA will upgrade cleanly. Remove the pins once GA ships.
+profile::base::release: 9
+profile::openvox_agent::version: '9.0.0~rc1'
+profile::openvox_server::version: '9.0.0~rc1'
 
 # Pin OpenVoxView application version
 profile::openvoxview::version: '1.4.0'
@@ -17,13 +24,10 @@ profile::openvox_gui::version: '3.12.0'
 # after an install/upgrade removes them.
 sudo::purge_ignore: 'openvox-gui-users'
 
-# openvoxdb comes from the openvox8 repository like every other package. It was
-# previously pinned to an April 2026 snapshot and fetched from two hardcoded
-# artifact URLs, which was a workaround for 8.13.0 not being released yet; both
-# it and openvoxdb-termini are in the repo at 8.15.0, so the workaround is gone.
-# Direct rpm installs also resolve no dependencies, which is why that path needed
-# a java_package hint the repo path does not.
-profile::openvoxdb::package_version: '8.15.0-1.el10'
+# openvoxdb comes from the openvox9 repository like every other package (the
+# repo path resolves its Java dependency; direct rpm URLs do not, which is
+# what the java_package hint is for).
+profile::openvoxdb::package_version: '9.0.0~rc1-1.el10'
 
 # Use the OS-provided PostgreSQL on EL10 (default is 16) to avoid bringing in the
 # external postgresql.org repository.
