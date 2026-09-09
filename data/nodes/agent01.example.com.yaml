@@ -1,0 +1,5 @@
+---
+# OpenVox 9 agent (EL9 aarch64); this is the openvox9 branch. The pin tracks
+# the openvox9 yum repo, like the 8.x pin in common.yaml does for openvox8.
+profile::base::release: 9
+profile::openvox_agent::version: '9.0.0'
