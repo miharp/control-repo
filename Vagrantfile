@@ -248,21 +248,25 @@ EYAML
     agent.vm.provision "shell", inline: <<-SHELL
       set -e
 
+      # Package upgrades can pull in debconf prompts (e.g. keyboard-configuration
+      # on a 2026-09 noble upgrade) that block forever over Vagrant's SSH session.
+      export DEBIAN_FRONTEND=noninteractive
+
       # Set up /etc/hosts
       echo "192.168.56.10 puppet.example.com puppet" | sudo tee -a /etc/hosts > /dev/null
       echo "192.168.56.11 agent01.example.com agent01" | sudo tee -a /etc/hosts > /dev/null
       echo "192.168.56.12 agent02.example.com agent02" | sudo tee -a /etc/hosts > /dev/null
 
       # Update all packages
-      sudo apt-get update -y
-      sudo apt-get upgrade -y
+      sudo -E apt-get update -y
+      sudo -E apt-get upgrade -y
 
       # Install OpenVox repository + agent (Debian/Ubuntu)
-      sudo apt-get install -y curl ca-certificates
+      sudo -E apt-get install -y curl ca-certificates
       curl -fsSL -o /tmp/openvox8-release-ubuntu24.04.deb #{apt_release_base}/openvox8-release-ubuntu24.04.deb
       sudo dpkg -i /tmp/openvox8-release-ubuntu24.04.deb
-      sudo apt-get update -y
-      sudo apt-get install -y openvox-agent
+      sudo -E apt-get update -y
+      sudo -E apt-get install -y openvox-agent
 
       # Bolt validation support: authorize the master's Bolt SSH key.
       while [ ! -f /vagrant/.vagrant_bolt_keys/bolt_ed25519.pub ]; do
