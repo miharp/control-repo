@@ -15,12 +15,13 @@
 # sudo::purge_ignore in the node's hiera data.
 #
 # Orchestration: the installer generates the console's Bolt SSH key
-# (/etc/puppetlabs/bolt/id_bolt) and the GUI resolves targets from
-# OpenVoxDB, so the inventory managed here only carries SSH settings
-# (upstream's bolt-plugin/inventory.yaml.example without the ENC plugin
-# group). Targets get the matching bolt user from profile::bolt_target.
-# The GUI's Settings page can write this file too; Puppet is the source
-# of truth and will put it back.
+# (/etc/puppetlabs/bolt/id_bolt); from OpenVox GUI 3.14.0 the GUI writes
+# its own Bolt inventory under its data directory (SSH settings plus
+# targets resolved through its openvox_enc plugin, from the ENC and the
+# live fleet) and ignores /etc/puppetlabs/bolt/inventory.yaml, so nothing
+# of the inventory is managed here any more. Targets get the matching bolt
+# user, and the NOPASSWD sudo its privileged runs need, from
+# profile::bolt_target.
 #
 # @param version
 #   The OpenVox GUI release to install.
@@ -46,27 +47,5 @@ class profile::openvox_gui (
     dport => $app_port,
     proto => 'tcp',
     jump  => 'ACCEPT',
-  }
-
-  # /etc/puppetlabs/bolt and the bolt group are created by the installer.
-  file { '/etc/puppetlabs/bolt/inventory.yaml':
-    ensure  => file,
-    owner   => 'root',
-    group   => 'bolt',
-    mode    => '0640',
-    content => @(INVENTORY),
-      ---
-      # Managed by Puppet (profile::openvox_gui). OpenVox GUI runs Bolt as
-      # the bolt user with this inventory; targets are resolved from
-      # OpenVoxDB, so only the SSH settings live here.
-      config:
-        ssh:
-          user: bolt
-          private-key: /etc/puppetlabs/bolt/id_bolt
-          host-key-check: false
-          tty: false
-          tmpdir: /home/bolt/.bolt/tmp
-      | INVENTORY
-    require => Class['openvox_gui'],
   }
 }
