@@ -32,15 +32,13 @@ describe 'profile::openvox_gui' do
           .with_jump('ACCEPT')
       }
 
-      it 'manages the console Bolt inventory with SSH settings only' do
-        expect(subject).to contain_file('/etc/puppetlabs/bolt/inventory.yaml')
-          .with(owner: 'root', group: 'bolt', mode: '0640')
-          .with_content(%r{^config:\n  ssh:\n    user: bolt\n    private-key: /etc/puppetlabs/bolt/id_bolt\n})
-          .with_content(%r{tmpdir: /home/bolt/.bolt/tmp})
-          .that_requires('Class[openvox_gui]')
+      it 'leaves the Bolt inventory to the GUI, which generates its own from 3.14.0' do
+        expect(subject).not_to contain_file('/etc/puppetlabs/bolt/inventory.yaml')
       end
 
-      it { expect(catalogue.resource('file', '/etc/puppetlabs/bolt/inventory.yaml')[:content]).not_to match(%r{groups:|_plugin}) }
+      it 'has the module install the openvox_enc inventory plugin the upstream installer forgets' do
+        expect(subject).to contain_exec('openvox_gui install openvox_enc bolt plugin')
+      end
 
       context 'with a custom port' do
         let(:params) { super().merge(app_port: 8443) }
