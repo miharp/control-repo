@@ -15,6 +15,7 @@ classes:
   - role::database_server
   - role::webserver
   - role::example
+  - role::macos
 
 # Node factsets (filenames in spec/factsets/, named after each node's certname
 # so that trusted.certname resolves the right nodes/%{trusted.certname}.yaml).
@@ -22,6 +23,7 @@ nodes:
   - puppet.example.com
   - agent01.example.com
   - agent02.example.com
+  - mac26.example.com
 
 # Roles that are just profile::base on a generic node. These are exercised on
 # both agents to catch cross-OS (RedHat/Debian) regressions in the base profile.
@@ -33,6 +35,8 @@ class_groups:
     - role::database_server
     - role::webserver
     - role::example
+  macos_roles:
+    - role::macos
 
 node_groups:
   master:
@@ -40,16 +44,22 @@ node_groups:
   agents:
     - agent01.example.com
     - agent02.example.com
+  macos:
+    - mac26.example.com
 
 # Map roles to the nodes they actually run on:
 #   - puppet_master only on the master (EL10), where the node hiera data pins
 #     server versions and the EL10 postgresql/openvoxdb overrides.
 #   - base_roles (role::agent, the default node, plus the placeholder
 #     roles) on both agents (EL9 + Ubuntu 24.04).
+#   - role::macos on the macOS 26 Tart VM (tart/mac.sh).
 test_matrix:
   - master:
       classes: master_role
       tests: spec
   - agents:
       classes: base_roles
+      tests: spec
+  - macos:
+      classes: macos_roles
       tests: spec

@@ -1,0 +1,571 @@
+{
+  "name": "mac26.example.com",
+  "values": {
+    "aio_agent_version": "8.28.1",
+    "augeas": {
+      "version": "1.14.1"
+    },
+    "dmi": {
+      "product": {
+        "name": "VirtualMac2,1"
+      }
+    },
+    "facterversion": "5.6.1",
+    "filesystems": "apfs,autofs,devfs",
+    "identity": {
+      "gid": 0,
+      "group": "wheel",
+      "privileged": true,
+      "uid": 0,
+      "user": "root"
+    },
+    "is_pe": false,
+    "is_virtual": false,
+    "kernel": "Darwin",
+    "kernelmajversion": "25.6",
+    "kernelrelease": "25.6.0",
+    "kernelversion": "25.6.0",
+    "load_averages": {
+      "15m": 6.27,
+      "1m": 0.48,
+      "5m": 1.72
+    },
+    "memory": {
+      "system": {
+        "available": "65.64 MiB",
+        "available_bytes": 68829184,
+        "capacity": "99.20%",
+        "total": "8.00 GiB",
+        "total_bytes": 8589934592,
+        "used": "7.94 GiB",
+        "used_bytes": 8521105408
+      }
+    },
+    "mountpoints": {
+      "/": {
+        "available": "15.57 GiB",
+        "available_bytes": 16721674240,
+        "capacity": "66.20%",
+        "device": "/dev/disk2s1s1",
+        "filesystem": "apfs",
+        "options": [
+          "readonly",
+          "local",
+          "root",
+          "journaled"
+        ],
+        "size": "46.08 GiB",
+        "size_bytes": 49475674112,
+        "used": "30.50 GiB",
+        "used_bytes": 32753999872
+      },
+      "/System/Library/AssetsV2/com_apple_MobileAsset_PKITrustStore/purpose_auto/6dd55b0d06633a00de6f57ccb910a66a5ba2409a.asset/.AssetData": {
+        "available": "3.00 MiB",
+        "available_bytes": 3149824,
+        "capacity": "24.90%",
+        "device": "/dev/disk6s1",
+        "filesystem": "apfs",
+        "options": [
+          "readonly",
+          "local",
+          "nobrowse",
+          "journaled"
+        ],
+        "size": "4.00 MiB",
+        "size_bytes": 4194304,
+        "used": "1020.00 KiB",
+        "used_bytes": 1044480
+      },
+      "/System/Library/AssetsV2/com_apple_MobileAsset_UAF_Siri_Understanding/purpose_auto/c10eb90af2d4996616c3cd0f6bac0833eb4925fa.asset/.AssetData": {
+        "available": "21.20 MiB",
+        "available_bytes": 22228992,
+        "capacity": "95.92%",
+        "device": "/dev/disk4s1",
+        "filesystem": "apfs",
+        "options": [
+          "readonly",
+          "local",
+          "nobrowse",
+          "journaled"
+        ],
+        "size": "520.00 MiB",
+        "size_bytes": 545259520,
+        "used": "498.80 MiB",
+        "used_bytes": 523030528
+      },
+      "/System/Volumes/Data": {
+        "available": "15.57 GiB",
+        "available_bytes": 16721674240,
+        "capacity": "66.20%",
+        "device": "/dev/disk2s5",
+        "filesystem": "apfs",
+        "options": [
+          "local",
+          "nobrowse",
+          "journaled"
+        ],
+        "size": "46.08 GiB",
+        "size_bytes": 49475674112,
+        "used": "30.50 GiB",
+        "used_bytes": 32753999872
+      },
+      "/System/Volumes/Data/home": {
+        "available": "0 bytes",
+        "available_bytes": 0,
+        "capacity": "100%",
+        "device": "map auto_home",
+        "filesystem": "autofs",
+        "options": [
+          "nobrowse",
+          "automounted"
+        ],
+        "size": "0 bytes",
+        "size_bytes": 0,
+        "used": "0 bytes",
+        "used_bytes": 0
+      },
+      "/System/Volumes/Hardware": {
+        "available": "494.89 MiB",
+        "available_bytes": 518934528,
+        "capacity": "1.02%",
+        "device": "/dev/disk1s3",
+        "filesystem": "apfs",
+        "options": [
+          "local",
+          "nobrowse",
+          "journaled"
+        ],
+        "size": "500.00 MiB",
+        "size_bytes": 524288000,
+        "used": "5.11 MiB",
+        "used_bytes": 5353472
+      },
+      "/System/Volumes/Preboot": {
+        "available": "15.57 GiB",
+        "available_bytes": 16721674240,
+        "capacity": "66.20%",
+        "device": "/dev/disk2s2",
+        "filesystem": "apfs",
+        "options": [
+          "local",
+          "nobrowse",
+          "journaled"
+        ],
+        "size": "46.08 GiB",
+        "size_bytes": 49475674112,
+        "used": "30.50 GiB",
+        "used_bytes": 32753999872
+      },
+      "/System/Volumes/Update": {
+        "available": "15.57 GiB",
+        "available_bytes": 16721674240,
+        "capacity": "66.20%",
+        "device": "/dev/disk2s4",
+        "filesystem": "apfs",
+        "options": [
+          "local",
+          "nobrowse",
+          "journaled"
+        ],
+        "size": "46.08 GiB",
+        "size_bytes": 49475674112,
+        "used": "30.50 GiB",
+        "used_bytes": 32753999872
+      },
+      "/System/Volumes/VM": {
+        "available": "15.57 GiB",
+        "available_bytes": 16721674240,
+        "capacity": "66.20%",
+        "device": "/dev/disk2s6",
+        "filesystem": "apfs",
+        "options": [
+          "noexec",
+          "local",
+          "nobrowse",
+          "journaled",
+          "noatime"
+        ],
+        "size": "46.08 GiB",
+        "size_bytes": 49475674112,
+        "used": "30.50 GiB",
+        "used_bytes": 32753999872
+      },
+      "/System/Volumes/iSCPreboot": {
+        "available": "494.89 MiB",
+        "available_bytes": 518934528,
+        "capacity": "1.02%",
+        "device": "/dev/disk1s1",
+        "filesystem": "apfs",
+        "options": [
+          "local",
+          "nobrowse",
+          "journaled"
+        ],
+        "size": "500.00 MiB",
+        "size_bytes": 524288000,
+        "used": "5.11 MiB",
+        "used_bytes": 5353472
+      },
+      "/System/Volumes/xarts": {
+        "available": "494.89 MiB",
+        "available_bytes": 518934528,
+        "capacity": "1.02%",
+        "device": "/dev/disk1s2",
+        "filesystem": "apfs",
+        "options": [
+          "noexec",
+          "local",
+          "nobrowse",
+          "journaled",
+          "noatime"
+        ],
+        "size": "500.00 MiB",
+        "size_bytes": 524288000,
+        "used": "5.11 MiB",
+        "used_bytes": 5353472
+      },
+      "/dev": {
+        "available": "0 bytes",
+        "available_bytes": 0,
+        "capacity": "100%",
+        "device": "devfs",
+        "filesystem": "devfs",
+        "options": [
+          "local",
+          "nobrowse"
+        ],
+        "size": "201.00 KiB",
+        "size_bytes": 205824,
+        "used": "201.00 KiB",
+        "used_bytes": 205824
+      }
+    },
+    "networking": {
+      "dhcp": "192.168.64.1",
+      "domain": "example.com",
+      "fqdn": "mac26.example.com",
+      "hostname": "mac26",
+      "interfaces": {
+        "XHC16": {
+          "mtu": 0
+        },
+        "anpi0": {
+          "flags": [
+            "UP",
+            "BROADCAST",
+            "SMART",
+            "RUNNING",
+            "SIMPLEX",
+            "MULTICAST"
+          ],
+          "mac": "76:ab:3a:03:1b:3a",
+          "mtu": 1500
+        },
+        "en0": {
+          "bindings": [
+            {
+              "address": "192.168.64.3",
+              "netmask": "255.255.255.0",
+              "network": "192.168.64.0"
+            }
+          ],
+          "bindings6": [
+            {
+              "address": "fe80::46b:bf75:3cc1:8397",
+              "netmask": "ffff:ffff:ffff:ffff::",
+              "network": "fe80::",
+              "scope6": "link"
+            },
+            {
+              "address": "fd5c:d258:c54c:612a:f0:1941:d9bd:fd04",
+              "netmask": "ffff:ffff:ffff:ffff::",
+              "network": "fd5c:d258:c54c:612a::",
+              "scope6": "global"
+            }
+          ],
+          "dhcp": "192.168.64.1",
+          "flags": [
+            "UP",
+            "BROADCAST",
+            "SMART",
+            "RUNNING",
+            "SIMPLEX",
+            "MULTICAST"
+          ],
+          "ip": "192.168.64.3",
+          "ip6": "fe80::46b:bf75:3cc1:8397",
+          "mac": "72:76:f4:5e:d8:14",
+          "mtu": 1500,
+          "netmask": "255.255.255.0",
+          "netmask6": "ffff:ffff:ffff:ffff::",
+          "network": "192.168.64.0",
+          "network6": "fe80::",
+          "scope6": "link"
+        },
+        "en1": {
+          "flags": [
+            "UP",
+            "BROADCAST",
+            "SMART",
+            "RUNNING",
+            "SIMPLEX",
+            "MULTICAST"
+          ],
+          "mac": "76:ab:3a:03:1b:1a",
+          "mtu": 1500
+        },
+        "gif0": {
+          "flags": [
+            "POINTOPOINT",
+            "MULTICAST"
+          ],
+          "mtu": 1280
+        },
+        "lo0": {
+          "bindings": [
+            {
+              "address": "127.0.0.1",
+              "netmask": "255.0.0.0",
+              "network": "127.0.0.0"
+            }
+          ],
+          "bindings6": [
+            {
+              "address": "::1",
+              "netmask": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+              "network": "::1",
+              "scope6": "host"
+            },
+            {
+              "address": "fe80::1",
+              "netmask": "ffff:ffff:ffff:ffff::",
+              "network": "fe80::",
+              "scope6": "link"
+            }
+          ],
+          "flags": [
+            "UP",
+            "LOOPBACK",
+            "RUNNING",
+            "MULTICAST"
+          ],
+          "ip": "127.0.0.1",
+          "ip6": "::1",
+          "mtu": 16384,
+          "netmask": "255.0.0.0",
+          "netmask6": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+          "network": "127.0.0.0",
+          "network6": "::1",
+          "scope6": "host"
+        },
+        "stf0": {
+          "mtu": 1280
+        },
+        "utun0": {
+          "bindings6": [
+            {
+              "address": "fe80::d797:1f17:97de:719",
+              "netmask": "ffff:ffff:ffff:ffff::",
+              "network": "fe80::",
+              "scope6": "link"
+            }
+          ],
+          "flags": [
+            "UP",
+            "POINTOPOINT",
+            "RUNNING",
+            "MULTICAST"
+          ],
+          "ip6": "fe80::d797:1f17:97de:719",
+          "mtu": 1500,
+          "netmask6": "ffff:ffff:ffff:ffff::",
+          "network6": "fe80::",
+          "scope6": "link"
+        },
+        "utun1": {
+          "bindings6": [
+            {
+              "address": "fe80::906b:8c4e:5ec0:5f5f",
+              "netmask": "ffff:ffff:ffff:ffff::",
+              "network": "fe80::",
+              "scope6": "link"
+            }
+          ],
+          "flags": [
+            "UP",
+            "POINTOPOINT",
+            "RUNNING",
+            "MULTICAST"
+          ],
+          "ip6": "fe80::906b:8c4e:5ec0:5f5f",
+          "mtu": 1380,
+          "netmask6": "ffff:ffff:ffff:ffff::",
+          "network6": "fe80::",
+          "scope6": "link"
+        },
+        "utun2": {
+          "bindings6": [
+            {
+              "address": "fe80::bee1:282:1e9f:d794",
+              "netmask": "ffff:ffff:ffff:ffff::",
+              "network": "fe80::",
+              "scope6": "link"
+            }
+          ],
+          "flags": [
+            "UP",
+            "POINTOPOINT",
+            "RUNNING",
+            "MULTICAST"
+          ],
+          "ip6": "fe80::bee1:282:1e9f:d794",
+          "mtu": 2000,
+          "netmask6": "ffff:ffff:ffff:ffff::",
+          "network6": "fe80::",
+          "scope6": "link"
+        },
+        "utun3": {
+          "bindings6": [
+            {
+              "address": "fe80::ce81:b1c:bd2c:69e",
+              "netmask": "ffff:ffff:ffff:ffff::",
+              "network": "fe80::",
+              "scope6": "link"
+            }
+          ],
+          "flags": [
+            "UP",
+            "POINTOPOINT",
+            "RUNNING",
+            "MULTICAST"
+          ],
+          "ip6": "fe80::ce81:b1c:bd2c:69e",
+          "mtu": 1000,
+          "netmask6": "ffff:ffff:ffff:ffff::",
+          "network6": "fe80::",
+          "scope6": "link"
+        }
+      },
+      "ip": "192.168.64.3",
+      "ip6": "fe80::46b:bf75:3cc1:8397",
+      "mac": "72:76:f4:5e:d8:14",
+      "mtu": 1500,
+      "netmask": "255.255.255.0",
+      "netmask6": "ffff:ffff:ffff:ffff::",
+      "network": "192.168.64.0",
+      "network6": "fe80::",
+      "primary": "en0",
+      "scope6": "link"
+    },
+    "os": {
+      "architecture": "arm64",
+      "family": "Darwin",
+      "hardware": "arm64",
+      "macosx": {
+        "build": "25G83",
+        "product": "macOS",
+        "version": {
+          "full": "26.6.2",
+          "major": "26",
+          "minor": "6",
+          "patch": "2"
+        }
+      },
+      "name": "Darwin",
+      "release": {
+        "full": "25.6.0",
+        "major": "25",
+        "minor": "6"
+      }
+    },
+    "package_provider": "pkgdmg",
+    "path": "/bin:/usr/bin:/usr/sbin:/usr/local/bin:/opt/homebrew/bin:/opt/puppetlabs/bin:/sbin",
+    "processors": {
+      "cores": 4,
+      "count": 4,
+      "isa": "arm",
+      "models": [
+        "Apple M2 Pro (Virtual)",
+        "Apple M2 Pro (Virtual)",
+        "Apple M2 Pro (Virtual)",
+        "Apple M2 Pro (Virtual)"
+      ],
+      "physicalcount": 4,
+      "threads": 1
+    },
+    "puppet_environmentpath": "/etc/puppetlabs/code/environments",
+    "puppet_server": "puppet.example.com",
+    "puppet_vardir": "/opt/puppetlabs/puppet/cache",
+    "puppetversion": "8.28.1",
+    "root_home": "/var/root",
+    "ruby": {
+      "platform": "arm64-darwin25",
+      "sitedir": "/opt/puppetlabs/puppet/lib/ruby/site_ruby/3.2.0",
+      "version": "3.2.11"
+    },
+    "service_provider": "launchd",
+    "ssh": {
+      "ecdsa": {
+        "fingerprints": {
+          "sha1": "SSHFP 3 1 242d462eb4a362ac3b692e7de960389388f64bec",
+          "sha256": "SSHFP 3 2 c827d6fbd57048c2e86cac65d68e276429ce916dd0f0904022f032d5d693a97d"
+        },
+        "key": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFp/LjrfV5MJax+FJPxgFnq5iOIF+zOXhIxW58fCpBH2jo1uoyZAPTsuiZG5SR9NlgjhwcHkT2UH9VkRyd8KQHA=",
+        "type": "ecdsa-sha2-nistp256"
+      },
+      "ed25519": {
+        "fingerprints": {
+          "sha1": "SSHFP 4 1 ec5ffc183899e6b85a63d9641fa3ff0538ff8f84",
+          "sha256": "SSHFP 4 2 fcf8aa7be9e87eabbae76a7cc69bc86df616cbe608f7556102324e0de4efdef1"
+        },
+        "key": "AAAAC3NzaC1lZDI1NTE5AAAAIN6qrrQQLLhqDXbTqS9/5GFBII1ZRonUIIRyuUd6f8l7",
+        "type": "ssh-ed25519"
+      },
+      "rsa": {
+        "fingerprints": {
+          "sha1": "SSHFP 1 1 1d3088cf4e29da34ab1907f54fc670d42eb40931",
+          "sha256": "SSHFP 1 2 b86701012c1b300b5171a0ab3b28b1e0b75e7f47e64a02a9c58b6bb5b4af2875"
+        },
+        "key": "AAAAB3NzaC1yc2EAAAADAQABAAABgQDRZMuGqD0H5o01valqNuPX/sutrBn9wkP1IAiizH9o8Gxtbv8XY3ZABLs6JhAav3CupNzql38wAfnDy++Igt79sBsDu/xvaS4N4hoXc6iJEtaqtGUPPExiAK7ZQjmTr2abjGaupbm/agSNDQa/U+7ntlnyoT1e07HNHFNQMP1+K6Thpz4lhRFn6aNW2MCiK/Hind/3iCbY42t+wWkhrWnq5ffs5lcOeZ9n9lSuWA4Ln2cY9pJMk2Rwbdn2MVjBKT6CqUgA1lQWgmlKzmXcz9wHPVVipxA9MLijr912MyaR7aG58NS93s90i1H9H3CkD/t7a61ryLVOaY1u9inHnGaZi7NQo4CNg+tIYpep2UDFkHFNK5XvmQgHrKEOeSLOCuId3DQW/HuO7//01g/HvHg258BKXnjBgrt41WG/drCR1Czb11ohVzSQZPSwQzu8+y3EhFYupuZXFJnrM/OtZAmXYP9XfSki/t0EstjmFnQH0oYdfiJv47kdmeNf6BL9w00=",
+        "type": "ssh-rsa"
+      }
+    },
+    "sudoversion": "1.9.17p2",
+    "system_profiler": {
+      "boot_mode": "Normal",
+      "boot_volume": "Macintosh HD",
+      "computer_name": "Managed’s Virtual Machine",
+      "cores": "4",
+      "hardware_uuid": "A3563E4D-769F-501D-AE02-EB1E49615E00",
+      "kernel_version": "Darwin 25.6.0",
+      "memory": "8 GB",
+      "model_identifier": "VirtualMac2,1",
+      "model_name": "Apple Virtual Machine 1",
+      "secure_virtual_memory": "Enabled",
+      "serial_number": "ZCHQFQ1YHL",
+      "system_version": "macOS 26.6.2 (25G83)",
+      "uptime": "22 minutes, 2 seconds",
+      "username": "System Administrator (root)"
+    },
+    "system_uptime": {
+      "days": 0,
+      "hours": 0,
+      "seconds": 1294,
+      "uptime": "0:21 hours"
+    },
+    "timezone": "UTC",
+    "vcsrepo_svn_ver": "",
+    "virtual": "physical",
+    "implementation": "openvox",
+    "clientcert": "mac26.example.com",
+    "clientversion": "8.28.1",
+    "clientnoop": false
+  },
+  "trusted": {
+    "authenticated": "remote",
+    "certname": "mac26.example.com",
+    "domain": "example.com",
+    "hostname": "mac26",
+    "extensions": {}
+  }
+}

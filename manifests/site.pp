@@ -31,3 +31,8 @@ node default {
 node 'puppet.example.com' {
   include role::puppet_master
 }
+
+# Throwaway macOS agents from tart/mac.sh (certname <name>.example.com).
+node /^mac[\w-]*\.example\.com$/ {
+  include role::macos
+}

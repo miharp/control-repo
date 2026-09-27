@@ -10,6 +10,9 @@ fixtures:
     openvox_gui:
       repo: "https://github.com/miharp/puppet-openvox_gui.git"
       ref: "v0.4.2"
+    puppet_run_scheduler:
+      repo: "https://github.com/voxpupuli/puppet-puppet_run_scheduler.git"
+      ref: "37ad7b470393d45c77bede48d47701297a2540be"
   forge_modules:
     inifile:
       repo: puppetlabs/inifile

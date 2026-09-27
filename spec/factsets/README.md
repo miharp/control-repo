@@ -8,6 +8,7 @@ control-repo's roles are compiled against the exact platforms they run on:
 | `puppet.example.com.json`   | puppet  | CentOS Stream 10  |
 | `agent01.example.com.json`  | agent01 | CentOS Stream 9   |
 | `agent02.example.com.json`  | agent02 | Ubuntu 24.04      |
+| `mac26.example.com.json`    | mac26 (Tart, `tart/mac.sh`) | macOS 26    |
 
 Real facts (rather than facterdb fact sets) are used because facterdb does not
 yet ship a RedHat 10 set, which the puppet master needs.
