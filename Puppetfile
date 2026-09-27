@@ -27,3 +27,12 @@ mod 'saz/sudo',              '9.0.2'
 mod 'openvox_gui',
   git: 'https://github.com/miharp/puppet-openvox_gui.git',
   ref: 'v0.4.2'
+
+# No Forge release since reidmv-puppet_run_scheduler 1.0.2 (2021); consumed
+# from the Vox Pupuli repo at a commit. Its cron path runs on macOS as is
+# (voxpupuli/puppet-puppet_run_scheduler#28 adds Darwin to its metadata).
+# Depends on stdlib, declared above; acl and scheduled_task are only used on
+# Windows.
+mod 'puppet_run_scheduler',
+  git: 'https://github.com/voxpupuli/puppet-puppet_run_scheduler.git',
+  ref: '37ad7b470393d45c77bede48d47701297a2540be'
