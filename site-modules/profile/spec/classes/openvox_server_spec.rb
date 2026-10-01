@@ -10,8 +10,19 @@ describe 'profile::openvox_server' do
 
       it { is_expected.to compile.with_all_deps }
 
+      it {
+        is_expected.to contain_package('r10k')
+          .with_ensure('installed')
+          .with_provider('puppet_gem')
+      }
+
       context 'with the agent package managed in the same catalog' do
         let(:pre_condition) { "package { 'openvox-agent': ensure => '9.0.0' }" }
+
+        it 'installs r10k into the Ruby of the agent it just installed' do
+          is_expected.to contain_package('openvox-agent')
+            .that_comes_before('Package[r10k]')
+        end
 
         if os_facts[:os]['family'] == 'RedHat'
           it 'lets dnf move the server (and its agent dependency) first' do

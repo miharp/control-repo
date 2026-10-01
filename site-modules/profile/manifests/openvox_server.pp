@@ -12,6 +12,8 @@
 #   Optional JRE package to install before the server. Direct rpm installs do
 #   not resolve dependencies, so a pre-release server needing a newer Java
 #   (e.g. java-25-openjdk-headless) must have it installed first.
+# @param r10k_ensure
+#   Ensure value for the r10k gem in the agent's bundled Ruby (puppet_gem).
 #
 # @example
 #   include profile::openvox_server
@@ -19,7 +21,20 @@ class profile::openvox_server (
   String $version,
   Optional[String] $source = undef,
   Optional[String] $java_package = undef,
+  String[1] $r10k_ensure = 'installed',
 ) {
+  # r10k lives in the agent's bundled Ruby, and each OpenVox major ships a new
+  # Ruby (8.x: 3.2, 9.x: 4.0) with its own gem directory, so crossing a major
+  # leaves the r10k binstub pointing at a gem the new Ruby cannot find. Order
+  # it after the agent: puppet_gem only lists installed gems when it reaches
+  # its first resource, so on the run that moves the agent it checks, and
+  # installs into, the new Ruby.
+  package { 'r10k':
+    ensure   => $r10k_ensure,
+    provider => 'puppet_gem',
+  }
+  Package <| title == 'openvox-agent' |> -> Package['r10k']
+
   if $source {
     package { 'openvox-server':
       ensure   => $version,
