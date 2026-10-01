@@ -3,7 +3,7 @@ fixtures:
   repositories:
     openvoxdb:
       repo: "https://github.com/voxpupuli/puppet-openvoxdb.git"
-      ref: "b32a25f"
+      ref: "v9.2.0"
     openvoxview:
       repo: "https://github.com/voxpupuli/puppet-openvoxview.git"
       ref: "v1.3.0"
@@ -16,7 +16,7 @@ fixtures:
   forge_modules:
     inifile:
       repo: puppetlabs/inifile
-      ref: 6.4.1
+      ref: 6.5.0
     stdlib:
       repo: puppetlabs/stdlib
       ref: 9.7.0
@@ -25,31 +25,31 @@ fixtures:
       ref: 5.0.0
     firewall:
       repo: puppetlabs/firewall
-      ref: 8.5.0
+      ref: 8.6.0
     sudo:
       repo: saz/sudo
       ref: 9.0.2
     concat:
       repo: puppetlabs/concat
-      ref: 9.1.0
+      ref: 10.1.0
     yum:
       repo: puppet/yum
       ref: 8.1.1
     apt:
       repo: puppetlabs/apt
-      ref: 11.3.2
+      ref: 11.4.0
     postgresql:
       repo: puppetlabs/postgresql
-      ref: 10.6.3
+      ref: 10.7.0
     archive:
       repo: puppet/archive
       ref: 8.1.0
     systemd:
       repo: puppet/systemd
-      ref: 8.3.1
+      ref: 10.2.0
     vcsrepo:
       repo: puppetlabs/vcsrepo
-      ref: 7.0.0
+      ref: 8.0.0
     cron_core:
       repo: puppetlabs/cron_core
       ref: 2.0.2
