@@ -190,7 +190,7 @@ Roles include profiles, profiles include component modules. Example: `role::pupp
 | --- | --- |
 | `base` | Core config for all nodes (chrony, firewall, OpenVox repo, sudo) |
 | `openvox_agent` | Manages openvox-agent package with OS-specific versioning |
-| `openvox_server` | Manages openvox-server package on the Puppet master |
+| `openvox_server` | Manages openvox-server package on the Puppet master, plus the r10k gem in the agent's bundled Ruby (reinstalled when an agent major changes that Ruby) |
 | `openvoxdb` | Configures OpenVoxDB via voxpupuli/puppet-openvoxdb (Git) |
 | `openbolt` | Installs OpenBolt (Bolt CLI) package |
 | `openvoxview` | Installs OpenVoxView, a web UI for browsing reports/catalogs from the local PuppetDB |

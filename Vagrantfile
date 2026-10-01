@@ -77,7 +77,8 @@ Vagrant.configure("2") do |config|
       # Configure Autosign
       echo "*" > /etc/puppetlabs/puppet/autosign.conf
 
-      # Install r10k
+      # Install r10k to deploy the Puppetfile below; from then on
+      # profile::openvox_server keeps it installed (also across agent majors)
       /opt/puppetlabs/puppet/bin/gem install r10k --no-document
 
       # Install modules from Puppetfile
