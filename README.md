@@ -30,7 +30,9 @@ vagrant ssh agent01 -c "sudo /opt/puppetlabs/bin/puppet agent -t"
 
 ## Prerequisites
 
-- [Vagrant](https://www.vagrantup.com/) with Parallels provider
+- [Vagrant](https://www.vagrantup.com/) with the Parallels provider, built from
+  [vagrant-parallels](https://github.com/Parallels/vagrant-parallels) `main`
+  until a release includes #525 (see the Vagrantfile)
 - [rbenv](https://github.com/rbenv/rbenv) (for local testing)
 
 ## Documentation

@@ -19,6 +19,17 @@ Vagrant.configure("2") do |config|
 
   config.vm.box = "bento/centos-stream-9"
 
+  # Bring Parallels Tools up to the host's version on every `up`/`reload`. The
+  # bento boxes ship older Tools, and a guest kernel update leaves the old
+  # Tools without modules for the new kernel, so prl_fs (the synced folder)
+  # fails to mount. Current Tools mount through libfuse3, which rejects the
+  # `big_writes` option vagrant-parallels <= 2.4.9 always passes; this needs
+  # a plugin build with Parallels/vagrant-parallels#525 (on main, unreleased
+  # as of 2026-10-01).
+  config.vm.provider "parallels" do |prl|
+    prl.update_guest_tools = true
+  end
+
   # Master Node: puppet
   config.vm.define "puppet" do |puppet|
     puppet.vm.box = "bento/centos-stream-10"
