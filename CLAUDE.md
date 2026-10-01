@@ -137,6 +137,8 @@ BEAKER_SETFILE=almalinux9-64 \
 
 Vagrant uses the **Parallels provider** (not VirtualBox). VMs provision sequentially by default (`VAGRANT_NO_PARALLEL=1`) due to puppetserver restart sensitivity.
 
+The Vagrantfile sets `update_guest_tools`, so `up`/`reload` upgrade Parallels Tools in each guest. Current Tools mount the synced folder with libfuse3, which rejects the `big_writes` option that vagrant-parallels 2.4.9 and earlier always pass (`fuse: unknown option(s): -o big_writes`). The fix ([vagrant-parallels#525](https://github.com/Parallels/vagrant-parallels/pull/525)) is on `main` but unreleased, so build the plugin from `main` (`gem build vagrant-parallels.gemspec`, then `vagrant plugin install ./vagrant-parallels-*.gem`). Return to the published gem once a release includes it.
+
 ```bash
 vagrant up              # Start all VMs (puppet, agent01, agent02)
 vagrant ssh puppet      # SSH to the Puppet master
