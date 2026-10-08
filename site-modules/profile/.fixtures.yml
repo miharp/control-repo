@@ -28,7 +28,7 @@ fixtures:
       ref: 8.6.0
     sudo:
       repo: saz/sudo
-      ref: 9.0.2
+      ref: 10.0.1
     concat:
       repo: puppetlabs/concat
       ref: 10.1.0

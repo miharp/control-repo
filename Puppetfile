@@ -19,7 +19,7 @@ mod 'puppetlabs/vcsrepo',    '8.0.0'
 # "Unknown resource type: 'yumrepo'". site-modules/profile/.fixtures.yml already
 # declared it for the module's own specs; the control repo never shipped it.
 mod 'puppetlabs/yumrepo_core', '3.0.1'
-mod 'saz/sudo',              '9.0.2'
+mod 'saz/sudo',              '10.0.1'
 
 # Not yet published to the Forge; consumed straight from Git at a release
 # tag. Depends on vcsrepo and stdlib, both declared above (r10k does not
