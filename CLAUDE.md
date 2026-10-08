@@ -152,7 +152,7 @@ vagrant provision       # Re-run provisioning
 `tart/mac.sh` adds throwaway macOS agents as [Tart](https://tart.run) VMs, cloned from the cirruslabs `macos-tahoe-base` (26) and `macos-sequoia-base` (15) images. Tart VMs cannot reach the Parallels networks, only the host, so `up` adds a Parallels NAT rule forwarding host port 8140 to the master and each Mac VM maps `puppet.example.com` to its gateway (the host). The rule also opens 8140 on the host's LAN address; `tart/mac.sh forward off` removes it. It is not a Vagrant `forwarded_port` because on macOS 27 Vagrant's collision check sees every host port as in use (a non-blocking `connect` to a closed port reports success there).
 
 ```bash
-tart/mac.sh up mac26 --os 26 --agent 8.28.1   # clone, boot, install the agent, first run
+tart/mac.sh up mac26 --os 26 --agent 8.30.0   # clone, boot, install the agent, first run
 tart/mac.sh run mac26 sudo /opt/puppetlabs/bin/puppet agent -t
 tart/mac.sh ssh mac26                         # admin/admin
 tart/mac.sh down mac26                        # delete the VM, clean its cert on the master
