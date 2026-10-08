@@ -34,7 +34,7 @@ fixtures:
       ref: 10.1.0
     yum:
       repo: puppet/yum
-      ref: 8.1.1
+      ref: 8.3.0
     apt:
       repo: puppetlabs/apt
       ref: 11.4.0
