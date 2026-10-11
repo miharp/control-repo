@@ -21,6 +21,14 @@ mod 'puppetlabs/vcsrepo',    '8.0.0'
 mod 'puppetlabs/yumrepo_core', '3.0.1'
 mod 'saz/sudo',              '10.0.1'
 
+# The OpenVox Server host: miharp/openvox_server manages the server package,
+# CA, settings and service; it needs the agent and tune modules for its
+# functions and sizing, and hocon for the HOCON files.
+mod 'miharp/openvox_server', '0.1.1'
+mod 'miharp/openvox_agent',  '0.2.0'
+mod 'miharp/openvox_tune',   '0.1.0'
+mod 'puppetlabs/hocon',      '2.0.0'
+
 # Not yet published to the Forge; consumed straight from Git at a release
 # tag. Depends on vcsrepo and stdlib, both declared above (r10k does not
 # resolve dependencies of Git-sourced modules).

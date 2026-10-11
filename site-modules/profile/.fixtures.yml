@@ -14,6 +14,18 @@ fixtures:
       repo: "https://github.com/voxpupuli/puppet-puppet_run_scheduler.git"
       ref: "37ad7b470393d45c77bede48d47701297a2540be"
   forge_modules:
+    openvox_server:
+      repo: miharp/openvox_server
+      ref: 0.1.1
+    openvox_agent:
+      repo: miharp/openvox_agent
+      ref: 0.2.0
+    openvox_tune:
+      repo: miharp/openvox_tune
+      ref: 0.1.0
+    hocon:
+      repo: puppetlabs/hocon
+      ref: 2.0.0
     inifile:
       repo: puppetlabs/inifile
       ref: 6.5.0
