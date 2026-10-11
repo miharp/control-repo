@@ -1,28 +1,49 @@
-# @summary Manages the openvox-server package
+# @summary Manages the OpenVox Server through miharp/openvox_server
 #
-# Manages the openvox-server package version on the Puppet master.
+# The module owns the server package, the CA, webserver.conf, the settings
+# in puppet.conf and ca.conf, and the puppetserver service. This profile
+# keeps what the control-repo owns around it: the agent package and the
+# repository stay with profile::base and profile::openvox_agent, so the
+# module is told not to manage them, and the server package is ordered
+# before the agent for a move across a major version.
 #
 # @param version
-#   The version of the openvox-server package to install.
-# @param source
-#   Optional direct URL to an RPM. When set, installs from the URL instead of
-#   a repo, and $version is used as-is for the ensure value (no el-suffix is
-#   appended). Intended for pre-release/snapshot testing.
+#   The openvox-server version to install, expanded for the platform by the
+#   module (`8.17.0` becomes `8.17.0-1.el10`).
+# @param release
+#   The OpenVox major the host is on, the collection the server comes from.
+#   Unset, profile::base's release pin is looked up.
 # @param java_package
-#   Optional JRE package to install before the server. Direct rpm installs do
-#   not resolve dependencies, so a pre-release server needing a newer Java
-#   (e.g. java-25-openjdk-headless) must have it installed first.
+#   Optional JRE package to install before the server, for a pre-release
+#   server that needs a newer Java than the package requires.
 # @param r10k_ensure
 #   Ensure value for the r10k gem in the agent's bundled Ruby (puppet_gem).
 #
 # @example
 #   include profile::openvox_server
 class profile::openvox_server (
-  String $version,
-  Optional[String] $source = undef,
-  Optional[String] $java_package = undef,
-  String[1] $r10k_ensure = 'installed',
+  String[1]           $version,
+  Optional[Integer[8]] $release     = undef,
+  Optional[String[1]] $java_package = undef,
+  String[1]           $r10k_ensure  = 'installed',
 ) {
+  $collection_release = $release.lest || { lookup('profile::base::release') }
+
+  class { 'openvox_server':
+    collection      => "openvox${collection_release}",
+    package_version => $version,
+    manage_agent    => false,
+    java_package    => $java_package,
+  }
+
+  # Server and agent pin each other's major version (openvox-server 8.x
+  # requires openvox-agent < 9.0.0~, 9.x requires >= 9.0.0~), so neither can
+  # cross a major on its own. Let the package manager move the server first,
+  # which upgrades the agent in the same transaction, then the agent
+  # resource applies its own pin on top. The module does this itself when it
+  # manages the agent; here profile::openvox_agent does.
+  Package['openvox-server'] -> Package <| title == 'openvox-agent' |>
+
   # r10k lives in the agent's bundled Ruby, and each OpenVox major ships a new
   # Ruby (8.x: 3.2, 9.x: 4.0) with its own gem directory, so crossing a major
   # leaves the r10k binstub pointing at a gem the new Ruby cannot find. Order
@@ -34,39 +55,4 @@ class profile::openvox_server (
     provider => 'puppet_gem',
   }
   Package <| title == 'openvox-agent' |> -> Package['r10k']
-
-  if $source {
-    package { 'openvox-server':
-      ensure   => $version,
-      source   => $source,
-      provider => 'rpm',
-    }
-
-    if $java_package {
-      ensure_packages([$java_package])
-      Package[$java_package] -> Package['openvox-server']
-    }
-
-    # rpm resolves no dependencies, so the (managed) agent must already
-    # satisfy the server's agent requirement before the server is installed.
-    # No-op edge when the agent package is not in the catalog.
-    Package <| title == 'openvox-agent' |> -> Package['openvox-server']
-  } elsif $facts['os']['family'] == 'RedHat' {
-    $package_version = "${version}-1.el${facts['os']['release']['major']}"
-    package { 'openvox-server':
-      ensure => $package_version,
-    }
-
-    # Server and agent pin each other's major version (openvox-server 8.x
-    # requires openvox-agent < 9.0.0~, 9.x requires >= 9.0.0~), so neither can
-    # cross a major on its own: a lone agent upgrade fails on the installed
-    # server's dependency. Let dnf move the server first, which upgrades the
-    # agent in the same transaction, then the agent resource applies its own
-    # pin (e.g. a newer rpm from the artifact bucket) on top.
-    Package['openvox-server'] -> Package <| title == 'openvox-agent' |>
-  } else {
-    package { 'openvox-server':
-      ensure => $version,
-    }
-  }
 }
