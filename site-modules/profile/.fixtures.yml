@@ -16,7 +16,7 @@ fixtures:
   forge_modules:
     openvox_server:
       repo: miharp/openvox_server
-      ref: 0.1.0
+      ref: 0.1.1
     openvox_agent:
       repo: miharp/openvox_agent
       ref: 0.2.0
