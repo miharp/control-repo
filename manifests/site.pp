@@ -32,6 +32,14 @@ node 'puppet.example.com' {
   include role::puppet_master
 }
 
+# Compilers: enrolled by ovadm::add_compiler against the primary's CA, then
+# kept as compilers (CA off, terminus at the primary) by this role. By certname
+# for now; classifying on $trusted['extensions']['pp_role'] == 'openvox_compiler',
+# which the enrolment puts in the certificate, is the follow-on.
+node /^compiler\d+\.example\.com$/ {
+  include role::compiler
+}
+
 # Throwaway macOS agents from tart/mac.sh (certname <name>.example.com).
 node /^mac[\w-]*\.example\.com$/ {
   include role::macos

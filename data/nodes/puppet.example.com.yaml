@@ -35,6 +35,11 @@ profile::openvoxdb::package_version: '9.0.0-1.el10'
 # external postgresql.org repository.
 openvoxdb::postgres_version: '16'
 
+# Compilers (role::compiler) store facts and reports here over 8081, and
+# profile::base's firewall rejects what is not opened. The module opens the
+# SSL port with its own puppetlabs-firewall rule; the plain 8080 stays local.
+openvoxdb::open_ssl_listen_port: true
+
 # Do not manage the external PostgreSQL (PGDG) repository.
 openvoxdb::manage_package_repo: false
 openvoxdb::database::postgresql::manage_package_repo: false
