@@ -182,7 +182,7 @@ sudo /opt/puppetlabs/bin/puppet agent -t
 - **site-modules/profile/** - Technology-specific configurations composed into roles
 - **modules/** - External modules from Puppet Forge (managed via Puppetfile)
 
-Roles include profiles, profiles include component modules. Example: `role::puppet_master` includes `profile::base`, `profile::openvox_server`, `profile::openvoxdb`, `profile::openbolt`, `profile::static_catalogs`, `profile::openvoxview`, `profile::openvox_gui`, `profile::bolt_target`. Nodes without a node definition get `role::agent` (`profile::base` + `profile::bolt_target`).
+Roles include profiles, profiles include component modules. Example: `role::puppet_master` includes `profile::base`, `profile::openvox_server`, `profile::openvoxdb`, `profile::openbolt`, `profile::static_catalogs`, `profile::openvoxview`, `profile::openvox_gui`, `profile::bolt_target`. `role::compiler` (`compiler\d+.example.com`, enrolled by ovadm::add_compiler) includes `profile::base`, `profile::openvox_server` (CA off via node data), `profile::openvoxdb_terminus`, `profile::bolt_target`. Nodes without a node definition get `role::agent` (`profile::base` + `profile::bolt_target`).
 
 ### Current Profiles
 
@@ -192,6 +192,7 @@ Roles include profiles, profiles include component modules. Example: `role::pupp
 | `openvox_agent` | Manages openvox-agent package with OS-specific versioning |
 | `openvox_server` | Manages openvox-server package on the Puppet master, plus the r10k gem in the agent's bundled Ruby (reinstalled when an agent major changes that Ruby) |
 | `openvoxdb` | Configures OpenVoxDB via voxpupuli/puppet-openvoxdb (Git) |
+| `openvoxdb_terminus` | The terminus half only, for a compiler: openvoxdb-termini, puppetdb.conf and routes.yaml pointed at the primary's OpenVoxDB, reports on |
 | `openbolt` | Installs OpenBolt (Bolt CLI) package |
 | `openvoxview` | Installs OpenVoxView, a web UI for browsing reports/catalogs from the local PuppetDB |
 | `openvox_gui` | Installs [OpenVox GUI](https://github.com/cvquesty/openvox-gui) (port 4567), a management console (CA, orchestration, PQL) that runs alongside OpenVoxView; thin wrapper around the [miharp/openvox_gui](https://github.com/miharp/puppet-openvox_gui) module (Git-sourced in the Puppetfile). Also manages the console's Bolt inventory (SSH settings only; targets come from OpenVoxDB) |
@@ -301,12 +302,12 @@ every PR; see the README's Testing section for the shareable write-up.
 Note the two separate bundles: the root `Gemfile` is for Onceover only;
 `site-modules/profile/Gemfile` covers rspec-puppet and Beaker.
 
-Profiles with spec tests: `openvox_agent`, `openvoxdb`, `static_catalogs`,
+Profiles with spec tests: `openvox_agent`, `openvoxdb`, `openvoxdb_terminus`, `static_catalogs`,
 `base`, `openvox_server`, `openbolt`, `openvoxview`, `openvox_gui`. All profiles except
 `example` (the empty Beaker smoke-test subject) have spec tests.
 
 Roles are covered by Onceover (see "Control-Repo Testing with Onceover" above):
-`puppet_master`, `database_server`, `webserver`, `example` all compile against
+`puppet_master`, `compiler`, `database_server`, `webserver`, `example` all compile against
 real-fact node factsets.
 
 Acceptance coverage is currently the `profile::example` smoke test only (see

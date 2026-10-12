@@ -11,6 +11,7 @@
 # Roles under test.
 classes:
   - role::puppet_master
+  - role::compiler
   - role::agent
   - role::database_server
   - role::webserver
@@ -21,6 +22,7 @@ classes:
 # so that trusted.certname resolves the right nodes/%{trusted.certname}.yaml).
 nodes:
   - puppet.example.com
+  - compiler01.example.com
   - agent01.example.com
   - agent02.example.com
   - mac26.example.com
@@ -30,6 +32,8 @@ nodes:
 class_groups:
   master_role:
     - role::puppet_master
+  compiler_role:
+    - role::compiler
   base_roles:
     - role::agent
     - role::database_server
@@ -41,6 +45,8 @@ class_groups:
 node_groups:
   master:
     - puppet.example.com
+  compiler:
+    - compiler01.example.com
   agents:
     - agent01.example.com
     - agent02.example.com
@@ -50,12 +56,17 @@ node_groups:
 # Map roles to the nodes they actually run on:
 #   - puppet_master only on the master (EL10), where the node hiera data pins
 #     server versions and the EL10 postgresql/openvoxdb overrides.
+#   - compiler only on compiler01 (EL10), whose node data turns the CA off and
+#     points the terminus at the master.
 #   - base_roles (role::agent, the default node, plus the placeholder
 #     roles) on both agents (EL9 + Ubuntu 24.04).
 #   - role::macos on the macOS 26 Tart VM (tart/mac.sh).
 test_matrix:
   - master:
       classes: master_role
+      tests: spec
+  - compiler:
+      classes: compiler_role
       tests: spec
   - agents:
       classes: base_roles

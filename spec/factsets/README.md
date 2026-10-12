@@ -6,6 +6,7 @@ control-repo's roles are compiled against the exact platforms they run on:
 | Factset                     | VM      | OS                |
 | --------------------------- | ------- | ----------------- |
 | `puppet.example.com.json`   | puppet  | CentOS Stream 10  |
+| `compiler01.example.com.json` | compiler (Vagrant, 2026-07; renamed, `pp_role: openvox_compiler` in `trusted`) | CentOS Stream 10 |
 | `agent01.example.com.json`  | agent01 | CentOS Stream 9   |
 | `agent02.example.com.json`  | agent02 | Ubuntu 24.04      |
 | `mac26.example.com.json`    | mac26 (Tart, `tart/mac.sh`) | macOS 26    |
