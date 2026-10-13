@@ -15,32 +15,18 @@ File { backup => false }
 
 ## Node Definitions ##
 
-# The default node definition matches any node lacking a more specific node
-# definition. If there are no other node definitions in this file, classes
-# and resources declared in the default node definition will be included in
-# every node's catalog.
-#
-# Note that node definitions in this file are merged with node data from the
-# Puppet Enterprise console and External Node Classifiers (ENC's).
-#
-# For more on node definitions, see: https://puppet.com/docs/puppet/latest/lang_node_definitions.html
+# The `demo` environment: a primary, compilers and agents for the codavox
+# screenshare. Hosts are built by ovadm::install, which puts pp_role in each
+# certificate; these roles then take them over. Classification is by
+# certname, as on production.
 node default {
-  include role::agent
+  include role::demo_agent
 }
 
 node 'puppet.example.com' {
-  include role::puppet_master
+  include role::demo_primary
 }
 
-# Compilers: enrolled by ovadm::add_compiler against the primary's CA, then
-# kept as compilers (CA off, terminus at the primary) by this role. By certname
-# for now; classifying on $trusted['extensions']['pp_role'] == 'openvox_compiler',
-# which the enrolment puts in the certificate, is the follow-on.
 node /^compiler\d+\.example\.com$/ {
-  include role::compiler
-}
-
-# Throwaway macOS agents from tart/mac.sh (certname <name>.example.com).
-node /^mac[\w-]*\.example\.com$/ {
-  include role::macos
+  include role::demo_compiler
 }

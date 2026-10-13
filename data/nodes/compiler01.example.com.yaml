@@ -1,18 +1,7 @@
 ---
-# Node-specific configuration for the compiler.
-
-# Same server package as the primary (nodes/puppet.example.com.yaml pins the
-# same); the difference is what it may do, not what it installs.
-profile::openvox_server::version: '8.17.0'
-
-# A compiler, not a CA: the module keeps the CA service disabled and the
-# server presenting the certificate its own agent holds from the primary. The
-# profile has no parameters for these, so the module reads them from here.
-# Provisioning (ovadm::add_compiler) sets the same state before the node ever
-# holds a certificate; this carries it forward and stops a stock install from
-# standing up a second CA.
+# A compiler, not a CA: ovadm::install enrolled it against the primary with its
+# CA service off, and the module keeps it that way.
 openvox_server::ca: false
 openvox_server::ca_server: 'puppet.example.com'
 
-# openvoxdb-termini at the primary's OpenVoxDB version.
-profile::openvoxdb_terminus::package_version: '8.17.0-1.el10'
+codavox::agent_publisher: 'https://puppet.example.com:8150'

@@ -1,5 +1,14 @@
 ---
-message: "This node is using common data"
-profile::base::release: 8
-profile::openvox_agent::version: '8.30.0'
-profile::openvox_agent::server: 'puppet.example.com'
+# The demo environment. Every host was built by ovadm::install from the
+# openvox8 collection; the pins here match what it installed, so the first
+# Puppet run changes nothing about the server.
+openvox_server::collection: 'openvox8'
+openvox_server::package_version: '8.17.0'
+
+# codavox on every node that compiles catalogs. basedir is r10k's basedir on
+# the primary; compilers publish nothing and only need the publisher's address
+# (nodes/compiler01.example.com.yaml).
+codavox::package_ensure: '0.8.0'
+codavox::basedir: '/etc/puppetlabs/code/environments'
+codavox::publish_allow_roles:
+  - 'openvox_compiler'

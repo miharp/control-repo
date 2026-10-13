@@ -29,6 +29,12 @@ mod 'miharp/openvox_agent',  '0.2.0'
 mod 'miharp/openvox_tune',   '0.1.0'
 mod 'puppetlabs/hocon',      '2.0.0'
 
+# codavox distributes versioned code to the compilers (role::demo_primary and
+# role::demo_compiler); puppet_authorization is its auth.conf dependency, the
+# rest are declared above.
+mod 'miharp/codavox',        '0.6.3'
+mod 'puppetlabs/puppet_authorization', '1.0.1'
+
 # Not yet published to the Forge; consumed straight from Git at a release
 # tag. Depends on vcsrepo and stdlib, both declared above (r10k does not
 # resolve dependencies of Git-sourced modules).
