@@ -6,6 +6,12 @@ if [ $# -ne 2 -o ! -d "$1" -o ! -d "$1/$2" ]; then
   exit 1
 fi
 
+# codavox serves this environment from a sealed tree with no .git or
+# .r10k-deploy.json, so label the catalog with its code_id.
+if [ "$1" = /opt/puppetlabs/codavox/environments ]; then
+  exec /usr/bin/codavox-config-version "$1" "$2"
+fi
+
 # For portability, identify a preferred ruby executable to use
 ruby() {
   [ -x /opt/puppetlabs/puppet/bin/ruby ] \
