@@ -1,9 +1,8 @@
 ---
 # The demo environment. Every host was built by ovadm::install from the
-# openvox8 collection; the pins here match what it installed, so the first
-# Puppet run changes nothing about the server.
+# openvox8 collection. No server version is pinned: the module keeps the one
+# ovadm installed, so the first Puppet run changes nothing about the server.
 openvox_server::collection: 'openvox8'
-openvox_server::package_version: '8.17.0'
 
 # codavox on every node that compiles catalogs. basedir is r10k's basedir on
 # the primary; compilers publish nothing and only need the publisher's address
