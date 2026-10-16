@@ -3,4 +3,4 @@
 # tracks the openvox9 apt component, like the 8.x pin in common.yaml does for
 # openvox8.
 profile::base::release: 9
-profile::openvox_agent::version: '9.0.0'
+profile::openvox_agent::version: '9.1.0'
