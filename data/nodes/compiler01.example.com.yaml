@@ -6,7 +6,7 @@
 # agents do. Without these the agent is pinned to 8.30.0 while the server
 # is pinned to 9.x, and dnf swaps the pair back and forth on every run.
 profile::base::release: 9
-profile::openvox_agent::version: '9.1.0'
+profile::openvox_agent::version: '9.1.1'
 
 # Same server package as the primary (nodes/puppet.example.com.yaml pins the
 # same); the difference is what it may do, not what it installs. OpenVox 9
