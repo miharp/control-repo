@@ -8,8 +8,9 @@ source 'https://rubygems.org'
 #   bundle install
 #   bundle exec onceover run spec
 group :test do
-  # Pin Puppet to the same major the profile module targets (>= 8 < 9).
-  gem 'puppet', ENV.fetch('PUPPET_GEM_VERSION', '~> 8.0'), require: false
+  # Pin OpenVox to the same major the profile module targets (>= 8 < 9). Do not
+  # add the 'puppet' gem: it also ships lib/puppet and would shadow OpenVox.
+  gem 'openvox', ENV.fetch('OPENVOX_GEM_VERSION', '~> 8.0'), require: false
 
   gem 'onceover', '~> 5.0', require: false
 
