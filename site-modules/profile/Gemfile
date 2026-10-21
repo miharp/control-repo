@@ -7,13 +7,19 @@ end
 # The test group is used for static validations and unit tests in gha-puppet's
 # basic and beaker gha-puppet workflows.
 group :test do
-  # Require the latest Puppet by default unless a specific version was requested
-  # CI will typically set it to '~> 7.0' to get 7.x
-  gem 'puppet', ENV.fetch('PUPPET_GEM_VERSION', '>= 0'), require: false
+  # Test against OpenVox 8 unless a specific version was requested. Do not add
+  # the 'puppet' gem: it also ships lib/puppet and would shadow OpenVox.
+  gem 'openvox', ENV.fetch('OPENVOX_GEM_VERSION', '~> 8.0'), require: false
 
   # Required when your hiera config references the eyaml backend. rspec-puppet will
   # attempt to load the encryptor via `hiera/backend/eyaml/encryptor`.
   gem 'hiera-eyaml', require: false
+
+  # json 3 removed JSON.create_id=, which jgrep 1.5 (via facterdb) calls at load
+  # time, and rejects the :quirks_mode option Puppet's JSON formats pass. jgrep
+  # 1.6 drops the call but needs Ruby >= 3.3. Older rubocop capped json below 3
+  # for us; rubocop 1.91 (voxpupuli-test 15) no longer does.
+  gem 'json', '< 3', require: false
 
   # Needed to build the test matrix based on metadata
   gem 'puppet_metadata', '~> 6.0',  require: false

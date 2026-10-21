@@ -285,7 +285,7 @@ Spec files go in `site-modules/profile/spec/classes/` for class tests.
   installs the profile module with Forge dependency resolution on the test
   host, which fails on any dependency the Forge cannot serve. Declare those in
   `.fixtures.yml` and the `Puppetfile` only.
-- `metadata.json` currently lists `operatingsystem_support` for RedHat 9, RedHat 10, and Ubuntu 24.04. The `on_supported_os` helper in tests only generates facts for OSes listed there. RedHat 10 fact sets are not yet in facterdb, so test coverage for that platform will appear automatically once facterdb ships them.
+- `metadata.json` currently lists `operatingsystem_support` for RedHat 9, RedHat 10, and Ubuntu 24.04. The `on_supported_os` helper in tests only generates facts for OSes listed there, and only from facterdb fact sets for the bundle's Facter version. facterdb has RedHat 10 facts only for Facter 5.6+, so they come from openfact (pulled in by the `openvox` gem); the Perforce `puppet` gem brings Facter 4.x, which silently drops RedHat 10. Keep `puppet` out of both Gemfiles.
 - `site-modules/profile/spec/unit/hiera_eyaml_spec.rb` generates throwaway PKCS7 keypairs at test time (no private keys stored in repo).
 
 ### Test Coverage
