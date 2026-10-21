@@ -111,7 +111,7 @@ ability to reuse Vox Pupuli's shared GitHub workflows.)
 Multi-OS coverage comes from `rspec-puppet-facts`: `on_supported_os` generates
 fact sets from the `operatingsystem_support` entries in `metadata.json`, so a
 platform is only covered once it's listed there *and* facterdb ships facts for
-it.
+it at the bundle's Facter version (openfact, via the `openvox` gem).
 
 If you'd rather not install Ruby at all, the
 [voxbox container](https://github.com/voxpupuli/container-voxbox) runs the same
