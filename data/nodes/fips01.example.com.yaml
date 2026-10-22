@@ -1,0 +1,6 @@
+---
+# OpenVox 9 agent in FIPS mode (the Hetzner lab's fips01, EL9 x86-64); this
+# is the openvox9 branch. profile::base picks the redhatfips repository and
+# profile::openvox_agent the redhatfips build from the fips_enabled fact.
+profile::base::release: 9
+profile::openvox_agent::version: '9.1.1'
