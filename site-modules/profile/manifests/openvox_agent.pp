@@ -46,7 +46,13 @@ class profile::openvox_agent (
     }
   } else {
     if $facts['os']['family'] == 'RedHat' {
-      $package_version = "${version}-1.el${facts['os']['release']['major']}"
+      # The release suffix names the build: el9, or redhatfips9 on a host in
+      # FIPS mode (see the repo selection in profile::base).
+      $el_platform = $facts['fips_enabled'] ? {
+        true    => 'redhatfips',
+        default => 'el',
+      }
+      $package_version = "${version}-1.${el_platform}${facts['os']['release']['major']}"
       $package_require = undef
     } elsif $facts['os']['name'] == 'Ubuntu' {
       $package_version = "${version}-1+ubuntu${facts['os']['release']['full']}"
