@@ -32,9 +32,17 @@ class profile::base (
   }
 
   if $facts['os']['family'] == 'RedHat' {
+    # OpenVox publishes separate packages for Enterprise Linux hosts in FIPS
+    # mode (redhatfips instead of el); the plain el build bundles an OpenSSL
+    # without the FIPS provider. Pointing a FIPS host at the el repo made
+    # the agent pin below downgrade the redhatfips agent to the el one
+    # (hetzner-openvox-lab fips01, 2026-10-22).
     $os_name = $facts['os']['name'] ? {
       'Fedora' => 'fedora',
-      default  => 'el',
+      default  => $facts['fips_enabled'] ? {
+        true    => 'redhatfips',
+        default => 'el',
+      },
     }
     if $use_test_repo {
       $yum_base = 'https://s3.osuosl.org/openvox-artifacts/repo_test/yum'
