@@ -13,8 +13,10 @@
 # @param port
 #   OpenVoxDB's SSL port.
 # @param package_version
-#   Full package version string to pin openvoxdb-termini to, as
-#   profile::openvoxdb pins it on the primary; unset, the module installs
+#   Version to pin openvoxdb-termini to. A bare version (`9.1.0`) is expanded
+#   for the host's platform the way openvox_agent expands the agent's
+#   (`9.1.0-1.el10`, `9.1.0-1.redhatfips9` on an EL host in FIPS mode); a
+#   full package version string is used as it is. Unset, the module installs
 #   whatever the repository offers.
 #
 # @example
@@ -32,8 +34,9 @@ class profile::openvoxdb_terminus (
   }
 
   if $package_version {
+    $package_ensure = openvox_agent::package_version($package_version, openvox_agent::platform(), $facts['os']['family'])
     Package <| title == 'openvoxdb-termini' |> {
-      ensure => $package_version,
+      ensure => $package_ensure,
     }
   }
 }

@@ -23,5 +23,7 @@ profile::openvox_server::version: '9.1.0'
 openvox_server::ca: false
 openvox_server::ca_server: 'puppet.example.com'
 
-# openvoxdb-termini at the primary's OpenVoxDB version.
-profile::openvoxdb_terminus::package_version: '9.1.0-1.el10'
+# openvoxdb-termini at the primary's OpenVoxDB version; the platform suffix
+# (el10, el9, redhatfips9) comes from the host, so a FIPS compiler gets the
+# redhatfips build.
+profile::openvoxdb_terminus::package_version: '9.1.0'
