@@ -1,13 +1,13 @@
 ---
 # Node-specific configuration for the Puppet master.
 
-# OpenVox 9 stack (this is the openvox9 branch): agent 9.1.1, server and
+# OpenVox 9 stack (this is the openvox9 branch): agent 9.2.1, server and
 # openvoxdb 9.1.0, all from the openvox9 EL10 repo. Server and openvoxdb
 # 9.1.0 both require openvox-agent >= 9.1.0 with no upper bound, so the
-# agent moves alone for a trust-store release; a server or openvoxdb bump
+# agent moves alone for an agent-only release; a server or openvoxdb bump
 # moves the agent with it. The pins mirror the 8.x pins on production.
 profile::base::release: 9
-profile::openvox_agent::version: '9.1.1'
+profile::openvox_agent::version: '9.2.1'
 profile::openvox_server::version: '9.1.0'
 
 # Pin OpenVoxView application version
