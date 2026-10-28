@@ -3,5 +3,5 @@
 # The screenshare edits the message, deploys with codavox, and shows the new
 # notice arriving with a catalog stamped with the new code_id.
 class role::demo_agent {
-  notify { 'synced beside a polling agent': }
+  notify { 'deployed on codavox 0.11.1': }
 }
