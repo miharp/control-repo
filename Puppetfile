@@ -33,10 +33,10 @@ mod 'puppetlabs/hocon',      '2.0.0'
 # role::demo_compiler); puppet_authorization is its auth.conf dependency, the
 # rest are declared above.
 # codavox_tasks: the module's unreleased codavox::deploy and codavox::sync
-# tasks (miharp/puppet-codavox#17), pinned by commit.
+# tasks, pinned to their merge commit (miharp/puppet-codavox#18).
 mod 'codavox',
   git: 'https://github.com/miharp/puppet-codavox.git',
-  ref: 'bb64a837ec80da1f2151b04faa9930543cf3c2ad'
+  ref: 'f11b91cbbbae88c0c3e0c0840f8401f309b456ae'
 mod 'puppetlabs/puppet_authorization', '1.0.1'
 
 # Not yet published to the Forge; consumed straight from Git at a release
