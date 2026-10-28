@@ -5,3 +5,8 @@ openvox_server::ca: false
 openvox_server::ca_server: 'puppet.example.com'
 
 codavox::agent_publisher: 'https://puppet.example.com:8150'
+
+# codavox_tasks: code changes here only when codavox::sync runs, as at a site
+# where an orchestrator must trigger them (miharp/codavox#109).
+codavox::agent::service_ensure: stopped
+codavox::agent::service_enable: false

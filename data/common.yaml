@@ -7,7 +7,10 @@ openvox_server::collection: 'openvox8'
 # codavox on every node that compiles catalogs. basedir is r10k's basedir on
 # the primary; compilers publish nothing and only need the publisher's address
 # (nodes/compiler01.example.com.yaml).
-codavox::package_ensure: '0.11.0'
+#
+# codavox_tasks: a snapshot of codavox main (f9f4bc0, after miharp/codavox#111),
+# copied to each server by hand, since no release carries the fix yet.
+codavox::package_source: '/root/codavox_0.11.1-snapshot_linux_amd64.rpm'
 codavox::basedir: '/etc/puppetlabs/code/environments'
 codavox::publish_allow_roles:
   - 'openvox_compiler'
