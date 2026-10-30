@@ -32,12 +32,25 @@ mod 'puppetlabs/hocon',      '2.0.0'
 # codavox distributes versioned code to the compilers (role::demo_primary and
 # role::demo_compiler); puppet_authorization is its auth.conf dependency, the
 # rest are declared above.
-# codavox_tasks: the module's unreleased codavox::deploy and codavox::sync
-# tasks, pinned to their merge commit (miharp/puppet-codavox#18).
-mod 'codavox',
-  git: 'https://github.com/miharp/puppet-codavox.git',
-  ref: 'f11b91cbbbae88c0c3e0c0840f8401f309b456ae'
+# codavox_choria: 0.7.0, the release with the codavox::deploy and
+# codavox::sync tasks.
+mod 'miharp/codavox', '0.7.0'
 mod 'puppetlabs/puppet_authorization', '1.0.1'
+
+# codavox_choria: Choria runs codavox::deploy and codavox::sync through its
+# bolt_tasks agent. choria needs every module below; r10k does not resolve
+# dependencies, so each one is listed. choria/mcollective declares
+# puppet/systemd < 10 but uses only systemd::timer, which 10.2.0 above still
+# has.
+mod 'choria/choria',                       '0.32.1'
+mod 'choria/mcollective',                  '0.15.0'
+mod 'choria/mcollective_choria',           '0.23.0'
+mod 'choria/mcollective_agent_bolt_tasks', '0.22.0'
+mod 'choria/mcollective_agent_puppet',     '2.5.1'
+mod 'choria/mcollective_agent_package',    '5.5.1'
+mod 'choria/mcollective_agent_service',    '4.1.0'
+mod 'choria/mcollective_agent_filemgr',    '2.1.0'
+mod 'choria/mcollective_util_actionpolicy', '3.3.0'
 
 # Not yet published to the Forge; consumed straight from Git at a release
 # tag. Depends on vcsrepo and stdlib, both declared above (r10k does not

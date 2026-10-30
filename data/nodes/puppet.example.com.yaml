@@ -3,3 +3,8 @@
 # publisher presents this node's Puppet certificate, and localhost would not
 # verify against it.
 codavox::agent_publisher: "https://%{trusted.certname}:8150"
+
+# codavox_choria: the Choria broker, and the client side of the Ruby layer
+# (mco tasks and the bolt_tasks DDL) for the orchestrator user.
+choria::broker::network_broker: true
+mcollective::client: true

@@ -5,8 +5,11 @@
 # allowlist checks. openvox_server keeps the CA service off (node data);
 # codavox::agent pulls each deploy and codavox::server points OpenVox Server at
 # what it deployed.
+#
+# codavox_choria: a Choria server, so codavox::sync can run here through Choria.
 class role::demo_compiler {
   include openvox_server
   include codavox::agent
   include codavox::server
+  include choria
 }

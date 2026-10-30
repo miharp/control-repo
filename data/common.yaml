@@ -14,3 +14,30 @@ codavox::package_ensure: '0.11.1'
 codavox::basedir: '/etc/puppetlabs/code/environments'
 codavox::publish_allow_roles:
   - 'openvox_compiler'
+
+# codavox_choria: Choria runs codavox::deploy and codavox::sync. The broker is
+# on the primary (nodes/puppet.example.com.yaml) and a Choria server runs on
+# the primary and each compiler. Task files come from the primary's OpenVox
+# Server: a trigger-only compiler serves no environment until its first
+# codavox::sync, so it cannot be the source of that sync's own task files.
+choria::server_config:
+  plugin.choria.puppetserver_host: 'puppet.example.com'
+  plugin.choria.puppetserver_port: 8140
+  plugin.choria.puppetca_host: 'puppet.example.com'
+  plugin.choria.puppetca_port: 8140
+  plugin.choria.middleware_hosts: 'puppet.example.com:4222'
+  plugin.choria.use_srv: false
+
+mcollective::plugin_classes:
+  - mcollective_agent_bolt_tasks
+
+# The one caller: a user on the primary with a certificate named
+# orchestrator.mcollective, signed by the Puppet CA (the lab test makes it).
+# Choria's default certname allowlist (\.mcollective$) admits it; every agent's
+# policy, rpcutil's included, then allows it and denies everyone else.
+mcollective::site_policies:
+  - action: 'allow'
+    callers: 'choria=orchestrator.mcollective'
+    actions: '*'
+    facts: '*'
+    classes: '*'
