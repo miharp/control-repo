@@ -10,11 +10,11 @@ This is a Puppet control repository for OpenVox (a Vox Pupuli fork of Puppet). I
 
 ### Ruby Setup (for local testing)
 
-This project uses Ruby 3.2.8 (pinned in `.ruby-version`) to match Puppet Enterprise. Both local development and CI use the same version.
+This project uses Ruby 3.2.11 (pinned in `.ruby-version`), the current patch of the 3.2 series Puppet Enterprise ships. Both local development and CI use the same version. Keep the pin on the latest 3.2.x: GitHub's `ubuntu-latest` runners (Ubuntu 26.04 since November 2026) only carry the newest patch release of each Ruby series, and `ruby/setup-ruby` fails on any other.
 
 ```bash
-rbenv install 3.2.8    # Install the required Ruby version
-ruby -v                # Verify: should show ruby 3.2.8
+rbenv install 3.2.11   # Install the required Ruby version
+ruby -v                # Verify: should show ruby 3.2.11
 ```
 
 ### Testing with Local Bundle (CI authoritative)
