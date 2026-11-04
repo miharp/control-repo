@@ -3,7 +3,7 @@
 
 # Same server package as the primary (nodes/puppet.example.com.yaml pins the
 # same); the difference is what it may do, not what it installs.
-profile::openvox_server::version: '8.17.0'
+profile::openvox_server::version: '8.18.0'
 
 # A compiler, not a CA: the module keeps the CA service disabled and the
 # server presenting the certificate its own agent holds from the primary. The
@@ -15,4 +15,4 @@ openvox_server::ca: false
 openvox_server::ca_server: 'puppet.example.com'
 
 # openvoxdb-termini at the primary's OpenVoxDB version.
-profile::openvoxdb_terminus::package_version: '8.17.0-1.el10'
+profile::openvoxdb_terminus::package_version: '8.18.0-1.el10'
