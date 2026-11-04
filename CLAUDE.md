@@ -227,18 +227,22 @@ Node-specific hiera data (e.g., `data/nodes/puppet.example.com.yaml`) pins serve
 ## OpenVox 9 Branch
 
 `production` is the OpenVox 8 line. The long-lived `openvox9` branch is
-`production` plus a single data commit (the three `data/nodes/*.yaml` files:
-`profile::base::release: 9` and the 9.x server/agent pins), so the lab can run
-either major:
+`production` plus 9-specific node data, so the lab can run either major. The
+difference is confined to four `data/nodes/*.yaml` files (`puppet`,
+`compiler01`, `agent01`, `agent02`), each setting `profile::base::release: 9`
+and the 9.x pins. `data/common.yaml` keeps the 8.x pins on both branches.
 
 - Switch the lab by checking out `production` or `openvox9` (the shared folder
   updates the master immediately) and running `puppet agent -t` on the master
   first, then the agents. The server profile orders the server package before
   the agent so dnf moves both in one transaction in either direction.
 - General changes (profiles, Vagrantfile, tooling) go to `production` through
-  a normal PR; only 9-specific data lives on `openvox9`. When `production`
-  moves, rebase `openvox9` onto it and `git push --force-with-lease`. Never
-  open a PR from `openvox9`.
+  a normal PR; only 9-specific data lives on `openvox9`.
+- `openvox9` is updated by merging, never by rebasing or force-pushing. A
+  9.x pin bump is a PR into `openvox9` from a branch such as
+  `openvox9-agent-<version>`, which first merges `origin/production` into
+  itself, so the same PR brings `openvox9` up to date. GitHub merges it with
+  a merge commit. Never open a PR from `openvox9`.
 
 ## Vagrant Environment
 
