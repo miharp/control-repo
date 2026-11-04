@@ -69,8 +69,10 @@ are documented upstream in the
 | Compilation | [Onceover](https://github.com/voxpupuli/onceover) | Every *role*, against real node facts and this repo's Hiera data | repo root |
 | Acceptance | [Beaker](https://github.com/voxpupuli/beaker) (via `voxpupuli-acceptance`) | A real apply on a real node, checked for idempotency | `site-modules/profile/` |
 
-Ruby is pinned to the version in [.ruby-version](.ruby-version) (3.2.8, matching
-Puppet Enterprise); CI reads the same file. Note that the two bundles are
+Ruby is pinned to the version in [.ruby-version](.ruby-version) (3.2.11, the
+current patch of the 3.2 series Puppet Enterprise ships); CI reads the same
+file, and GitHub's `ubuntu-latest` runners only carry the latest patch of each
+series, so the pin follows 3.2.x point releases. Note that the two bundles are
 separate: [Gemfile](Gemfile) at the root is for Onceover, and
 [site-modules/profile/Gemfile](site-modules/profile/Gemfile) is for
 rspec-puppet and Beaker.
