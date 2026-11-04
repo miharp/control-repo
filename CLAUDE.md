@@ -10,11 +10,11 @@ This is a Puppet control repository for OpenVox (a Vox Pupuli fork of Puppet). I
 
 ### Ruby Setup (for local testing)
 
-This project uses Ruby 3.2.8 (pinned in `.ruby-version`) to match Puppet Enterprise. Both local development and CI use the same version.
+This project uses Ruby 3.2.11 (pinned in `.ruby-version`), the current patch of the 3.2 series Puppet Enterprise ships. Both local development and CI use the same version. Keep the pin on the latest 3.2.x: GitHub's `ubuntu-latest` runners (Ubuntu 26.04 since November 2026) only carry the newest patch release of each Ruby series, and `ruby/setup-ruby` fails on any other.
 
 ```bash
-rbenv install 3.2.8    # Install the required Ruby version
-ruby -v                # Verify: should show ruby 3.2.8
+rbenv install 3.2.11   # Install the required Ruby version
+ruby -v                # Verify: should show ruby 3.2.11
 ```
 
 ### Testing with Local Bundle (CI authoritative)
@@ -227,18 +227,22 @@ Node-specific hiera data (e.g., `data/nodes/puppet.example.com.yaml`) pins serve
 ## OpenVox 9 Branch
 
 `production` is the OpenVox 8 line. The long-lived `openvox9` branch is
-`production` plus a single data commit (the three `data/nodes/*.yaml` files:
-`profile::base::release: 9` and the 9.x server/agent pins), so the lab can run
-either major:
+`production` plus 9-specific node data, so the lab can run either major. The
+difference is confined to four `data/nodes/*.yaml` files (`puppet`,
+`compiler01`, `agent01`, `agent02`), each setting `profile::base::release: 9`
+and the 9.x pins. `data/common.yaml` keeps the 8.x pins on both branches.
 
 - Switch the lab by checking out `production` or `openvox9` (the shared folder
   updates the master immediately) and running `puppet agent -t` on the master
   first, then the agents. The server profile orders the server package before
   the agent so dnf moves both in one transaction in either direction.
 - General changes (profiles, Vagrantfile, tooling) go to `production` through
-  a normal PR; only 9-specific data lives on `openvox9`. When `production`
-  moves, rebase `openvox9` onto it and `git push --force-with-lease`. Never
-  open a PR from `openvox9`.
+  a normal PR; only 9-specific data lives on `openvox9`.
+- `openvox9` is updated by merging, never by rebasing or force-pushing. A
+  9.x pin bump is a PR into `openvox9` from a branch such as
+  `openvox9-agent-<version>`, which first merges `origin/production` into
+  itself, so the same PR brings `openvox9` up to date. GitHub merges it with
+  a merge commit. Never open a PR from `openvox9`.
 
 ## Vagrant Environment
 
