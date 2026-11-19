@@ -1,24 +1,25 @@
 ---
 # Node-specific configuration for the Puppet master.
 
-# OpenVox 9 stack (this is the openvox9 branch): agent 9.3.0, server and
+# OpenVox 9 stack (this is the openvox9 branch): agent 9.5.0, server and
 # openvoxdb 9.2.0, all from the openvox9 EL10 repo. Server and openvoxdb
 # 9.2.0 both require openvox-agent >= 9.3.0 with no upper bound, so the
 # agent moves alone for an agent-only release; a server or openvoxdb bump
 # moves the agent with it. The pins mirror the 8.x pins on production.
 profile::base::release: 9
-profile::openvox_agent::version: '9.3.0'
+profile::openvox_agent::version: '9.5.0'
 profile::openvox_server::version: '9.2.0'
 
 # Pin OpenVoxView application version
 profile::openvoxview::version: '1.4.0'
 
 # Pin OpenVox GUI release (git tag without the leading 'v'). The admin
-# password lives in nodes/puppet.example.com.eyaml. 3.14.0 is the stable after
-# 3.12.0; its Bolt inventory resolves targets through the GUI's openvox_enc
-# plugin, which the upstream installer forgets to install
-# (cvquesty/openvox-gui#102) and openvox_gui >= 0.4.1 installs instead.
-profile::openvox_gui::version: '3.14.0'
+# password lives in nodes/puppet.example.com.eyaml. 3.14.2 is the stable after
+# 3.14.0: its installer now copies the openvox_enc Bolt plugin itself (fixes
+# cvquesty/openvox-gui#102; openvox_gui >= 0.4.1 still installs it for older
+# releases, and the two agree on content), and it needs Python >= 3.11, which
+# EL10 ships as 3.12.
+profile::openvox_gui::version: '3.14.2'
 
 # The OpenVox GUI installer owns /etc/sudoers.d/openvox-gui-users (~50 rules
 # for CA, Bolt, r10k, and log access). Keep profile::base's sudo purge from
