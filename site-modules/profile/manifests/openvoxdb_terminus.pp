@@ -4,9 +4,9 @@
 # but runs no OpenVoxDB of its own: installs openvoxdb-termini, writes
 # puppetdb.conf and routes.yaml for the server named in $server, turns on
 # storeconfigs and the puppetdb report processor, and restarts puppetserver
-# when any of that changes. The module first checks that OpenVoxDB answers on
-# $server:$port with this host's certificate, which OpenVoxDB accepts for any
-# certificate the CA signed.
+# when any of that or the package changes. The module first checks that
+# OpenVoxDB answers on $server:$port with this host's certificate, which
+# OpenVoxDB accepts for any certificate the CA signed.
 #
 # @param server
 #   The OpenVoxDB host, normally the primary server.
@@ -30,6 +30,12 @@ class profile::openvoxdb_terminus (
     manage_report_processor => true,
     enable_reports          => true,
   }
+
+  # The module restarts puppetserver when the terminus configuration changes,
+  # but not when the terminus package does. puppetserver keeps the old code
+  # loaded until it restarts, and a termini release can be a fix on its own
+  # (GHSA-859m-7qpm-85p7 in 8.18.1 and 9.2.1), so restart it on an upgrade.
+  Package['openvoxdb-termini'] ~> Service['puppetserver']
 
   if $package_version {
     Package <| title == 'openvoxdb-termini' |> {

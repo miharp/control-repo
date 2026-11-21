@@ -38,6 +38,12 @@ class profile::openvoxdb (
     enable_reports          => true,
   }
 
+  # The module restarts puppetserver when the terminus configuration changes,
+  # but not when the terminus package does. puppetserver keeps the old code
+  # loaded until it restarts, and a termini release can be a fix on its own
+  # (GHSA-859m-7qpm-85p7 in 8.18.1 and 9.2.1), so restart it on an upgrade.
+  Package['openvoxdb-termini'] ~> Service['puppetserver']
+
   if $package_version {
     if $package_source {
       Package <| title == 'openvoxdb' |> {

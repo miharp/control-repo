@@ -11,6 +11,7 @@ describe 'profile::openvoxdb' do
 
       it { is_expected.to contain_class('openvoxdb') }
       it { is_expected.to contain_class('openvoxdb::master::config') }
+      it { is_expected.to contain_package('openvoxdb-termini').that_notifies('Service[puppetserver]') }
 
       context 'with pre-release source URLs' do
         let(:params) do
