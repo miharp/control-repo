@@ -27,7 +27,7 @@ sudo::purge_ignore: 'openvox-gui-users'
 # it and openvoxdb-termini are in the repo at 8.15.0, so the workaround is gone.
 # Direct rpm installs also resolve no dependencies, which is why that path needed
 # a java_package hint the repo path does not.
-profile::openvoxdb::package_version: '8.18.0-1.el10'
+profile::openvoxdb::package_version: '8.18.1-1.el10'
 
 # Use the OS-provided PostgreSQL on EL10 (default is 16) to avoid bringing in the
 # external postgresql.org repository.

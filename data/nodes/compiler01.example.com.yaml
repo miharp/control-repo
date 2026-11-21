@@ -15,4 +15,4 @@ openvox_server::ca: false
 openvox_server::ca_server: 'puppet.example.com'
 
 # openvoxdb-termini at the primary's OpenVoxDB version.
-profile::openvoxdb_terminus::package_version: '8.18.0-1.el10'
+profile::openvoxdb_terminus::package_version: '8.18.1-1.el10'
