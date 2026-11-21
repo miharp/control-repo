@@ -10,6 +10,7 @@ describe 'profile::openvoxdb_terminus' do
       it { is_expected.to compile }
       it { is_expected.not_to contain_class('openvoxdb') }
       it { is_expected.to contain_package('openvoxdb-termini').with_ensure('present') }
+      it { is_expected.to contain_package('openvoxdb-termini').that_notifies('Service[puppetserver]') }
 
       it {
         is_expected.to contain_class('openvoxdb::master::config')
